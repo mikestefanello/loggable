@@ -29,7 +29,7 @@ a.tabledrag-handle .handle {
   padding: 18px;
 }
 
-#block-validd-local-actions .icon {
+#block-valid-local-actions .icon {
   background-color: #6c747d;
 }
 
@@ -78,19 +78,6 @@ a.tabledrag-handle .handle {
 
 .views-form .form-checkbox {
   position: relative;
-}
-
-.field--widget-entity-reference-paragraphs td.field-multiple-drag {
-  width: 24px;
-  padding: 20px 20px;
-}
-
-.field--widget-entity-reference-paragraphs .tabledrag-toggle-weight {
-  display: none;
-}
-
-.field--widget-entity-reference-paragraphs .js-form-wrapper {
-  padding-right: 10px;
 }
 
 .tile .tile-title {
