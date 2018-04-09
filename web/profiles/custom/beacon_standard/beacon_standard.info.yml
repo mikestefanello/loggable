@@ -6,6 +6,7 @@ dependencies:
   - block
   - config
   - contextual
+  - link
   - options
   - page_cache
   - dynamic_page_cache
