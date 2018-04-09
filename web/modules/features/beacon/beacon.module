@@ -1,0 +1,112 @@
+<?php
+
+use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Field\FieldStorageDefinitionInterface;
+use Drupal\Core\Field\FieldDefinitionInterface;
+use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\Field\FieldItemListInterface;
+use Drupal\Core\Access\AccessResult;
+use Drupal\user\Entity\User;
+use Drupal\Core\Database\Query\AlterableInterface;
+
+/**
+ * Implements hook_entity_base_field_info().
+ */
+function beacon_entity_base_field_info(EntityTypeInterface $entity_type) {
+  // Check if this is the user entity type.
+  if ($entity_type->id() === 'user') {
+    // Add a field to store the real name.
+    $fields['real_name'] = BaseFieldDefinition::create('string')
+      ->setLabel(t('Full name'))
+      ->setDescription(t('Provide your full name.'))
+      ->setRequired(TRUE)
+      ->setSettings([
+        'max_length' => 255,
+        'text_processing' => 0,
+      ])
+      ->setDefaultValue('')
+      ->setDisplayOptions('form', [
+        'type' => 'string_textfield',
+        'weight' => -20,
+      ])
+      ->setDisplayConfigurable('form', TRUE);
+
+    return $fields;
+  }
+}
+
+/**
+ * Implements hook_entity_type_build().
+ */
+function beacon_entity_type_build(array &$entity_types) {
+  // Override the user entity type to support UUIDs in urls.
+  //$entity_types['user']->setClass('Drupal\beacon\Entity\User');
+}
+
+/**
+ * Implements hook_query_TAG_alter().
+ */
+function _beacon_query_team_access_alter(AlterableInterface $query) {
+  // Check if this is an entity reference query.
+  if ($query->hasTag('entity_reference')) {
+    // TODO
+  }
+}
+
+/**
+ * Implements hook_views_data_alter().
+ */
+function beacon_views_data_alter(array &$data) {
+  // There is a bug in core where entity edit links include a broken destination
+  // if the view uses AJAX.
+  // @see https://www.drupal.org/project/drupal/issues/2828733
+  // To bypass this, we'll use a custom field that does not include the destination.
+  return;
+  // TODO
+  $data['company']['edit_company']['field']['id'] = 'entity_link_edit_no_destination';
+  $data['teams']['edit_team']['field']['id'] = 'entity_link_edit_no_destination';
+  $data['positions']['edit_position']['field']['id'] = 'entity_link_edit_no_destination';
+  $data['applicants']['edit_applicant']['field']['id'] = 'entity_link_edit_no_destination';
+  $data['evaluations']['edit_evaluation']['field']['id'] = 'entity_link_edit_no_destination';
+}
+
+/**
+ * Implements hook_theme().
+ */
+function beacon_theme($existing, $type, $theme, $path) {
+  $items = [];
+
+  // Add functions for each entity type.
+  /*
+  foreach (beacon_entity_types() as $type) {
+    $items[$type] = [
+      'render element' => 'elements',
+      'file' => "{$type}.page.inc",
+    ];
+  }
+  */
+
+  $items['chartjs'] = [
+    'template'  => 'chartjs',
+    'variables' => [
+      'id' => NULL,
+      'config' => NULL,
+    ],
+    'path' => $path . '/templates',
+  ];
+
+  return $items;
+}
+
+/**
+ * Template preprocess hook for chartjs charts.
+ */
+function template_preprocess_chartjs(&$variables) {
+  // Attach the chartjs library.
+  $variables['#attached']['library'] = 'beacon/chartjs';
+
+  // Add the ID and config to the JS settings.
+  $variables['#attached']['drupalSettings']['chartJs'][$variables['id']] = $variables['config'];
+}

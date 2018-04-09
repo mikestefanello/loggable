@@ -1,0 +1,15 @@
+services:
+  paramconverter.entity_uuid:
+    class: Drupal\beacon\ParamConverter\EntityUuidConverter
+    arguments: ['@entity.repository']
+    tags:
+      - { name: paramconverter }
+  beacon.route_subscriber:
+    class: Drupal\beacon\Routing\RouteSubscriber
+    tags:
+      - { name: event_subscriber }
+  beacon.breadcrumb_builder:
+    class: Drupal\beacon\BreadcrumbBuilder
+    arguments: ['@beacon']
+    tags:
+      - { name: breadcrumb_builder, priority: 1000 }

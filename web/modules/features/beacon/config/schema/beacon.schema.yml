@@ -1,0 +1,7 @@
+condition.plugin.beacon_entity:
+  type: condition.plugin
+  mapping:
+    types:
+      type: sequence
+      sequence:
+        type: string

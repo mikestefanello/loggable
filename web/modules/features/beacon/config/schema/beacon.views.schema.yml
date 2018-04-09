@@ -1,0 +1,13 @@
+views.argument_default.convert_uuid_to_id_raw:
+  type: mapping
+  label: 'Convert UUID to ID from raw value from URL'
+  mapping:
+    index:
+      type: integer
+      label: 'Path component'
+    use_alias:
+      type: boolean
+      label: 'Use path alias'
+    entity_type_id:
+      type: string
+      label: 'The entity type ID'
