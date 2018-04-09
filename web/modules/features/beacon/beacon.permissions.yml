@@ -1,0 +1,4 @@
+administer channel entities:
+  title: 'Administer Channel entities'
+  description: 'Allow to access the administration form to configure Channel entities.'
+  restrict access: true

@@ -103,12 +103,12 @@ abstract class BeaconContentEntityBase extends ContentEntityBase implements Beac
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
     $fields = parent::baseFieldDefinitions($entity_type);
 
-    $fields['owner'] = BaseFieldDefinition::create('entity_reference')
-      ->setLabel(t('Owner'))
+    $fields['user_id'] = BaseFieldDefinition::create('entity_reference')
+      ->setLabel(t('User'))
       ->setDescription(t('The user ID of owner of the entity.'))
       ->setRequired(TRUE)
       ->setSetting('target_type', 'user')
-      ->setDefaultValueCallback('Drupal\node\Entity\Node::getCurrentUserId')
+      ->setDefaultValueCallback('Drupal\beacon\Entity\BeaconContentEntityBase::getCurrentUserId')
       ->setSetting('handler', 'default');
 
     $fields['created'] = BaseFieldDefinition::create('created')
@@ -164,6 +164,18 @@ abstract class BeaconContentEntityBase extends ContentEntityBase implements Beac
     }
 
     return NULL;
+  }
+
+  /**
+   * Default value callback for 'uid' base field definition.
+   *
+   * @see ::baseFieldDefinitions()
+   *
+   * @return array
+   *   An array of default values.
+   */
+  public static function getCurrentUserId() {
+    return [\Drupal::currentUser()->id()];
   }
 
 }

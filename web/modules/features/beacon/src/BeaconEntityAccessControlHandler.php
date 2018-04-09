@@ -7,16 +7,14 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Entity\EntityTypeInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\user\Entity\User;
-use Drupal\Core\Entity\EntityHandlerInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 
 /**
  * Access controller base for beacon entities.
  */
-abstract class BeaconEntityAccessControlHandler extends EntityAccessControlHandler implements EntityHandlerInterface {
+abstract class BeaconEntityAccessControlHandler extends EntityAccessControlHandler {
 
   /**
    * {@inheritdoc}

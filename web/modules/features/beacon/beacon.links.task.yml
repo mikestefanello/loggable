@@ -1,0 +1,22 @@
+# Channel routing definition
+channel.list_tab:
+  route_name: entity.channel.collection
+  title: 'List'
+  base_route: entity.channel.collection
+  weight: -10
+
+entity.channel.canonical:
+  route_name: entity.channel.canonical
+  base_route: entity.channel.canonical
+  title: 'View'
+
+entity.channel.edit_form:
+  route_name: entity.channel.edit_form
+  base_route: entity.channel.canonical
+  title: 'Edit'
+
+entity.channel.delete_form:
+  route_name:  entity.channel.delete_form
+  base_route:  entity.channel.canonical
+  title: Delete
+  weight: 10

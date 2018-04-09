@@ -10,6 +10,5 @@ services:
       - { name: event_subscriber }
   beacon.breadcrumb_builder:
     class: Drupal\beacon\BreadcrumbBuilder
-    arguments: ['@beacon']
     tags:
       - { name: breadcrumb_builder, priority: 1000 }
