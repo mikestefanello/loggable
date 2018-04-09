@@ -98,14 +98,12 @@ function beacon_theme($existing, $type, $theme, $path) {
   $items = [];
 
   // Add functions for each entity type.
-  /*
-  foreach (beacon_entity_types() as $type) {
+  foreach (['channel', 'event', 'alert'] as $type) {
     $items[$type] = [
       'render element' => 'elements',
       'file' => "{$type}.page.inc",
     ];
   }
-  */
 
   $items['chartjs'] = [
     'template'  => 'chartjs',

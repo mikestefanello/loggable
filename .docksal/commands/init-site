@@ -72,5 +72,7 @@ site_install ()
 fix_permissions
 init_settings
 time site_install
+drush en devel kint -y
+drush upwd admin admin
 
 #-------------------------- END: Execution --------------------------------
