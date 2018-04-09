@@ -1,0 +1,14 @@
+# Ignore binaries.
+/bin
+
+.idea/
+docker-compose.yml
+web/sites/*/settings.local.php
+web/sites/*/files
+
+# Allow composer to build everything
+web/core
+web/profiles/contrib
+web/modules/contrib
+web/themes/contrib
+web/vendor

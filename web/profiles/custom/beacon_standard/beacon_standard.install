@@ -1,0 +1,15 @@
+<?php
+
+/**
+ * Implements hook_install().
+ */
+function beacon_standard_install() {
+  // Load the config factory.
+  $config = \Drupal::configFactory();
+
+  // Set the theme.
+  $config->getEditable('system.theme')
+    ->set('admin', 'valid')
+    ->set('default', 'valid')
+    ->save();
+}
