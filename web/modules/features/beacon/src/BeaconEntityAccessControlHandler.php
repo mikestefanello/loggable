@@ -20,24 +20,30 @@ abstract class BeaconEntityAccessControlHandler extends EntityAccessControlHandl
    * {@inheritdoc}
    */
   protected function checkAccess(EntityInterface $entity, $operation, AccountInterface $account) {
-    // Always grant admin access.
-    if ($this->userHasAdminPermission($account)) {
-      return AccessResult::allowed()
-        ->cachePerPermissions()
-        ->addCacheableDependency($entity);
-    }
+    // Check admin access.
+    $admin = $this->userHasAdminPermission($account);
 
-    // Default access.
-    return AccessResult::neutral();
+    // Check if the account is the owner of the entity.
+    $is_owner = ($entity->getOwnerId() == $account->id());
+
+    // Determine access.
+    $access = $this->accessCondition($admin || $is_owner);
+
+    // Add caching.
+    $access
+      ->cachePerUser()
+      ->addCacheableDependency($entity);
+
+    return $access;
   }
 
   /**
    * {@inheritdoc}
    */
   protected function checkCreateAccess(AccountInterface $account, array $context, $entity_bundle = NULL) {
-    // Classes inheriting this should add to these checks since there is no
-    // forbidden potential.
-    return AccessResult::allowedIf($this->userHasAdminPermission($account));
+    // Allow authenticated users to create.
+    return AccessResult::allowedIf($this->userHasRole($account, 'authenticated'))
+      ->addCacheContexts(['user.roles']);
   }
 
   /**
