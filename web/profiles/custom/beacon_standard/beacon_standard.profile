@@ -22,7 +22,8 @@ function beacon_standard_install_tasks(&$install_state) {
 function beacon_standard_enable_features_batch() {
   // List features to install.
   $features = [
-    // TODO
+    'beacon',
+    'beacon_ui',
   ];
 
   // Create a batch operation.

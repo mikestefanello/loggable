@@ -1,0 +1,102 @@
+.table-responsive > .table-bordered {
+  border: 1px solid #dee2e6;
+}
+
+table.dataTable thead .sorting, table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc, table.dataTable thead .sorting_asc_disabled, table.dataTable thead .sorting_desc_disabled {
+  cursor: initial;
+}
+
+.form-text {
+  margin-top: 0;
+}
+
+a.tabledrag-handle .handle {
+  height: 24px;
+  width: 24px;
+}
+
+.table td {
+  vertical-align: middle;
+}
+
+.app-sidebar__user-avatar.fa {
+  font-size: 1.4rem;
+}
+
+.block-local-actions-block .icon {
+  min-width: 12px;
+  font-size: 1.8rem;
+  padding: 18px;
+}
+
+#block-validd-local-actions .icon {
+  background-color: #6c747d;
+}
+
+.card-header {
+  font-weight: normal;
+}
+
+.widget-small {
+  margin-bottom: 18px;
+}
+
+.widget-small.success.coloured-icon {
+  background-color: #fff;
+  color: #2a2a2a;
+}
+
+.widget-small.secondary.coloured-icon {
+  background-color: #fff;
+  color: #2a2a2a;
+}
+
+.widget-small.secondary.coloured-icon .icon {
+  background-color: #6c747d;
+  color: #fff;
+}
+
+.widget-small.success.coloured-icon .icon {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.widget-small .icon-text {
+  font-size: 1rem;
+  padding: 8px;
+  font-weight: bold;
+  min-width: 100px;
+}
+
+.block .field--type-entity-reference {
+  margin: 0;
+}
+
+.views-form th.select-all {
+  width: 20px;
+}
+
+.views-form .form-checkbox {
+  position: relative;
+}
+
+.field--widget-entity-reference-paragraphs td.field-multiple-drag {
+  width: 24px;
+  padding: 20px 20px;
+}
+
+.field--widget-entity-reference-paragraphs .tabledrag-toggle-weight {
+  display: none;
+}
+
+.field--widget-entity-reference-paragraphs .js-form-wrapper {
+  padding-right: 10px;
+}
+
+.tile .tile-title {
+  font-weight: normal;
+}
+
+.app-sidebar__user-name, .app-sidebar__user-designation {
+  white-space: normal;
+}

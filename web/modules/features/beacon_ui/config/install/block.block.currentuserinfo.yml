@@ -1,0 +1,27 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - beacon_ui
+    - user
+  theme:
+    - valid
+id: currentuserinfo
+theme: valid
+region: sidebar
+weight: 0
+provider: null
+plugin: current_user_info
+settings:
+  id: current_user_info
+  label: 'Current user info'
+  provider: beacon_ui
+  label_display: '0'
+visibility:
+  user_role:
+    id: user_role
+    roles:
+      authenticated: authenticated
+    negate: false
+    context_mapping:
+      user: '@user.current_user_context:current_user'

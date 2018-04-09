@@ -1,0 +1,3 @@
+login_path: /user/login
+paths: "~stripe/*\r\n~api/*\r\n~user/password\r\n~user/register\r\n*"
+message: ''

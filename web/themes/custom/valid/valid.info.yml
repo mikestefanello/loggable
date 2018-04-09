@@ -1,0 +1,32 @@
+core: 8.x
+type: theme
+base theme: bootstrap_barrio
+name: 'Valid'
+description: 'A bootstrap admin theme.'
+
+regions:
+  breadcrumb: 'Breadcrumb'
+  navbar: 'Navbar'
+  page_title: 'Page title'
+  header: 'Header'
+  content: 'Content'
+  content_bottom: 'Content bottom'
+  sidebar: 'Sidebar'
+  footer: 'Footer'
+  page_top: 'Page top'
+  page_bottom: 'Page bottom'
+
+stylesheets-remove:
+  - '@bootstrap_barrio/css/components/table.css'
+  - '@bootstrap_barrio/css/components/tablesort-indicator.css'
+  - '@system/css/components/tablesort.module.css'
+
+libraries-override:
+  core/drupal.batch: valid/drupal.batch
+
+libraries-extend:
+  core/drupal.progress:
+    - valid/drupal.progress
+
+libraries:
+  - valid/valid

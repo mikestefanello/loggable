@@ -1,0 +1,14 @@
+beacon_ui.support:
+  path: '/support'
+  defaults:
+    _form: '\Drupal\beacon_ui\Form\SupportForm'
+    _title: 'Contact support'
+  requirements:
+    _role: 'authenticated'
+
+beacon_ui.user_edit:
+  path: '/user/account/edit'
+  defaults:
+    _controller: '\Drupal\beacon_ui\Controller\UserEditRedirect::redirectUser'
+  requirements:
+    _role: 'authenticated'

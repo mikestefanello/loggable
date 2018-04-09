@@ -1,0 +1,27 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - beacon_ui
+    - user
+  theme:
+    - valid
+id: sidebarnavigation
+theme: valid
+region: sidebar
+weight: 0
+provider: null
+plugin: sidebar_navigation
+settings:
+  id: sidebar_navigation
+  label: 'Sidebar navigation'
+  provider: beacon_ui
+  label_display: '0'
+visibility:
+  user_role:
+    id: user_role
+    roles:
+      authenticated: authenticated
+    negate: false
+    context_mapping:
+      user: '@user.current_user_context:current_user'

@@ -1,0 +1,12 @@
+name: 'Beacon'
+type: module
+core: 8.x
+description: 'Core functionality for the Beacon platform.'
+dependencies:
+  - jsonapi
+  - jsonapi_extras
+  - key_auth
+  - features
+  - options
+  - system
+  - user

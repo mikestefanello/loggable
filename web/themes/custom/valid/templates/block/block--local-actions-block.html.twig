@@ -1,0 +1,32 @@
+{#
+/**
+ * @file
+ * Theme override for local actions (primary admin actions.)
+ */
+#}
+
+{%
+  set classes = [
+    'block',
+    'block-' ~ configuration.provider|clean_class,
+    'block-' ~ plugin_id|clean_class,
+    'widget-small',
+    'primary',
+    'coloured-icon',
+  ]
+%}
+
+{% block content %}
+  {% if links %}
+    <div{{ attributes.addClass(classes) }}>
+      <i class="icon fa fa-cogs"></i>
+      <div class="info">
+        <nav class="action-links">
+          <ul class="nav">
+            {{ content }}
+          </ul>
+        </nav>
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}

@@ -1,0 +1,27 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - beacon_ui
+    - user
+  theme:
+    - valid
+id: navbaruser
+theme: valid
+region: navbar
+weight: 0
+provider: null
+plugin: navbar_user
+settings:
+  id: navbar_user
+  label: 'Navbar: User'
+  provider: beacon_ui
+  label_display: '0'
+visibility:
+  user_role:
+    id: user_role
+    roles:
+      authenticated: authenticated
+    negate: false
+    context_mapping:
+      user: '@user.current_user_context:current_user'

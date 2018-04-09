@@ -1,0 +1,27 @@
+valid:
+  js:
+    js/lib/popper.min.js: {}
+    js/lib/bootstrap.min.js: {}
+    js/lib/pace.min.js: {}
+    js/valid.js: {}
+  css:
+    base:
+      //maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css: {}
+      css/main.css: {}
+      css/styles.css: {}
+  dependencies:
+    - core/drupal
+    - core/jquery
+
+# libraries-override
+drupal.batch:
+  js:
+    js/batch.js: { cache: false }
+  dependencies:
+    - core/drupal.ajax
+    - core/drupal.progress
+    - core/jquery.once
+
+drupal.progress:
+  js:
+    js/progress.js: {}

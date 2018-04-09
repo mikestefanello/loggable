@@ -1,0 +1,13 @@
+name: 'Beacon UI'
+type: module
+core: 8.x
+description: 'Provide front-end interface for the Beacon platform.'
+dependencies:
+  - anonymous_login
+  - antibot
+  - block
+  - options
+  - beacon
+  - system
+  - user
+  - views

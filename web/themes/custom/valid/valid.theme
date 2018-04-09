@@ -1,0 +1,224 @@
+<?php
+
+use Drupal\Core\Template\Attribute;
+use Drupal\block\Entity\Block;
+use Drupal\Core\Form\FormStateInterface;
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function valid_preprocess_html(&$variables) {
+  // Add classes to the body.
+  $variables['attributes']['class'][] = 'app';
+  $variables['attributes']['class'][] = 'sidebar-mini';
+  $variables['attributes']['class'][] = 'rtl';
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter().
+ */
+function valid_theme_suggestions_page_alter(array &$suggestions, array $variables) {
+  if (valid_is_portal()) {
+    $suggestions[] = 'page__portal';
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function valid_preprocess_menu_local_task(&$variables) {
+  $is_portal = valid_is_portal();
+  if (!empty($variables['is_active'])) {
+    $variables['link']['#options']['attributes']['class'][] = 'active';
+    $variables['link']['#options']['attributes']['class'][] = 'btn';
+  }
+  if ($is_portal) {
+    $variables['link']['#options']['attributes']['class'][] = 'btn';
+    $variables['link']['#options']['attributes']['class'][] = 'btn-primary';
+  }
+  else {
+    $variables['link']['#options']['attributes']['class'][] = 'nav-link';
+  }
+  $variables['is_portal'] = $is_portal;
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function valid_preprocess_menu_local_tasks(&$variables) {
+  $variables['is_portal'] = valid_is_portal();
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function valid_preprocess_menu_local_action(&$variables) {
+  $variables['link']['#options']['attributes']['class'][] = 'btn';
+  $variables['link']['#options']['attributes']['class'][] = 'btn-primary';
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function valid_preprocess_form_element(&$variables) {
+  if (!empty($variables['label']['#title'])) {
+    if (is_object($variables['label']['#title']) && !$variables['label']['#title'] instanceof \Drupal\Component\Render\MarkupInterface) {
+      $variables['input_title'] = NULL;
+    }
+    elseif (is_object($variables['label']['#title']) ) {
+      $variables['input_title'] = $variables['label']['#title'];
+    }
+    else {
+      $variables['input_title'] = $variables['label']['#title'];
+    }
+  }
+  if (isset($variables['element']['#attributes'])) {
+    $variables['input_attributes'] = new Attribute($variables['element']['#attributes']);
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function valid_preprocess_block(&$variables) {
+  // Check for the local actions block.
+  if ($variables['plugin_id'] == 'local_actions_block') {
+    // The bug is that this block shows even if there are no links to display
+    // because the forbidden link(s) are still in the content. The only way to
+    // prevent this is to remove the forbidden links.
+    $links = FALSE;
+
+    // Iterate the links.
+    foreach ($variables['content'] as $key => $link) {
+      // Check if it is a link.
+      if (is_array($link) && !empty($link['#access'])) {
+        // Check if the link is not forbidden.
+        if (get_class($link['#access']) != 'Drupal\Core\Access\AccessResultForbidden') {
+          // Mark that there are links to show.
+          $links = TRUE;
+        }
+      }
+    }
+
+    // Store the variable.
+    $variables['links'] = $links;
+  }
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter().
+ */
+function valid_theme_suggestions_block_alter(array &$suggestions, array $variables) {
+  if (!empty($variables['elements']['#id'])) {
+    $block = Block::load($variables['elements']['#id']);
+    $suggestions = ['block__' . $block->getRegion()] + $suggestions;
+    $suggestions[] = 'block__' . $block->getRegion() . '__' . $variables['elements']['#id'];
+  }
+  return $suggestions;
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function valid_form_alter(&$form, FormStateInterface $form_state) {
+  if (!empty($form['actions'])) {
+    foreach ($form['actions'] as $index => &$element) {
+      if (!empty($element['#type']) && ($element['#type'] == 'link')) {
+        $element['#attributes']['class'] = ['btn', 'btn-secondary', 'mr-1'];
+      }
+    }
+    if ($form['#form_id'] != 'views_exposed_form') {
+      $form['actions']['#attributes']['class'][] = 'tile-footer';
+    }
+  }
+
+  // Check if this is a views exposed form.
+  if ($form['#form_id'] == 'views_exposed_form') {
+    // Allow elements to be inline.
+    $form['#attributes']['class'][] = 'row';
+
+    // Store that this form element came from views.
+    foreach ($form as $key => &$item) {
+      if (is_array($item) && !empty($item['#type'])) {
+        $item['#views_exposed_form'] = TRUE;
+      }
+    }
+
+    if (!empty($form['actions'])) {
+      $form['actions']['#attributes']['class'][] = 'col-md-2';
+      $form['actions']['#attributes']['class'][] = 'align-self-end';
+      $form['actions']['#attributes']['class'][] = 'form-group';
+    }
+  }
+}
+
+/**
+ * Determine if the portal template should be used, which is on user login,
+ * register, and password pages.
+ *
+ * @return bool
+ *   TRUE if the portal should be used, otherwise FALSE.
+ */
+function valid_is_portal() {
+  $route_match = \Drupal::routeMatch()->getRouteName();
+  $portal_paths = array('user.pass', 'user.login', 'user.register');
+  if (in_array($route_match, $portal_paths, TRUE)) {
+    return TRUE;
+  }
+  return FALSE;
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function valid_preprocess_views_view_table(&$vars) {
+  // Map the badge fields, values, and classes.
+  $badge_map = [
+    'priority' => [
+      'Low' => 'success',
+      'Medium' => 'warning',
+      'High' => 'danger',
+    ],
+    'active' => [
+      'Yes' => 'success',
+      'No' => 'danger',
+    ],
+    'status' => [
+      'Hired' => 'success',
+      'Completed' => 'success',
+      'Active' => 'success',
+      'Pending' => 'warning',
+      'In progress' => 'warning',
+      'Past due' => 'warning',
+      'Rejected' => 'danger',
+      'Blocked' => 'danger',
+      'Canceled' => 'danger',
+      'Unpaid' => 'danger',
+      'Trialing' => 'primary',
+    ],
+  ];
+
+  // Iterate the table rows.
+  foreach ($vars['rows'] as &$row) {
+    // Iterate the badge map.
+    foreach ($badge_map as $column => $classes) {
+      // Check if the column is present.
+      if (!empty($row['columns'][$column])) {
+        // Check if there is a value.
+        if (isset($row['columns'][$column]['content'][0])) {
+          // Extract the value.
+          if ($value = $row['columns'][$column]['content'][0]['field_output']['#markup']) {
+            // Convert to a string.
+            $value = (string) $value;
+
+            // Check if there is a class for this.
+            if (isset($classes[$value])) {
+              // Add the badge.
+              $row['columns'][$column]['content'][0]['field_output']['#markup'] = '<span class="badge badge-pill badge-' . $classes[$value] . '">' . $value . '</span>';
+            }
+          }
+        }
+      }
+    }
+  }
+}
