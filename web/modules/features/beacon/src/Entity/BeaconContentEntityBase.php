@@ -167,7 +167,7 @@ abstract class BeaconContentEntityBase extends ContentEntityBase implements Beac
   }
 
   /**
-   * Default value callback for 'uid' base field definition.
+   * Default value callback for 'user_id' base field definition.
    *
    * @see ::baseFieldDefinitions()
    *

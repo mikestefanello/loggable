@@ -1,0 +1,116 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - beacon
+id: event--event
+disabled: false
+path: event
+resourceType: event
+resourceFields:
+  id:
+    disabled: true
+    fieldName: id
+    publicName: id
+    enhancer:
+      id: ''
+    advancedOptionsIcon: ''
+    enhancer_label: ''
+  uuid:
+    fieldName: uuid
+    publicName: uuid
+    enhancer:
+      id: ''
+    disabled: false
+    advancedOptionsIcon: ''
+    enhancer_label: ''
+  user_id:
+    disabled: true
+    fieldName: user_id
+    publicName: user_id
+    enhancer:
+      id: ''
+    advancedOptionsIcon: ''
+    enhancer_label: ''
+  created:
+    fieldName: created
+    publicName: created
+    enhancer:
+      id: ''
+    disabled: false
+    advancedOptionsIcon: ''
+    enhancer_label: ''
+  changed:
+    fieldName: changed
+    publicName: changed
+    enhancer:
+      id: ''
+    disabled: false
+    advancedOptionsIcon: ''
+    enhancer_label: ''
+  type:
+    fieldName: type
+    publicName: type
+    enhancer:
+      id: ''
+    disabled: false
+    advancedOptionsIcon: ''
+    enhancer_label: ''
+  severity:
+    fieldName: severity
+    publicName: severity
+    enhancer:
+      id: ''
+    disabled: false
+    advancedOptionsIcon: ''
+    enhancer_label: ''
+  user:
+    fieldName: user
+    publicName: user
+    enhancer:
+      id: ''
+    disabled: false
+    advancedOptionsIcon: ''
+    enhancer_label: ''
+  url:
+    fieldName: url
+    publicName: url
+    enhancer:
+      id: nested
+      settings:
+        path: uri
+    disabled: false
+    advancedOptionsIcon: ''
+    enhancer_label: ''
+  message:
+    fieldName: message
+    publicName: message
+    enhancer:
+      id: ''
+    disabled: false
+    advancedOptionsIcon: ''
+    enhancer_label: ''
+  unread:
+    fieldName: unread
+    publicName: unread
+    enhancer:
+      id: ''
+    disabled: false
+    advancedOptionsIcon: ''
+    enhancer_label: ''
+  expire:
+    fieldName: expire
+    publicName: expire
+    enhancer:
+      id: ''
+    disabled: false
+    advancedOptionsIcon: ''
+    enhancer_label: ''
+  channel:
+    fieldName: channel
+    publicName: channel
+    enhancer:
+      id: ''
+    disabled: false
+    advancedOptionsIcon: ''
+    enhancer_label: ''

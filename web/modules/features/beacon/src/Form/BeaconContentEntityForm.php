@@ -27,7 +27,9 @@ class BeaconContentEntityForm extends ContentEntityForm {
       // Check if the entity has a parent field.
       if ($parent = $entity->getParentReferenceFieldName()) {
         // Load the contextual entity.
-        if ($parent_entity = $this->beacon->getContextualEntity($entity->getEntityTypeId(), TRUE)) {
+        // TODO
+        /*
+        if ($parent_entity = $this->beacon->getContextualEntity($entity->getEntityTypeId())) {
           // Store the target entity in the parent field.
           $entity->set($parent, ['target_id' => $parent_entity->id()]);
 
@@ -39,6 +41,7 @@ class BeaconContentEntityForm extends ContentEntityForm {
             '#weight' => 100,
           ];
         }
+        */
       }
     }
 

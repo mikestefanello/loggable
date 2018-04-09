@@ -1,6 +1,11 @@
-# Channel menu items definition
 entity.channel.collection:
   title: 'Channels'
   route_name: entity.channel.collection
   description: 'List and manage channel entities.'
+  parent: system.admin_structure
+
+entity.event.collection:
+  title: 'Events'
+  route_name: entity.event.collection
+  description: 'List and manage event entities.'
   parent: system.admin_structure

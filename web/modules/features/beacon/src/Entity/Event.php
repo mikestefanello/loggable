@@ -1,0 +1,271 @@
+<?php
+
+namespace Drupal\beacon\Entity;
+
+use Drupal\Core\Entity\EntityStorageInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\Core\Entity\EntityChangedTrait;
+use Drupal\Core\Entity\EntityTypeInterface;
+use Psr\Log\LogLevel;
+
+/**
+ * Defines the Event entity.
+ *
+ * @ingroup beacon
+ *
+ * @ContentEntityType(
+ *   id = "event",
+ *   label = @Translation("Event"),
+ *   label_collection = @Translation("Events"),
+ *   label_singular = @Translation("event"),
+ *   label_plural = @Translation("events"),
+ *   label_count = @PluralTranslation(
+ *     singular = "@count event",
+ *     plural = "@count events"
+ *   ),
+ *   handlers = {
+ *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
+ *     "list_builder" = "Drupal\beacon\BeaconEntityListBuilder",
+ *     "views_data" = "Drupal\beacon\Entity\EventViewsData",
+ *
+ *     "form" = {
+ *       "default" = "Drupal\beacon\Form\EventForm",
+ *       "add" = "Drupal\beacon\Form\EventForm",
+ *       "edit" = "Drupal\beacon\Form\EventForm",
+ *       "delete" = "Drupal\beacon\Form\EventDeleteForm",
+ *     },
+ *     "access" = "Drupal\beacon\EventAccessControlHandler",
+ *     "route_provider" = {
+ *       "html" = "Drupal\beacon\BeaconEntityHtmlRouteProvider",
+ *     },
+ *   },
+ *   base_table = "event",
+ *   admin_permission = "administer event entities",
+ *   entity_keys = {
+ *     "id" = "id",
+ *     "uuid" = "uuid",
+ *     "uid" = "user_id",
+ *   },
+ *   links = {
+ *     "canonical" = "/event/{event}",
+ *     "add-form" = "/event/add",
+ *     "edit-form" = "/event/{event}/edit",
+ *     "delete-form" = "/event/{event}/delete",
+ *     "collection" = "/admin/structure/event",
+ *   },
+ *   field_ui_base_route = "entity.event.collection"
+ * )
+ */
+class Event extends BeaconContentEntityBase implements EventInterface {
+
+  use EntityChangedTrait;
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
+    $fields = parent::baseFieldDefinitions($entity_type);
+
+    $fields['type'] = BaseFieldDefinition::create('string')
+      ->setLabel(t('Type'))
+      ->setDescription(t('The event type.'))
+      ->setSettings([
+        'max_length' => 64,
+        'text_processing' => 0,
+      ])
+      ->setDefaultValue('')
+      ->setDisplayOptions('view', [
+        'label' => 'hidden',
+        'type' => 'string',
+        'weight' => -4,
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'string_textfield',
+        'weight' => -4,
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', TRUE)
+      ->setRequired(TRUE);
+
+    $fields['severity'] = BaseFieldDefinition::create('list_string')
+      ->setLabel(t('Severity'))
+      ->setDescription(t('The event severity.'))
+      ->setDefaultValue(LogLevel::NOTICE)
+      ->setRequired(TRUE)
+      ->setSettings([
+        'allowed_values' => [
+          LogLevel::DEBUG => 'Debug',
+          LogLevel::INFO => 'Info',
+          LogLevel::NOTICE => 'Notice',
+          LogLevel::WARNING => 'Warning',
+          LogLevel::ERROR => 'Error',
+          LogLevel::CRITICAL => 'Critical',
+          LogLevel::ALERT => 'Alert',
+          LogLevel::EMERGENCY => 'Emergency',
+        ],
+      ])
+      ->setDisplayOptions('view', [
+        'label' => 'hidden',
+        'type' => 'string',
+        'weight' => -4,
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'options_select',
+        'weight' => -4,
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', TRUE);
+
+    $fields['user'] = BaseFieldDefinition::create('string')
+      ->setLabel(t('User'))
+      ->setDescription(t('The user that triggered the event.'))
+      ->setSettings([
+        'max_length' => 64,
+        'text_processing' => 0,
+      ])
+      ->setDefaultValue('')
+      ->setDisplayOptions('view', [
+        'label' => 'hidden',
+        'type' => 'string',
+        'weight' => -4,
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'string_textfield',
+        'weight' => -4,
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', TRUE);
+
+    $fields['url'] = BaseFieldDefinition::create('link')
+      ->setLabel(t('URL'))
+      ->setDescription(t('A URL that references the event.'))
+      ->setSettings([
+        'link_type' => 16,
+        'title' => 0,
+      ])
+      ->setDefaultValue('')
+      ->setDisplayOptions('view', [
+        'label' => 'hidden',
+        'type' => 'link',
+        'weight' => -3,
+        'settings' => [
+          'trim_length' => NULL,
+          'target' => '_blank',
+          'url_only' => FALSE,
+          'url_plain' => FALSE,
+          'rel' => '0'
+        ],
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'link_default',
+        'weight' => -3,
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', TRUE)
+      ->setRequired(FALSE);
+
+    $fields['message'] = BaseFieldDefinition::create('string_long')
+      ->setLabel(t('Message'))
+      ->setDescription(t('The event message.'))
+      ->setDefaultValue('')
+      // TODO: Length constraint
+      ->setDisplayOptions('view', [
+        'label' => 'above',
+        'type' => 'string',
+        'weight' => -1,
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'string_textarea',
+        'weight' => 25,
+        'settings' => [
+          'rows' => 10,
+        ],
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', TRUE)
+      ->setRequired(TRUE);
+
+    $fields['unread'] = BaseFieldDefinition::create('boolean')
+      ->setLabel(t('Unread'))
+      ->setDescription(t('Indicate if this event has not yet been read.'))
+      ->setDefaultValue(TRUE)
+      ->setDisplayOptions('view', [
+        'label' => 'hidden',
+        'type' => 'boolean',
+        'weight' => -3,
+        'settings' => [
+          'format' => 'yes-no',
+        ],
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'boolean_checkbox',
+        'settings' => [
+          'display_label' => TRUE,
+        ],
+        'weight' => 2,
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', TRUE);
+
+    $fields['expire'] = BaseFieldDefinition::create('timestamp')
+      ->setLabel(t('Expires on'))
+      ->setDescription(t('The time when this event expires.'))
+      ->setDefaultValueCallback('Drupal\beacon\Entity\Event::getDefaultExpireTimestamp')
+      ->setSetting('admin_only', TRUE)
+      ->setDisplayOptions('view', [
+        'label' => 'inline',
+        'type' => 'timestamp',
+        'weight' => -3,
+        'settings' => [
+          'date_format' => 'medium',
+        ],
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'datetime_timestamp',
+        'weight' => 2,
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', TRUE);
+
+    $fields['channel'] = BaseFieldDefinition::create('entity_reference')
+      ->setLabel(t('Channel'))
+      ->setDescription(t('The channel this event belongs to.'))
+      ->setRequired(TRUE)
+      ->setSetting('target_type', 'channel')
+      ->setSetting('handler', 'default')
+      ->setSetting('handler', 'default')->setDisplayOptions('form', [
+        'type' => 'entity_reference_autocomplete',
+        'weight' => 26,
+      ]);
+
+    return $fields;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function label() {
+    return t('Event %event', ['%event' => $this->uuid()]);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function getParentReferenceFieldName() {
+    return 'channel';
+  }
+
+  /**
+   * Default value callback for 'expire' base field definition.
+   *
+   * @see ::baseFieldDefinitions()
+   *
+   * @return array
+   *   An array of default values.
+   */
+  public static function getDefaultExpireTimestamp() {
+    // TODO: Hook?
+    return [strtotime('+2 weeks')];
+  }
+
+}

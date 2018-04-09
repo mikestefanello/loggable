@@ -19,7 +19,7 @@ use Drupal\user\UserInterface;
  *   label = @Translation("Channel"),
  *   label_collection = @Translation("Channels"),
  *   label_singular = @Translation("channel"),
- *   label_plural = @Translation("shannels"),
+ *   label_plural = @Translation("channels"),
  *   label_count = @PluralTranslation(
  *     singular = "@count channel",
  *     plural = "@count channels"

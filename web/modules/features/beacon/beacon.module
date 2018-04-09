@@ -12,6 +12,25 @@ use Drupal\user\Entity\User;
 use Drupal\Core\Database\Query\AlterableInterface;
 
 /**
+ * Implements hook_cron().
+ */
+function beacon_cron() {
+  // Load event storage.
+  $event_storage = \Drupal::entityTypeManager()
+    ->getStorage('event');
+
+  // Find up to 50 expired events.
+  $event_ids = $event_storage
+    ->getQuery()
+    ->condition('expire', time(), '<')
+    ->range(0, 50)
+    ->execute();
+
+  // Load and delete the events.
+  $event_storage->delete($event_storage->loadMultiple($event_ids));
+}
+
+/**
  * Implements hook_entity_base_field_info().
  */
 function beacon_entity_base_field_info(EntityTypeInterface $entity_type) {
