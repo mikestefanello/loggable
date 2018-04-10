@@ -15,3 +15,6 @@ services:
   plugin.manager.alert_type:
     class: Drupal\beacon\Plugin\AlertTypeManager
     parent: default_plugin_manager
+  beacon.alert_dispatcher:
+    class: Drupal\beacon\AlertDispatcher
+    arguments: ['@entity_type.manager', '@plugin.manager.alert_type', '@path.matcher']

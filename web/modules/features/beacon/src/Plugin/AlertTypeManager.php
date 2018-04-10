@@ -36,15 +36,18 @@ class AlertTypeManager extends DefaultPluginManager {
    * This will automatically pass in the proper configuration stored in the
    * entity which is provided via the settings forms.
    *
-   * @param $plugin_id
-   *   The plugin ID.
    * @param \Drupa\beacon\Entity\AlertInterface $alert
    *   An alert entity.
+   * @param $plugin_id
+   *   The plugin ID, or NULL to load the type from the Alert.
    * @return \Drupal\beacon\Plugin\AlertTypeInterface
    *   An alert type plugin instance.
    */
-  public function createInstanceFromAlert($plugin_id, AlertInterface $alert) {
+  public function createInstanceFromAlert(AlertInterface $alert, $plugin_id = NULL) {
     $settings = [];
+
+    // Determine the plugin ID.
+    $plugin_id = $plugin_id ? $plugin_id : $alert->get('type')->value;
 
     // Check if there are alert settings.
     if ($value = $alert->get('settings')->value) {

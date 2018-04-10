@@ -63,6 +63,16 @@ class Event extends BeaconContentEntityBase implements EventInterface {
   /**
    * {@inheritdoc}
    */
+  public function postSave(EntityStorageInterface $storage, $update = TRUE) {
+    // Dispatch alerts for new events.
+    if (!$update) {
+      \Drupal::service('beacon.alert_dispatcher')->dispatch($this);
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
     $fields = parent::baseFieldDefinitions($entity_type);
 

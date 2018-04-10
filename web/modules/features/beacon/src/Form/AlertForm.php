@@ -103,7 +103,7 @@ class AlertForm extends BeaconContentEntityForm {
     // Check if an alert type was provided.
     if ($alert_type) {
       // Load the alert type plugin.
-      $plugin = $this->alertTypeManager->createInstanceFromAlert($alert_type, $entity);
+      $plugin = $this->alertTypeManager->createInstanceFromAlert($entity, $alert_type);
 
       // Add the settings form.
       $form['alert_type_settings']['settings_form'] = $plugin->settingsForm($form_state);
@@ -120,9 +120,9 @@ class AlertForm extends BeaconContentEntityForm {
     $entity = parent::validateForm($form, $form_state);
 
     // Check for an alert type.
-    if ($alert_type = $entity->type->value) {
+    if ($entity->type->value) {
       // Allow the alert type plugin to validate the form.
-      $this->alertTypeManager->createInstanceFromAlert($alert_type, $entity)->validateSettingsForm($form_state);
+      $this->alertTypeManager->createInstanceFromAlert($entity)->validateSettingsForm($form_state);
     }
   }
 
@@ -133,7 +133,7 @@ class AlertForm extends BeaconContentEntityForm {
     $entity = $this->entity;
 
     // Allow the alert type plugin to submit the form.
-    $this->alertTypeManager->createInstanceFromAlert($entity->type->value, $entity)->submitSettingsForm($form_state);
+    $this->alertTypeManager->createInstanceFromAlert($entity)->submitSettingsForm($form_state);
 
     // Extract the current settings.
     $settings = $entity->settings->value;
