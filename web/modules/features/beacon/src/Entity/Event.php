@@ -76,6 +76,17 @@ class Event extends BeaconContentEntityBase implements EventInterface {
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
     $fields = parent::baseFieldDefinitions($entity_type);
 
+    $fields['channel'] = BaseFieldDefinition::create('entity_reference')
+      ->setLabel(t('Channel'))
+      ->setDescription(t('The channel this event belongs to.'))
+      ->setRequired(TRUE)
+      ->setSetting('target_type', 'channel')
+      ->setSetting('handler', 'default')
+      ->setSetting('handler', 'default')->setDisplayOptions('form', [
+        'type' => 'options_select',
+        'weight' => -5,
+      ]);
+
     $fields['type'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Type'))
       ->setDescription(t('The event type.'))
@@ -121,7 +132,7 @@ class Event extends BeaconContentEntityBase implements EventInterface {
       ])
       ->setDisplayOptions('form', [
         'type' => 'options_select',
-        'weight' => -4,
+        'weight' => -3,
       ])
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
@@ -141,7 +152,7 @@ class Event extends BeaconContentEntityBase implements EventInterface {
       ])
       ->setDisplayOptions('form', [
         'type' => 'string_textfield',
-        'weight' => -4,
+        'weight' => -2,
       ])
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
@@ -168,7 +179,7 @@ class Event extends BeaconContentEntityBase implements EventInterface {
       ])
       ->setDisplayOptions('form', [
         'type' => 'link_default',
-        'weight' => -3,
+        'weight' => -1,
       ])
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE)
@@ -191,7 +202,7 @@ class Event extends BeaconContentEntityBase implements EventInterface {
       ])
       ->setDisplayOptions('form', [
         'type' => 'string_textarea',
-        'weight' => 25,
+        'weight' => 0,
         'settings' => [
           'rows' => 10,
         ],
@@ -217,7 +228,7 @@ class Event extends BeaconContentEntityBase implements EventInterface {
         'settings' => [
           'display_label' => TRUE,
         ],
-        'weight' => 2,
+        'weight' => 1,
       ])
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
@@ -241,17 +252,6 @@ class Event extends BeaconContentEntityBase implements EventInterface {
       ])
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
-
-    $fields['channel'] = BaseFieldDefinition::create('entity_reference')
-      ->setLabel(t('Channel'))
-      ->setDescription(t('The channel this event belongs to.'))
-      ->setRequired(TRUE)
-      ->setSetting('target_type', 'channel')
-      ->setSetting('handler', 'default')
-      ->setSetting('handler', 'default')->setDisplayOptions('form', [
-        'type' => 'entity_reference_autocomplete',
-        'weight' => 26,
-      ]);
 
     return $fields;
   }

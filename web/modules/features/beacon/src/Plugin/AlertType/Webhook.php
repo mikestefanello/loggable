@@ -20,7 +20,7 @@ class Webhook extends AlertTypeBase {
    * {@inheritdoc}
    */
   public function send(EventInterface $event) {
-
+    // TODO
   }
 
   /**

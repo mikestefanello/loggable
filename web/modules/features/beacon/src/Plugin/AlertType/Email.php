@@ -20,7 +20,7 @@ class Email extends AlertTypeBase {
    * {@inheritdoc}
    */
   public function send(EventInterface $event) {
-
+    // TODO
   }
 
   /**

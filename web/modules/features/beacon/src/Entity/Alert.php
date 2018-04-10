@@ -89,6 +89,39 @@ class Alert extends BeaconContentEntityBase implements AlertInterface {
       ->setDisplayConfigurable('view', TRUE)
       ->setRequired(TRUE);
 
+    $fields['channel'] = BaseFieldDefinition::create('entity_reference')
+      ->setLabel(t('Channel'))
+      ->setDescription(t('The channel this alert belongs to.'))
+      ->setRequired(TRUE)
+      ->setSetting('target_type', 'channel')
+      ->setSetting('handler', 'default')
+      ->setSetting('handler', 'default')->setDisplayOptions('form', [
+        'type' => 'options_select',
+        'weight' => -3,
+      ]);
+
+    $fields['enabled'] = BaseFieldDefinition::create('boolean')
+      ->setLabel(t('Enabled'))
+      ->setDescription(t('Enabled alerts will send out messages when events are created.'))
+      ->setDefaultValue(TRUE)
+      ->setDisplayOptions('view', [
+        'label' => 'inline',
+        'type' => 'boolean',
+        'weight' => -3,
+        'settings' => [
+          'format' => 'yes-no',
+        ],
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'boolean_checkbox',
+        'settings' => [
+          'display_label' => TRUE,
+        ],
+        'weight' => -2,
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', TRUE);
+
     $fields['type'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Type'))
       ->setDescription(t('The alert type.'))
@@ -104,7 +137,7 @@ class Alert extends BeaconContentEntityBase implements AlertInterface {
       ])
       ->setDisplayOptions('form', [
         'type' => 'string_textfield',
-        'weight' => -4,
+        'weight' => -1,
       ])
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE)
@@ -140,14 +173,14 @@ class Alert extends BeaconContentEntityBase implements AlertInterface {
       ])
       ->setDisplayOptions('form', [
         'type' => 'options_buttons',
-        'weight' => -4,
+        'weight' => 1,
       ])
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
 
     $fields['event_types'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Event types'))
-      ->setDescription(t('The event types to send alerts for. If omitted, no filtering for event type will be used. Wildcard (*) characters are supported.'))
+      ->setDescription(t('The event types to send alerts for. If omitted, no filtering for event type will be used. Wildcard (*) characters are supported. Add a single type filter for every textbox.'))
       ->setCardinality(FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED)
       ->setSettings([
         'max_length' => 64,
@@ -161,43 +194,10 @@ class Alert extends BeaconContentEntityBase implements AlertInterface {
       ])
       ->setDisplayOptions('form', [
         'type' => 'string_textfield',
-        'weight' => -4,
-      ])
-      ->setDisplayConfigurable('form', TRUE)
-      ->setDisplayConfigurable('view', TRUE);
-
-    $fields['enabled'] = BaseFieldDefinition::create('boolean')
-      ->setLabel(t('Enabled'))
-      ->setDescription(t('Enabled alerts will send out messages when events are created.'))
-      ->setDefaultValue(TRUE)
-      ->setDisplayOptions('view', [
-        'label' => 'inline',
-        'type' => 'boolean',
-        'weight' => -3,
-        'settings' => [
-          'format' => 'yes-no',
-        ],
-      ])
-      ->setDisplayOptions('form', [
-        'type' => 'boolean_checkbox',
-        'settings' => [
-          'display_label' => TRUE,
-        ],
         'weight' => 2,
       ])
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
-
-    $fields['channel'] = BaseFieldDefinition::create('entity_reference')
-      ->setLabel(t('Channel'))
-      ->setDescription(t('The channel this alert belongs to.'))
-      ->setRequired(TRUE)
-      ->setSetting('target_type', 'channel')
-      ->setSetting('handler', 'default')
-      ->setSetting('handler', 'default')->setDisplayOptions('form', [
-        'type' => 'entity_reference_autocomplete',
-        'weight' => 26,
-      ]);
 
     return $fields;
   }

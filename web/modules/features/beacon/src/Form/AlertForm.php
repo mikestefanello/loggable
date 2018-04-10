@@ -60,10 +60,6 @@ class AlertForm extends BeaconContentEntityForm {
 
     $entity = $this->entity;
 
-    // Convert alert type to a select list.
-    $form['type']['widget'][0]['value']['#type'] = 'select';
-    $form['type']['widget'][0]['value']['#size'] = NULL;
-
     // Gather the alert type plugins.
     $alert_types = [];
     foreach ($this->alertTypeManager->getDefinitions() as $alert_type_id => $alert_type) {
@@ -73,8 +69,10 @@ class AlertForm extends BeaconContentEntityForm {
     // Sort the types by name.
     asort($alert_types);
 
-    // Merge in the alert type options.
+    // Convert type to a select list with alert type options.
     $form['type']['widget'][0]['value']['#options'] = $alert_types;
+    $form['type']['widget'][0]['value']['#type'] = 'select';
+    $form['type']['widget'][0]['value']['#size'] = NULL;
 
     // Add AJAX so the plugin settings form is reloaded.
     $form['type']['widget'][0]['value']['#ajax'] = [
@@ -109,6 +107,11 @@ class AlertForm extends BeaconContentEntityForm {
       $form['alert_type_settings']['settings_form'] = $plugin->settingsForm($form_state);
       $form['alert_type_settings']['settings_form']['#tree'] = TRUE;
     }
+
+    // Add details wrappers.
+    $this->addDetails($form, 'info', $this->t('Alert info'), ['name', 'channel', 'enabled']);
+    $this->addDetails($form, 'type', $this->t('Alert type'), ['type', 'alert_type_settings']);
+    $this->addDetails($form, 'filters', $this->t('Event filters'), ['event_types', 'event_severity']);
 
     return $form;
   }
@@ -177,7 +180,7 @@ class AlertForm extends BeaconContentEntityForm {
    */
   public function addAlertTypeSettingsAjax(array &$form, FormStateInterface $form_state) {
     $form_state->setRebuild();
-    return $form['alert_type_settings'];
+    return $form['type_wrapper']['alert_type_settings'];
   }
 
 }
