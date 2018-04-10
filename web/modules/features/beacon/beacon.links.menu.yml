@@ -9,3 +9,9 @@ entity.event.collection:
   route_name: entity.event.collection
   description: 'List and manage event entities.'
   parent: system.admin_structure
+
+entity.alert.collection:
+  title: 'Alerts'
+  route_name: entity.alert.collection
+  description: 'List and manage alert entities.'
+  parent: system.admin_structure

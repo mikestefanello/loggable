@@ -9,3 +9,9 @@ entity.event.add_form:
   title: 'Add event'
   appears_on:
     - entity.event.collection
+
+entity.alert.add_form:
+  route_name: entity.alert.add_form
+  title: 'Add alert'
+  appears_on:
+    - entity.alert.collection
