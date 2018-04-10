@@ -114,15 +114,7 @@ class Alert extends BeaconContentEntityBase implements AlertInterface {
       ->setLabel(t('Settings'))
       ->setDescription(t('The alert settings.'))
       ->setDefaultValue('')
-      ->setSetting('admin_only', TRUE)
-      ->setDisplayOptions('form', [
-        'type' => 'string_textarea',
-        'weight' => 25,
-        'settings' => [
-          'rows' => 4,
-        ],
-      ])
-      ->setDisplayConfigurable('form', TRUE);
+      ->setSetting('admin_only', TRUE);
 
     $fields['event_severity'] = BaseFieldDefinition::create('list_string')
       ->setLabel(t('Event severity'))
