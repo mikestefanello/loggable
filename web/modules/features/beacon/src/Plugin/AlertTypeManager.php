@@ -2,7 +2,7 @@
 
 namespace Drupal\beacon\Plugin;
 
-use Drupal\beacon\Entity\Alert;
+use Drupal\beacon\Entity\AlertInterface;
 use Drupal\Core\Plugin\DefaultPluginManager;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
@@ -30,7 +30,20 @@ class AlertTypeManager extends DefaultPluginManager {
     $this->setCacheBackend($cache_backend, 'alert_type_plugins');
   }
 
-  public function createInstanceFromAlert($plugin_id, Alert $alert) {
+  /**
+   * Create a plugin instance from an alert entity.
+   *
+   * This will automatically pass in the proper configuration stored in the
+   * entity which is provided via the settings forms.
+   *
+   * @param $plugin_id
+   *   The plugin ID.
+   * @param \Drupa\beacon\Entity\AlertInterface $alert
+   *   An alert entity.
+   * @return \Drupal\beacon\Plugin\AlertTypeInterface
+   *   An alert type plugin instance.
+   */
+  public function createInstanceFromAlert($plugin_id, AlertInterface $alert) {
     $settings = [];
 
     // Check if there are alert settings.
