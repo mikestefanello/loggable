@@ -178,7 +178,12 @@ class Event extends BeaconContentEntityBase implements EventInterface {
       ->setLabel(t('Message'))
       ->setDescription(t('The event message.'))
       ->setDefaultValue('')
-      // TODO: Length constraint
+      ->addPropertyConstraints('value', [
+        'Length' => [
+          'max' => 2000,
+          'maxMessage' => 'This message is too long. It should have 2000 characters or less.',
+        ]
+      ])
       ->setDisplayOptions('view', [
         'label' => 'above',
         'type' => 'string',

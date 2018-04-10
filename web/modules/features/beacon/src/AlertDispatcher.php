@@ -60,7 +60,9 @@ class AlertDispatcher implements AlertDispatcherInterface {
       // Iterate the alerts.
       foreach ($alerts as $alert) {
         // Dispatch the alert.
-        $this->alertTypeManager->createInstanceFromAlert($alert)->send($event);
+        $this->alertTypeManager
+          ->createInstanceFromAlert($alert)
+          ->send($event);
       }
 
       return count($alerts);
