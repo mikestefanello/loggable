@@ -15,8 +15,13 @@ class EventViewsData extends EntityViewsData {
   public function getViewsData() {
     $data = parent::getViewsData();
 
-    // Additional information for Views integration, such as table joins, can be
-    // put here.
+    $data['event']['event_bulk_form'] = [
+      'title' => $this->t('Event operations bulk form'),
+      'help' => $this->t('Add a form element that lets you run operations on multiple events.'),
+      'field' => [
+        'id' => 'beacon_entity_bulk_form',
+      ],
+    ];
 
     return $data;
   }

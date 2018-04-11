@@ -20,12 +20,10 @@ function beacon_ui_user_format_name_alter(&$name, $account) {
     // Load the user.
     if ($user = User::load($account->id())) {
       // Check if the user has a real name.
-      /*
       if ($real_name = $user->get('real_name')->value) {
         // Use the real name.
         $name = $real_name;
       }
-      */
     }
   }
 }

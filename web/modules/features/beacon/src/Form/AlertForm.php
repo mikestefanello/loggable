@@ -165,7 +165,7 @@ class AlertForm extends BeaconContentEntityForm {
           '%label' => $entity->label(),
         ]));
     }
-    $form_state->setRedirect('entity.alert.canonical', ['alert' => $entity->uuid()]);
+    $form_state->setRedirect('entity.channel.canonical', ['channel' => $entity->channel->entity->uuid()]);
   }
 
   /**

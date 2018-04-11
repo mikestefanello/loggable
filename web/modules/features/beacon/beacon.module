@@ -39,8 +39,8 @@ function beacon_entity_base_field_info(EntityTypeInterface $entity_type) {
   if ($entity_type->id() === 'user') {
     // Add a field to store the real name.
     $fields['real_name'] = BaseFieldDefinition::create('string')
-      ->setLabel(t('Full name'))
-      ->setDescription(t('Provide your full name.'))
+      ->setLabel(t('Name'))
+      ->setDescription(t('Provide your name.'))
       ->setRequired(TRUE)
       ->setSettings([
         'max_length' => 255,
@@ -70,7 +70,7 @@ function beacon_entity_type_build(array &$entity_types) {
  */
 function beacon_query_channel_access_alter(AlterableInterface $query) {
   // Add access control.
-  _beacon_entity_query_access_alert($query);
+  _beacon_entity_query_access_alert($query, 'channel');
 }
 
 /**
@@ -78,7 +78,7 @@ function beacon_query_channel_access_alter(AlterableInterface $query) {
  */
 function beacon_query_event_access_alter(AlterableInterface $query) {
   // Add access control.
-  _beacon_entity_query_access_alert($query);
+  _beacon_entity_query_access_alert($query, 'event');
 }
 
 /**
@@ -86,7 +86,7 @@ function beacon_query_event_access_alter(AlterableInterface $query) {
  */
 function beacon_query_alert_access_alter(AlterableInterface $query) {
   // Add access control.
-  _beacon_entity_query_access_alert($query);
+  _beacon_entity_query_access_alert($query, 'alert');
 }
 
 /**
@@ -179,8 +179,12 @@ function beacon_entity_types() {
  *
  * @see hook_query_TAG_alter()
  * @param \Drupal\Core\Database\Query\AlterableInterface $query
+ *   The query to alter for access control.
+ * @param $entity_type_id
+ *   The entity type to add access for. This can usually be extract from the query
+ *   metadata but there is no guarantee.
  */
-function _beacon_entity_query_access_alert(AlterableInterface $query) {
+function _beacon_entity_query_access_alert(AlterableInterface $query, $entity_type_id) {
   $filter = FALSE;
 
   // Get the current user.
@@ -191,9 +195,6 @@ function _beacon_entity_query_access_alert(AlterableInterface $query) {
     $filter = TRUE;
   }
   else {
-    // Get the entity type from the query.
-    $entity_type_id = $query->getMetaData('entity_type');
-
     // Get the entity admin permission.
     $permission = \Drupal::entityTypeManager()
       ->getDefinition($entity_type_id)
@@ -210,7 +211,10 @@ function _beacon_entity_query_access_alert(AlterableInterface $query) {
     // Get the query tables.
     $tables = $query->getTables();
 
+    // Determine the alias.
+    $alias = isset($tables[$entity_type_id]) ? $tables[$entity_type_id]['alias'] : $tables['base_table']['alias'];
+
     // Filter for entities that this user owns.
-    $query->condition($tables['base_table']['alias'] . '.user_id', $user->id());
+    $query->condition($alias . '.user_id', $user->id());
   }
 }
