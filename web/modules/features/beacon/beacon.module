@@ -23,6 +23,7 @@ function beacon_cron() {
   $event_ids = $event_storage
     ->getQuery()
     ->condition('expire', time(), '<')
+    // Constant or setting?
     ->range(0, 50)
     ->execute();
 
@@ -86,6 +87,19 @@ function beacon_query_event_access_alter(AlterableInterface $query) {
 function beacon_query_alert_access_alter(AlterableInterface $query) {
   // Add access control.
   _beacon_entity_query_access_alert($query);
+}
+
+/**
+ * Implements hook_mail().
+ */
+function beacon_mail($key, &$message, $params) {
+  switch ($key) {
+    // Alert.
+    case 'alert':
+      $message['subject'] = $params['subject'];
+      $message['body'] = $params['body'];
+      break;
+  }
 }
 
 /**

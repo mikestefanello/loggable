@@ -5,6 +5,10 @@ namespace Drupal\beacon\Plugin\AlertType;
 use Drupal\beacon\Plugin\AlertTypeBase;
 use Drupal\beacon\Entity\EventInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Mail\MailManagerInterface;
+use Drupal\Core\Url;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Alert type plugin for sending alerts via email.
@@ -14,13 +18,66 @@ use Drupal\Core\Form\FormStateInterface;
  *   label = @Translation("Email"),
  * )
  */
-class Email extends AlertTypeBase {
+class Email extends AlertTypeBase implements ContainerFactoryPluginInterface {
+
+  /**
+   * The mail sender service.
+   *
+   * @var \Drupal\Core\Mail\MailManagerInterface
+   */
+  protected $mailManager;
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('plugin.manager.mail')
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, MailManagerInterface $mail_manager) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition);
+    $this->mailManager = $mail_manager;
+  }
 
   /**
    * {@inheritdoc}
    */
   public function send(EventInterface $event) {
-    // TODO
+    $settings = $this->getSettings();
+
+    // Build the message parameters.
+    $params = [
+      'subject' => $this->t('Alert notification for channel @channel', ['@channel' => $event->channel->entity->label()]),
+      'body' => [
+        $this->t('The following event has been logged:'),
+        '',
+        $this->t('Channel: @channel', ['@channel' => $event->channel->entity->label()]),
+        $this->t('Channel ID: @uuid', ['@uuid' => $event->channel->entity->uuid()]),
+        $this->t('Type: @type', ['@type' => $event->type->value]),
+        $this->t('Severity: @severity', ['@severity' => $event->severity->value]),
+        $this->t('User: @user', ['@user' => $event->user->value]),
+        $this->t('URL: @url', ['@url' => $event->url->first() ? $event->url->first()->getUrl()->toString() : '']),
+        $this->t('Date: @date', ['@date' => format_date($event->created->value, 'long')]),
+        $this->t('Expires: @date', ['@date' => format_date($event->expire->value, 'long')]),
+        $this->t('Message: @message', ['@message' => $event->message->value]),
+        '',
+        $this->t('You can view this event here: @link', ['@link' => $event->url('canonical', ['absolute' => TRUE])]),
+        '',
+        $this->t('Please log if you wish to change your alerts: @link', ['@link' => Url::fromRoute('<front>')->setAbsolute()->toString()]),
+      ],
+    ];
+
+    // Send the email.
+    // TODO; Properly determine the language?
+    $this->mailManager->mail('beacon', 'alert', $settings['email'], 'en', $params);
   }
 
   /**
