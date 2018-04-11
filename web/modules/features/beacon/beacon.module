@@ -67,11 +67,25 @@ function beacon_entity_type_build(array &$entity_types) {
 /**
  * Implements hook_query_TAG_alter().
  */
-function _beacon_query_team_access_alter(AlterableInterface $query) {
-  // Check if this is an entity reference query.
-  if ($query->hasTag('entity_reference')) {
-    // TODO
-  }
+function beacon_query_channel_access_alter(AlterableInterface $query) {
+  // Add access control.
+  _beacon_entity_query_access_alert($query);
+}
+
+/**
+ * Implements hook_query_TAG_alter().
+ */
+function beacon_query_event_access_alter(AlterableInterface $query) {
+  // Add access control.
+  _beacon_entity_query_access_alert($query);
+}
+
+/**
+ * Implements hook_query_TAG_alter().
+ */
+function beacon_query_alert_access_alter(AlterableInterface $query) {
+  // Add access control.
+  _beacon_entity_query_access_alert($query);
 }
 
 /**
@@ -126,4 +140,49 @@ function template_preprocess_chartjs(&$variables) {
 
   // Add the ID and config to the JS settings.
   $variables['#attached']['drupalSettings']['chartJs'][$variables['id']] = $variables['config'];
+}
+
+/**
+ * Add access control to an entity query.
+ *
+ * If the user is not an admin of the entity, only entities that they own
+ * will be returned, unless it's an entity reference query, in which case
+ * admin permissions are ignored.
+ *
+ * @see hook_query_TAG_alter()
+ * @param \Drupal\Core\Database\Query\AlterableInterface $query
+ */
+function _beacon_entity_query_access_alert(AlterableInterface $query) {
+  $filter = FALSE;
+
+  // Get the current user.
+  $user = \Drupal::currentUser();
+
+  // Check if this is an entity reference query.
+  if ($query->hasTag('entity_reference')) {
+    $filter = TRUE;
+  }
+  else {
+    // Get the entity type from the query.
+    $entity_type_id = $query->getMetaData('entity_type');
+
+    // Get the entity admin permission.
+    $permission = \Drupal::entityTypeManager()
+      ->getDefinition($entity_type_id)
+      ->getAdminPermission();
+
+    // Check if the user does not have the permission.
+    if (!$user->hasPermission($permission)) {
+      $filter = TRUE;
+    }
+  }
+
+  // Check if we should filter.
+  if ($filter) {
+    // Get the query tables.
+    $tables = $query->getTables();
+
+    // Filter for entities that this user owns.
+    $query->condition($tables['base_table']['alias'] . '.user_id', $user->id());
+  }
 }

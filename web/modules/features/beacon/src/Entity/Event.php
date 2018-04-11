@@ -36,7 +36,7 @@ use Psr\Log\LogLevel;
  *     },
  *     "access" = "Drupal\beacon\EventAccessControlHandler",
  *     "route_provider" = {
- *       "html" = "Drupal\beacon\BeaconEntityHtmlRouteProvider",
+ *       "html" = "Drupal\beacon\EventHtmlRouteProvider",
  *     },
  *   },
  *   base_table = "event",
