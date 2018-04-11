@@ -64,6 +64,7 @@ class Webhook extends AlertTypeBase implements ContainerFactoryPluginInterface {
     $data = [
       'channel' => $event->channel->entity->uuid(),
       'channelName' => $event->channel->entity->label(),
+      'event' => $event->uuid(),
       'type' => $event->type->value,
       'severity' => $event->severity->value,
       'user' => $event->user->value,
@@ -142,6 +143,7 @@ class Webhook extends AlertTypeBase implements ContainerFactoryPluginInterface {
         '#value' => '{
    "channel":"742caa49-19e9-4126-ad35-4089d3eee13b",
    "channelName":"Ecommerce store",
+   "event":"821cda32-32e2-1423-sa32-4723d3asf33p",
    "type":"order",
    "severity":"notice",
    "user":"John Doe",

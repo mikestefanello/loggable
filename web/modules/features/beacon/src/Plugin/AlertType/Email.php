@@ -61,6 +61,7 @@ class Email extends AlertTypeBase implements ContainerFactoryPluginInterface {
         '',
         $this->t('Channel: @channel', ['@channel' => $event->channel->entity->label()]),
         $this->t('Channel ID: @uuid', ['@uuid' => $event->channel->entity->uuid()]),
+        $this->t('Event ID: @uuid', ['@uuid' => $event->uuid()]),
         $this->t('Type: @type', ['@type' => $event->type->value]),
         $this->t('Severity: @severity', ['@severity' => $event->severity->value]),
         $this->t('User: @user', ['@user' => $event->user->value]),
