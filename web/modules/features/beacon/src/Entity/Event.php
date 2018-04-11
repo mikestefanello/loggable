@@ -61,6 +61,13 @@ class Event extends BeaconContentEntityBase implements EventInterface {
   use EntityChangedTrait;
 
   /**
+   * The event message max length.
+   *
+   * @var int
+   */
+  const MESSAGE_MAX_LENGTH = 5000;
+
+  /**
    * {@inheritdoc}
    */
   public function postSave(EntityStorageInterface $storage, $update = TRUE) {
@@ -191,8 +198,8 @@ class Event extends BeaconContentEntityBase implements EventInterface {
       ->setDefaultValue('')
       ->addPropertyConstraints('value', [
         'Length' => [
-          'max' => 2000,
-          'maxMessage' => 'This message is too long. It should have 2000 characters or less.',
+          'max' => self::MESSAGE_MAX_LENGTH,
+          'maxMessage' => 'This message is too long. It should have ' . self::MESSAGE_MAX_LENGTH . ' characters or less.',
         ]
       ])
       ->setDisplayOptions('view', [

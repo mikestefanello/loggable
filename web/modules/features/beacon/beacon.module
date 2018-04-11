@@ -126,7 +126,7 @@ function beacon_theme($existing, $type, $theme, $path) {
   $items = [];
 
   // Add functions for each entity type.
-  foreach (['channel', 'event', 'alert'] as $type) {
+  foreach (beacon_entity_types() as $type) {
     $items[$type] = [
       'render element' => 'elements',
       'file' => "{$type}.page.inc",
@@ -154,6 +154,20 @@ function template_preprocess_chartjs(&$variables) {
 
   // Add the ID and config to the JS settings.
   $variables['#attached']['drupalSettings']['chartJs'][$variables['id']] = $variables['config'];
+}
+
+/**
+ * Get a list of beacon entity type IDs.
+ *
+ * @return array
+ *   An array of beacon entity type IDs.
+ */
+function beacon_entity_types() {
+  return [
+    'channel',
+    'event',
+    'alert',
+  ];
 }
 
 /**

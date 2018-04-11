@@ -184,7 +184,6 @@ function valid_preprocess_views_view_table(&$vars) {
       'No' => 'danger',
     ],
     'status' => [
-      'Hired' => 'success',
       'Completed' => 'success',
       'Active' => 'success',
       'Pending' => 'warning',
@@ -195,6 +194,16 @@ function valid_preprocess_views_view_table(&$vars) {
       'Canceled' => 'danger',
       'Unpaid' => 'danger',
       'Trialing' => 'primary',
+    ],
+    'severity' => [
+      'Debug' => 'secondary',
+      'Info' => 'primary',
+      'Notice' => 'secondary',
+      'Warning' => 'warning',
+      'Error' => 'danger',
+      'Critical' => 'danger',
+      'Alert' => 'danger',
+      'Emergency' => 'danger',
     ],
   ];
 
