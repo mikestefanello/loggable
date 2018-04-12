@@ -1,0 +1,9 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - beacon
+id: channel_delete
+label: 'Delete channel'
+type: channel
+plugin: channel_delete_action

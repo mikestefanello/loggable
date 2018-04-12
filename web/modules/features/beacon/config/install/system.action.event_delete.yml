@@ -1,0 +1,9 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - beacon
+id: event_delete
+label: 'Delete event'
+type: event
+plugin: event_delete_action

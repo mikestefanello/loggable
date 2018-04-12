@@ -15,7 +15,7 @@ abstract class DeleteEntityBase extends EntityActionBase {
    */
   public function executeMultiple(array $entities) {
     $this->entityTypeManager
-      ->getDefinition($this->getPluginDefinition()['type'])
+      ->getStorage($this->getPluginDefinition()['type'])
       ->delete($entities);
   }
 
