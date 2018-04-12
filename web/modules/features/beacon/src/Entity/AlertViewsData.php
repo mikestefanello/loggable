@@ -15,8 +15,13 @@ class AlertViewsData extends EntityViewsData {
   public function getViewsData() {
     $data = parent::getViewsData();
 
-    // Additional information for Views integration, such as table joins, can be
-    // put here.
+    $data['alert']['alert_bulk_form'] = [
+      'title' => $this->t('Alert operations bulk form'),
+      'help' => $this->t('Add a form element that lets you run operations on multiple alerts.'),
+      'field' => [
+        'id' => 'beacon_entity_bulk_form',
+      ],
+    ];
 
     return $data;
   }
