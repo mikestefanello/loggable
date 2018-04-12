@@ -6,6 +6,7 @@ use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\user\Entity\User;
 use Drupal\Core\Url;
@@ -29,6 +30,13 @@ class SidebarNavigation extends BlockBase implements ContainerFactoryPluginInter
   protected $account;
 
   /**
+   * The entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
+
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
@@ -36,16 +44,29 @@ class SidebarNavigation extends BlockBase implements ContainerFactoryPluginInter
       $configuration,
       $plugin_id,
       $plugin_definition,
-      $container->get('current_user')
+      $container->get('current_user'),
+      $container->get('entity_type.manager')
     );
   }
 
   /**
-   * {@inheritdoc}
+   * Constructs a SidebarNavigation object.
+   *
+   * @param mixed[] $configuration
+   *   A configuration array containing information about the plugin instance.
+   * @param string $plugin_id
+   *   The plugin ID for the plugin instance.
+   * @param mixed $plugin_definition
+   *   The plugin implementation definition.
+   * @param \Drupal\Core\Session\AccountInterface $account
+   *   The current user account.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity type manager.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, AccountInterface $account) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, AccountInterface $account, EntityTypeManagerInterface $entity_type_manager) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->account = $account;
+    $this->entityTypeManager = $entity_type_manager;
   }
 
   /**
@@ -54,8 +75,45 @@ class SidebarNavigation extends BlockBase implements ContainerFactoryPluginInter
   public function build() {
     $items = [];
 
-    // Load the current user.
-    $user = User::load($this->account->id());
+    // Load channel storage.
+    $channel_storage = $this->entityTypeManager
+      ->getStorage('channel');
+
+    // Find channels that the current user owns.
+    $channels = $channel_storage
+      ->getQuery()
+      ->condition('user_id', $this->account->id())
+      ->sort('name')
+      ->execute();
+
+    // Load the channels.
+    $channels = $channels ? $channel_storage->loadMultiple($channels) : [];
+
+    // Add channel links.
+    $items['channels'] = [
+      'title' => t('Channels'),
+      'url' => Url::fromRoute('<none>', [], ['fragment' => 'channels']),
+      'icon' => 'filter',
+      'below' => [],
+    ];
+
+    // Add a link for each channel.
+    foreach ($channels as $channel) {
+      $items['channels']['below'][] = [
+        'title' => $channel->label(),
+        'url' => $channel->url(),
+      ];
+    }
+
+    // Check if the user can create channels.
+    if ($this->entityTypeManager->getAccessControlHandler('channel')->createAccess()) {
+      // Add a link to add a channel.
+      $items['channels']['below']['add'] = [
+        'title' => t('Add channel'),
+        'url' => Url::fromRoute('entity.channel.add_form'),
+        'icon' => 'plus',
+      ];
+    }
 
     // Add support link.
     $items['support'] = [
@@ -66,7 +124,7 @@ class SidebarNavigation extends BlockBase implements ContainerFactoryPluginInter
     ];
 
     // Check if this user is a site admin.
-    if ($user->hasPermission('administer site configuration')) {
+    if ($this->account->hasPermission('administer site configuration')) {
       // Add Drupal admin links.
       $items['drupal'] = [
         'title' => t('Drupal'),
@@ -105,18 +163,24 @@ class SidebarNavigation extends BlockBase implements ContainerFactoryPluginInter
       ];
     }
 
-    return [
-      'items' => $items,
-    ];
+    return ['items' => $items];
   }
 
   /**
    * {@inheritdoc}
    */
   public function getCacheContexts() {
-    return Cache::mergeTags(parent::getCacheContexts(), [
-      'user.roles',
-      'user.permissions'
+    return Cache::mergeContexts(parent::getCacheContexts(), [
+      'user'
+    ]);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getCacheTags() {
+    return Cache::mergeTags(parent::getCacheTags(), [
+      'user.channels:' . $this->account->id(),
     ]);
   }
 
