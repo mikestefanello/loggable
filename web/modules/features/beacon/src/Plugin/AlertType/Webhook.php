@@ -6,7 +6,7 @@ use Drupal\beacon\Plugin\AlertTypeBase;
 use Drupal\beacon\Entity\EventInterface;
 use Drupal\Core\Form\FormStateInterface;
 use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Promise;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -25,7 +25,7 @@ class Webhook extends AlertTypeBase implements ContainerFactoryPluginInterface {
    *
    * @var int
    */
-  const TIMEOUT = 10;
+  const TIMEOUT = 3;
 
   /**
    * The HTTP client.
@@ -74,22 +74,14 @@ class Webhook extends AlertTypeBase implements ContainerFactoryPluginInterface {
       'message' => $event->message->value,
     ];
 
-    // Attempt the POST to the endpoint.
-    try {
-      $response = $this->httpClient->request('POST', $settings['endpoint'], [
-        'headers' => [
-          'Accept' => 'application/json',
-          'Content-Type' => 'application/json',
-        ],
-        'json' => $data,
-        'allow_redirects' => FALSE,
-        'timeout' => self::TIMEOUT,
-        'synchronous' => TRUE,
-      ]);
-    }
-    catch (RequestException $e) {
-
-    }
+    // Queue the request.
+    $this->queueHttpRequest('POST', $settings['endpoint'], [
+      'headers' => [
+        'Accept' => 'application/json',
+        'Content-Type' => 'application/json',
+      ],
+      'json' => $data,
+    ]);
   }
 
   /**
@@ -155,6 +147,47 @@ class Webhook extends AlertTypeBase implements ContainerFactoryPluginInterface {
       ],
     ];
     return $form;
+  }
+
+  /**
+   * Queue an HTTP request to be made during shutdown.
+   *
+   * All requests are queued and executed in a shutdown function asynchronously
+   * so that the page response does not have to wait for the requests to finish.
+   *
+   * @param string $method
+   *   The HTTP request method.
+   * @param string $uri
+   *   The HTTP request endpoint URI.
+   * @param array $options
+   *   An array of request options.
+   */
+  public function queueHttpRequest($method, $uri, array $options = []) {
+    $requests = &drupal_static(__METHOD__, []);
+
+    // Register a shutdown function if this is the first request to be queued.
+    if (empty($requests)) {
+      drupal_register_shutdown_function([$this, 'executeQueuedHttpRequests']);
+    }
+
+    // Merge in option detaults.
+    $options = array_merge([
+      'timeout' => self::TIMEOUT,
+      'allow_redirects' => FALSE,
+    ], $options);
+
+    // Create and store the request.
+    $requests[] = $this->httpClient->requestAsync($method, $uri, $options);
+  }
+
+  /**
+   * Asynchronously execute all queued HTTP requests.
+   *
+   * @see queueHttpRequest()
+   */
+  public static function executeQueuedHttpRequests() {
+    $requests = &drupal_static('Drupal\beacon\Plugin\AlertType\Webhook::queueHttpRequest', []);
+    Promise\settle($requests)->wait();
   }
 
 }
