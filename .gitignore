@@ -7,10 +7,26 @@ web/sites/*/settings.local.php
 web/sites/*/files
 
 # Allow composer to build everything
-web/*
-!web/modules/custom/*
-!web/modules/features/*
-!web/themes/custom/*
-!web/profiles/custom/*
-!web/sites/*
 vendor
+web/core
+web/modules/contrib
+web/themes/contrib
+web/profiles/contrib
+web/.csslintrc
+web/.editorconfig
+web/.eslintignore
+web/.eslintrc
+web/.eslintrc.json
+web/.gitattributes
+web/.ht.router.php
+web/.htaccess
+web/index.php
+web/robots.txt
+web/sites/default/default.settings.php
+web/sites/default/default.services.yml
+web/sites/development.services.yml
+web/sites/example.settings.local.php
+web/sites/example.sites.php
+web/update.php
+web/web.config
+web/autoload.php
