@@ -8,9 +8,9 @@ web/sites/*/files
 
 # Allow composer to build everything
 web/*
-!web/modules/custom
-!web/modules/features
-!web/themes/custom
-!web/profiles/custom
-!web/sites
+!web/modules/custom/*
+!web/modules/features/*
+!web/themes/custom/*
+!web/profiles/custom/*
+!web/sites/*
 vendor
