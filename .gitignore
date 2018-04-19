@@ -12,4 +12,5 @@ web/*
 !web/modules/features
 !web/themes/custom
 !web/profiles/custom
+!web/sites
 vendor
