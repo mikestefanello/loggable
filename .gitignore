@@ -7,8 +7,9 @@ web/sites/*/settings.local.php
 web/sites/*/files
 
 # Allow composer to build everything
-web/core
-web/profiles/contrib
-web/modules/contrib
-web/themes/contrib
-web/vendor
+web/*
+!web/modules/custom
+!web/modules/features
+!web/themes/custom
+!web/profiles/custom
+vendor
