@@ -6,10 +6,10 @@
     "require": {
         "composer/installers": "^1.0.24",
         "wikimedia/composer-merge-plugin": "^1.4",
-        "drupal/core": "8.5.1",
+        "drupal/core": "8.5.2",
         "drupal/jsonapi": "1.15",
         "drupal/jsonapi_extras": "2.0-rc1",
-        "drupal/key_auth": "1.0-beta1",
+        "drupal/key_auth": "1.0",
         "drupal/features": "3.7",
         "drupal/stripe": "1.0-beta2",
         "drupal/google_analytics": "2.2",
