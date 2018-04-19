@@ -1,0 +1,24 @@
+channel.manage_alerts:
+  route_name: view.beacon_channel_alerts.page_1
+  title: 'Manage alerts'
+  weight: 1
+  appears_on:
+    - entity.channel.canonical
+
+channel.url_redirect:
+  route_name: entity.channel.url_redirect
+  title: 'Channel URL'
+  #class: \Drupal\beacon_ui\Plugin\Menu\LocalAction\NewWindowLocalAction
+  weight: 2
+  options:
+    attributes:
+      target: _blank
+  appears_on:
+    - entity.channel.canonical
+
+channel.alerts.add_form:
+  route_name: entity.alert.add_form
+  title: 'Add alert'
+  class: \Drupal\beacon_ui\Plugin\Menu\LocalAction\ChannelEntityContextual
+  appears_on:
+    - view.beacon_channel_alerts.page_1

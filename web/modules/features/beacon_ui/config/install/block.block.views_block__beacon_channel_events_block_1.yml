@@ -1,0 +1,31 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - views.view.beacon_channel_events
+  module:
+    - beacon
+    - views
+  theme:
+    - valid
+id: views_block__beacon_channel_events_block_1
+theme: valid
+region: content
+weight: -3
+provider: null
+plugin: 'views_block:beacon_channel_events-block_1'
+settings:
+  id: 'views_block:beacon_channel_events-block_1'
+  label: ''
+  provider: views
+  label_display: visible
+  views_label: ''
+  items_per_page: none
+  context_mapping: {  }
+visibility:
+  beacon_entity:
+    id: beacon_entity
+    types:
+      channel: channel
+    negate: false
+    context_mapping: {  }

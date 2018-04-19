@@ -1,16 +1,11 @@
 <?php
 
 use Drupal\views\Views;
-use Drupal\rex\Entity\Applicant;
-use Drupal\rex\Entity\Company;
-use Drupal\rex\Entity\Team;
 use Drupal\user\Entity\User;
 use Drupal\Core\Entity\EntityInterface;
-use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
-use Drupal\Core\Template\Attribute;
-use Drupal\Core\Cache\Cache;
+use Psr\Log\LogLevel;
 
 /**
  * Implements hook_user_format_name_alter().
@@ -28,33 +23,6 @@ function beacon_ui_user_format_name_alter(&$name, $account) {
     }
   }
 }
-
-/**
- * Implements hook_entity_insert().
- */
-function beacon_ui_entity_insert(EntityInterface $entity) {
-  if ($entity->getEntityTypeId() == 'channel') {
-    Cache::invalidateTags(['user.channels:' . $entity->getOwnerId()]);
-  }
-}
-
-/**
- * Implements hook_entity_update().
- */
- function beacon_ui_entity_update(EntityInterface $entity) {
-   if ($entity->getEntityTypeId() == 'channel') {
-     Cache::invalidateTags(['user.channels:' . $entity->getOwnerId()]);
-   }
- }
-
-/**
- * Implements hook_entity_delete().
- */
- function beacon_ui_entity_delete(EntityInterface $entity) {
-   if ($entity->getEntityTypeId() == 'channel') {
-     Cache::invalidateTags(['user.channels:' . $entity->getOwnerId()]);
-   }
- }
 
 /**
  * Implements hook_mail().
@@ -149,6 +117,24 @@ function beacon_ui_entity_presave(EntityInterface $entity) {
 }
 
 /**
+ * Implements hook_preprocess_HOOK().
+ */
+function beacon_ui_preprocess_block(&$variables) {
+  // Check for the main content block.
+  if ($variables['plugin_id'] == 'system_main_block') {
+    // Get the route name.
+    $route_name = \Drupal::routeMatch()->getRouteName();
+
+    // Check for a canonical match on channel entities.
+    if ($route_name == "entity.channel.canonical") {
+      // Do not render this block as a tile since our theme will
+      // render everything as individual cards.
+      $variables['no_tile'] = TRUE;
+    }
+  }
+}
+
+/**
  * Validation handler for the user registration form.
  */
 function beacon_ui_form_user_register_form_validate(&$form, FormStateInterface $form_state) {
@@ -162,4 +148,42 @@ function beacon_ui_form_user_register_form_validate(&$form, FormStateInterface $
 function beacon_ui_user_login_form_submit(&$form, FormStateInterface $form_state) {
   // Redirect home.
   $form_state->setRedirect('<front>');
+}
+
+/**
+ * Views exposed form alter callback for view: beacon_channel_events
+ *
+ * @see beacon_ui_form_views_exposed_form_alter()
+ */
+function beacon_ui_views_exposed_form_beacon_channel_events_form_alter(&$form, FormStateInterface $form_state) {
+  // Convert severity in to a select list.
+  // Core does not automatically do this for base fields.
+  $form['severity']['#type'] = 'select';
+  $form['severity']['#options'] = [
+    '' => t('- Any -'),
+    LogLevel::DEBUG => t('Debug'),
+    LogLevel::INFO => t('Info'),
+    LogLevel::NOTICE => t('Notice'),
+    LogLevel::WARNING => t('Warning'),
+    LogLevel::ERROR => t('Error'),
+    LogLevel::CRITICAL => t('Critical'),
+    LogLevel::ALERT => t('Alert'),
+    LogLevel::EMERGENCY => t('Emergency'),
+  ];
+  $form['severity']['#size'] = NULL;
+
+  // Extract the channel.
+  if ($channel_id = $form_state->get('view')->argument['channel']->getValue()) {
+    // Convert type in to a select list.
+    $form['type']['#type'] = 'select';
+    $form['type']['#options'] = [
+      '' => t('- Any -'),
+    ];
+    $form['type']['#size'] = NULL;
+
+    // Add the types.
+    foreach (beacon_get_channel_event_types($channel_id) as $type) {
+      $form['type']['#options'][$type] = $type;
+    }
+  }
 }

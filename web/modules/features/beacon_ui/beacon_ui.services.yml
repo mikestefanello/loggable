@@ -1,0 +1,5 @@
+services:
+  beacon_ui.route_subscriber:
+    class: Drupal\beacon_ui\Routing\RouteSubscriber
+    tags:
+      - { name: event_subscriber }

@@ -9,6 +9,8 @@ use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Access\AccessResult;
 use Drupal\user\Entity\User;
+use Drupal\Core\Cache\Cache;
+use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Database\Query\AlterableInterface;
 
 /**
@@ -63,6 +65,27 @@ function beacon_entity_base_field_info(EntityTypeInterface $entity_type) {
 function beacon_entity_type_build(array &$entity_types) {
   // Override the user entity type to support UUIDs in urls.
   //$entity_types['user']->setClass('Drupal\beacon\Entity\User');
+}
+
+/**
+ * Implements hook_entity_insert().
+ */
+function beacon_entity_insert(EntityInterface $entity) {
+  _beacon_entity_post_save_cache_invalidate($entity);
+}
+
+/**
+ * Implements hook_entity_update().
+ */
+function beacon_entity_update(EntityInterface $entity) {
+  _beacon_entity_post_save_cache_invalidate($entity);
+}
+
+/**
+ * Implements hook_entity_delete().
+ */
+function beacon_entity_delete(EntityInterface $entity) {
+  _beacon_entity_post_save_cache_invalidate($entity);
 }
 
 /**
@@ -217,4 +240,60 @@ function _beacon_entity_query_access_alert(AlterableInterface $query, $entity_ty
     // Filter for entities that this user owns.
     $query->condition($alias . '.user_id', $user->id());
   }
+}
+
+/**
+ * Helper function to clear custom cache tags whenever certain entities are
+ * saved or deleted.
+ *
+ * @param \Drupal\Core\Entity\EntityInterface $entity
+ *   The entity being acted on.
+ */
+function _beacon_entity_post_save_cache_invalidate(EntityInterface $entity) {
+  switch ($entity->getEntityTypeId()) {
+    case 'channel':
+      Cache::invalidateTags(['user.channels:' . $entity->getOwnerId()]);
+      break;
+
+    case 'event':
+      // For some reason, the entity's tags are required here too.
+      // TODO: Why is this ^ ?
+      // TODO: New events do NOT CLEAR the channel events view.
+      Cache::invalidateTags($entity->getCacheTags() + ['channel.events:' . $entity->channel->entity->id()]);
+      break;
+  }
+}
+
+/**
+ * Get a list of the event types for the events within a given channel.
+ *
+ * @param int $channel_id
+ *   The channel entity ID.
+ * @return array
+ *   An array of event type strings.
+ */
+function beacon_get_channel_event_types(int $channel_id) {
+  // Generate a cache ID.
+  $cache_id = "channel_event_types:{$channel_id}";
+
+  // Load the cache.
+  $cache = \Drupal::cache();
+
+  // Check the cache for data.
+  if ($data = $cache->get($cache_id)) {
+    return $data->data;
+  }
+
+  // Find all of the event types within this channel.
+  $query = \Drupal::database()->select('event');
+  $query->fields('event', ['type']);
+  $query->condition('channel', $channel_id);
+  $query->groupBy('type');
+  $query->orderBy('type');
+  $types = $query->execute()->fetchCol();
+
+  // Cache the types.
+  $cache->set($cache_id, $types, CacheBackendInterface::CACHE_PERMANENT, ["channel:{$channel_id}", "channel.events:{$channel_id}"]);
+
+  return $types;
 }

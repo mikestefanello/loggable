@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\beacon\Routing;
+namespace Drupal\beacon_ui\Routing;
 
 use Drupal\user\Entity\User;
 use Drupal\Core\Routing\RouteSubscriberBase;
@@ -16,6 +16,12 @@ class RouteSubscriber extends RouteSubscriberBase {
    * {@inheritdoc}
    */
   protected function alterRoutes(RouteCollection $collection) {
+    // Views with default contextual filters still expose the option to pass
+    // in the argument via the URL (as {arg+0}). We don't want that.
+    if ($route = $collection->get('view.beacon_channel_alerts.page_1')) {
+      $route->setPath('/channel/{channel}/alerts');
+    }
+
     // TODO
     return;
 

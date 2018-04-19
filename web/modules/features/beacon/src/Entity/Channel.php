@@ -97,18 +97,6 @@ class Channel extends BeaconContentEntityBase implements ChannelInterface {
         'title' => 0,
       ])
       ->setDefaultValue('')
-      ->setDisplayOptions('view', [
-        'label' => 'hidden',
-        'type' => 'link',
-        'weight' => -3,
-        'settings' => [
-          'trim_length' => NULL,
-          'target' => '_blank',
-          'url_only' => FALSE,
-          'url_plain' => FALSE,
-          'rel' => '0'
-        ],
-      ])
       ->setDisplayOptions('form', [
         'type' => 'link_default',
         'weight' => -3,
@@ -125,11 +113,6 @@ class Channel extends BeaconContentEntityBase implements ChannelInterface {
         'text_processing' => 0,
       ])
       ->setDefaultValue('')
-      ->setDisplayOptions('view', [
-        'label' => 'above',
-        'type' => 'string',
-        'weight' => -2,
-      ])
       ->setDisplayOptions('form', [
         'type' => 'string_textfield',
         'weight' => -2,

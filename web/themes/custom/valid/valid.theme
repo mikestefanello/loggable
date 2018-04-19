@@ -55,6 +55,7 @@ function valid_preprocess_menu_local_tasks(&$variables) {
 function valid_preprocess_menu_local_action(&$variables) {
   $variables['link']['#options']['attributes']['class'][] = 'btn';
   $variables['link']['#options']['attributes']['class'][] = 'btn-primary';
+  $variables['link']['#options']['attributes']['class'][] = 'mr-2';
 }
 
 /**
@@ -182,6 +183,10 @@ function valid_preprocess_views_view_table(&$vars) {
     'active' => [
       'Yes' => 'success',
       'No' => 'danger',
+    ],
+    'enabled' => [
+      'Enabled' => 'success',
+      'Disabled' => 'danger',
     ],
     'status' => [
       'Completed' => 'success',

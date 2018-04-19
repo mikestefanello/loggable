@@ -6,6 +6,19 @@ beacon_ui.support:
   requirements:
     _role: 'authenticated'
 
+entity.channel.url_redirect:
+  path: '/channel/{channel}/url'
+  defaults:
+    _controller: '\Drupal\beacon_ui\Controller\ChannelUrlRedirectController::redirectToChannelUrl'
+  requirements:
+    _custom_access: '\Drupal\beacon_ui\Controller\ChannelUrlRedirectController::redirectAccess'
+    channel: '[\d\w\-]+'
+  options:
+    parameters:
+      channel:
+        type: entity_uuid
+        entity_type_id: channel
+
 beacon_ui.user_edit:
   path: '/user/account/edit'
   defaults:

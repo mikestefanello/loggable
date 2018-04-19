@@ -4,10 +4,6 @@ services:
     arguments: ['@entity.repository']
     tags:
       - { name: paramconverter }
-  beacon.route_subscriber:
-    class: Drupal\beacon\Routing\RouteSubscriber
-    tags:
-      - { name: event_subscriber }
   beacon.breadcrumb_builder:
     class: Drupal\beacon\BreadcrumbBuilder
     tags:

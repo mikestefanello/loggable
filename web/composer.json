@@ -19,7 +19,8 @@
         "drupal/devel": "^1.2",
         "drush/drush": "^9.2",
         "drupal/bootstrap_barrio": "4.8",
-        "drupal/console": "~1.0"
+        "drupal/console": "~1.0",
+        "drupal/ctools": "^3.0"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,

@@ -17,6 +17,9 @@ dependencies:
   - anonymous_login
   - antibot
   - config_update
+  - ctools
+  - ctools_block
+  - ctools_views
   - google_analytics
   - features
   - features_ui
