@@ -7,6 +7,8 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Component\Datetime\TimeInterface;
+use Drupal\Core\Entity\EntityRepositoryInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -24,6 +26,20 @@ class AlertForm extends BeaconContentEntityForm {
   protected $alertTypeManager;
 
   /**
+   * The entity repository.
+   *
+   * @var \Drupal\Core\Entity\EntityRepositoryInterface;
+   */
+  protected $entityRepository;
+
+  /**
+   * Symfony\Component\HttpFoundation\RequestStack definition.
+   *
+   * @var \Symfony\Component\HttpFoundation\RequestStack
+   */
+  protected $requestStack;
+
+  /**
    * Constructs a AlertForm object.
    *
    * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
@@ -34,10 +50,16 @@ class AlertForm extends BeaconContentEntityForm {
    *   The time service.
    * @param \Drupal\beacon\Plugin\AlertTypeManager $alert_type_manager
    *   The alert type plugin manager.
+   * @param \Drupal\Core\Entity\EntityRepositoryInterface $entity_repository
+   *   The entity repository.
+   * @param \Symfony\Component\HttpFoundation\RequestStack $request_stack
+   *   The request stack.
    */
-  public function __construct(EntityManagerInterface $entity_manager, EntityTypeBundleInfoInterface $entity_type_bundle_info = NULL, TimeInterface $time = NULL, AlertTypeManager $alert_type_manager) {
+  public function __construct(EntityManagerInterface $entity_manager, EntityTypeBundleInfoInterface $entity_type_bundle_info = NULL, TimeInterface $time = NULL, AlertTypeManager $alert_type_manager, EntityRepositoryInterface $entity_repository, RequestStack $request_stack) {
     parent::__construct($entity_manager, $entity_type_bundle_info, $time);
     $this->alertTypeManager = $alert_type_manager;
+    $this->entityRepository = $entity_repository;
+    $this->requestStack = $request_stack;
   }
 
   /**
@@ -48,7 +70,9 @@ class AlertForm extends BeaconContentEntityForm {
       $container->get('entity.manager'),
       $container->get('entity_type.bundle.info'),
       $container->get('datetime.time'),
-      $container->get('plugin.manager.alert_type')
+      $container->get('plugin.manager.alert_type'),
+      $container->get('entity.repository'),
+      $container->get('request_stack')
     );
   }
 
@@ -59,6 +83,28 @@ class AlertForm extends BeaconContentEntityForm {
     $form = parent::buildForm($form, $form_state);
 
     $entity = $this->entity;
+
+    // Check if the entity is new.
+    if ($entity->isNew()) {
+      // Check if a channel was not yet selected.
+      if (!$form_state->getValue('channel')) {
+        // Attempt to extract the target channel UUID from the URL.
+        if ($channel_uuid = $this->requestStack->getCurrentRequest()->query->get('channel')) {
+          // Attempt to load the channel.
+          if ($channel = $this->entityRepository->loadEntityByUuid('channel', $channel_uuid)) {
+            // Check if this channel is an option.
+            if (isset($form['channel']['widget']['#options'][$channel->id()])) {
+              // Set the channel as the default.
+              $form['channel']['widget']['#default_value'] = $channel->id();
+            }
+            else {
+              // Disregard the channel.
+              unset($channel);
+            }
+          }
+        }
+      }
+    }
 
     // Gather the alert type plugins.
     $alert_types = [];

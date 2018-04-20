@@ -23,6 +23,8 @@ class AlertViewsData extends EntityViewsData {
       ],
     ];
 
+    $data['alert']['enabled']['filter']['type'] = 'yes-no';
+
     return $data;
   }
 

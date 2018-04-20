@@ -5,9 +5,9 @@ description: 'Provide front-end interface for the Beacon platform.'
 dependencies:
   - anonymous_login
   - antibot
+  - beacon
   - block
   - options
-  - beacon
   - system
   - user
   - views

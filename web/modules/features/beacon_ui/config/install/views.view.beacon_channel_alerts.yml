@@ -42,7 +42,7 @@ display:
         type: basic
         options:
           submit_button: Filter
-          reset_button: false
+          reset_button: true
           reset_button_label: Reset
           exposed_sorts_label: 'Sort by'
           expose_sort_order: true
@@ -155,6 +155,8 @@ display:
           include_exclude: include
           selected_actions:
             - alert_delete
+            - alert_disable
+            - alert_enable
           entity_type: alert
           plugin_id: beacon_entity_bulk_form
         name:
@@ -309,7 +311,7 @@ display:
             trim_whitespace: false
             alt: ''
             rel: ''
-            link_class: 'btn btn-primary mr-2'
+            link_class: 'btn btn-primary'
             prefix: ''
             suffix: ''
             target: ''
@@ -341,19 +343,19 @@ display:
           absolute: false
           entity_type: alert
           plugin_id: entity_link_edit
-        delete_alert:
-          id: delete_alert
+        channel:
+          id: channel
           table: alert
-          field: delete_alert
+          field: channel
           relationship: none
           group_type: group
           admin_label: ''
           label: ''
-          exclude: false
+          exclude: true
           alter:
-            alter_text: false
+            alter_text: true
             text: ''
-            make_link: true
+            make_link: false
             path: ''
             absolute: false
             external: false
@@ -362,7 +364,7 @@ display:
             trim_whitespace: false
             alt: ''
             rel: ''
-            link_class: 'btn btn-primary'
+            link_class: ''
             prefix: ''
             suffix: ''
             target: ''
@@ -389,11 +391,23 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
-          text: Delete
-          output_url_as_text: false
-          absolute: false
+          click_sort_column: target_id
+          type: entity_reference_label
+          settings:
+            link: false
+          group_column: target_id
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
           entity_type: alert
-          plugin_id: entity_link_delete
+          entity_field: channel
+          plugin_id: field
       filters:
         name:
           id: name
@@ -538,8 +552,8 @@ display:
             value: ''
             title_enable: false
             title: All
-          title_enable: false
-          title: ''
+          title_enable: true
+          title: '{{ channel }}'
           default_argument_type: convert_uuid_to_id_raw
           default_argument_options:
             index: 1
@@ -570,7 +584,7 @@ display:
           entity_field: channel
           plugin_id: numeric
       display_extenders: {  }
-      use_ajax: true
+      use_ajax: false
       filter_groups:
         operator: AND
         groups:
