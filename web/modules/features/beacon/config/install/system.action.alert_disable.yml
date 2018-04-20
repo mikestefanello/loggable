@@ -1,0 +1,9 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - beacon
+id: alert_disable
+label: 'Disable alert'
+type: alert
+plugin: alert_disable_action

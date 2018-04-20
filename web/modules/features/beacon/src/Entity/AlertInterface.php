@@ -13,4 +13,26 @@ use Drupal\user\EntityOwnerInterface;
  */
 interface AlertInterface extends ContentEntityInterface, EntityChangedInterface, EntityOwnerInterface {
 
+  /**
+   * Set the alert as enabled.
+   *
+   * @return $this
+   */
+  public function setEnabled();
+
+  /**
+   * Set the alert as disabled.
+   *
+   * @return $this
+   */
+  public function setDisabled();
+
+  /**
+   * Returns whether or not the alert is enabled.
+   *
+   * @return bool
+   *  TRUE if the alert is enabled, otherwise FALSE.
+   */
+  public function isEnabled();
+
 }

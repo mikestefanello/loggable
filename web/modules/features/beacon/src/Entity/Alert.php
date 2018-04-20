@@ -65,6 +65,29 @@ class Alert extends BeaconContentEntityBase implements AlertInterface {
   /**
    * {@inheritdoc}
    */
+  public function setEnabled() {
+    $this->set('enabled', TRUE);
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setDisabled() {
+    $this->set('enabled', FALSE);
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function isEnabled() {
+    return $this->enabled->value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
     $fields = parent::baseFieldDefinitions($entity_type);
 

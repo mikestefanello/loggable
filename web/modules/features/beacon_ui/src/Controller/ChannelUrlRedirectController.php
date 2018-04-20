@@ -36,12 +36,10 @@ class ChannelUrlRedirectController extends ControllerBase {
    */
   public function redirectAccess(ChannelInterface $channel) {
     // TODO: This stops working after access is denied.
-    return AccessResult::allowedIf(
-        !$channel->url->isEmpty() &&
-        $channel->access('view')
-      )
-      ->cachePerUser()
-      ->addCacheableDependency($channel);
+    return AccessResult::allowedIf(!$channel->url->isEmpty())
+      ->andIf($channel->access('view', NULL, TRUE))
+      ->addCacheableDependency($channel)
+      ->cachePerUser();
   }
 
 }

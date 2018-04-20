@@ -1,0 +1,9 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - beacon
+id: alert_enable
+label: 'Enable alert'
+type: alert
+plugin: alert_enable_action
