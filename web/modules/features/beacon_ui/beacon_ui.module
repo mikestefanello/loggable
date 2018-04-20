@@ -1,6 +1,7 @@
 <?php
 
 use Drupal\views\Views;
+use Drupal\views\ViewExecutable;
 use Drupal\beacon\Entity\Channel;
 use Drupal\user\Entity\User;
 use Drupal\Core\Entity\EntityInterface;
@@ -139,6 +140,17 @@ function beacon_ui_preprocess_block(&$variables) {
       // render everything as individual cards.
       $variables['no_tile'] = TRUE;
     }
+  }
+}
+
+/**
+ * Implements hook_views_pre_render().
+ */
+function beacon_ui_views_pre_render(ViewExecutable $view) {
+  // Check for the channel alerts view.
+  if ($view->id() == 'beacon_channel_alerts') {
+    // Use the channel label as the title.
+    $view->setTitle(Channel::load($view->argument['channel']->getValue())->label());
   }
 }
 
