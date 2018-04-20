@@ -25,3 +25,12 @@ beacon_ui.user_edit:
     _controller: '\Drupal\beacon_ui\Controller\UserEditRedirect::redirectUser'
   requirements:
     _role: 'authenticated'
+
+beacon_ui.api.key_auth:
+  path: '/api/key'
+  defaults:
+    _controller: '\Drupal\beacon_ui\Controller\KeyAuthController::keyAuthForm'
+    _title: 'Key authentication'
+  requirements:
+    _role: 'authenticated'
+    _permission: 'use key authentication'

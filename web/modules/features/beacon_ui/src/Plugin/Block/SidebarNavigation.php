@@ -144,7 +144,13 @@ class SidebarNavigation extends BlockBase implements ContainerFactoryPluginInter
       'title' => t('API information'),
       'url' => Url::fromRoute('<none>', [], ['fragment' => 'api']),
       'icon' => 'plug',
-      'below' => [],
+      'below' => [
+        'key' => [
+          'title' => t('Key authentication'),
+          'url' => Url::fromRoute('beacon_ui.api.key_auth'),
+          'icon' => 'key',
+        ],
+      ],
     ];
 
     // Add support link.
