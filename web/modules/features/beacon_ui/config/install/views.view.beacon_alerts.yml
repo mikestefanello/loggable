@@ -5,14 +5,13 @@ dependencies:
     - user.role.authenticated
   module:
     - beacon
-    - options
     - user
-id: beacon_events
-label: Events
+id: beacon_alerts
+label: Alerts
 module: views
-description: 'Display events for a given user.'
+description: 'Manage alerts for the current user.'
 tag: ''
-base_table: event
+base_table: alert
 base_field: id
 core: 8.x
 display:
@@ -81,21 +80,13 @@ display:
           summary: ''
           description: ''
           columns:
-            uuid: uuid
-            event_bulk_form: event_bulk_form
+            alert_bulk_form: alert_bulk_form
             channel: channel
-            type: type
-            severity: severity
-            message: message
-            created: created
-            edit_event: edit_event
+            name: name
+            enabled: enabled
+            edit_alert: edit_alert
           info:
-            uuid:
-              align: ''
-              separator: ''
-              empty_column: false
-              responsive: ''
-            event_bulk_form:
+            alert_bulk_form:
               align: ''
               separator: ''
               empty_column: false
@@ -107,55 +98,100 @@ display:
               separator: ''
               empty_column: false
               responsive: ''
-            type:
+            name:
               sortable: true
               default_sort_order: asc
               align: ''
               separator: ''
               empty_column: false
               responsive: ''
-            severity:
+            enabled:
               sortable: true
               default_sort_order: asc
               align: ''
               separator: ''
               empty_column: false
               responsive: ''
-            message:
+            edit_alert:
               sortable: false
               default_sort_order: asc
               align: ''
               separator: ''
               empty_column: false
               responsive: ''
-            created:
-              sortable: true
-              default_sort_order: desc
-              align: ''
-              separator: ''
-              empty_column: false
-              responsive: ''
-            edit_event:
-              sortable: false
-              default_sort_order: asc
-              align: ''
-              separator: ''
-              empty_column: false
-              responsive: ''
-          default: created
+          default: name
           empty_table: false
       row:
         type: fields
       fields:
-        uuid:
-          id: uuid
-          table: event
-          field: uuid
+        alert_bulk_form:
+          id: alert_bulk_form
+          table: alert
+          field: alert_bulk_form
           relationship: none
           group_type: group
           admin_label: ''
-          label: UUID
-          exclude: true
+          label: ''
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          action_title: Action
+          include_exclude: include
+          selected_actions:
+            - alert_delete
+            - alert_disable
+            - alert_enable
+          entity_type: alert
+          plugin_id: beacon_entity_bulk_form
+        name:
+          table: alert
+          field: name
+          id: name
+          entity_type: null
+          entity_field: name
+          plugin_id: field
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: Name
+          exclude: false
           alter:
             alter_text: false
             text: ''
@@ -197,8 +233,7 @@ display:
           hide_alter_empty: true
           click_sort_column: value
           type: string
-          settings:
-            link_to_entity: false
+          settings: {  }
           group_column: value
           group_columns: {  }
           group_rows: true
@@ -209,66 +244,9 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-          entity_type: event
-          entity_field: uuid
-          plugin_id: field
-        event_bulk_form:
-          id: event_bulk_form
-          table: event
-          field: event_bulk_form
-          relationship: none
-          group_type: group
-          admin_label: ''
-          label: 'Event operations bulk form'
-          exclude: false
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: true
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          action_title: Action
-          include_exclude: include
-          selected_actions:
-            - event_delete
-          entity_type: event
-          plugin_id: beacon_entity_bulk_form
         channel:
           id: channel
-          table: event
+          table: alert
           field: channel
           relationship: none
           group_type: group
@@ -276,7 +254,7 @@ display:
           label: Channel
           exclude: false
           alter:
-            alter_text: false
+            alter_text: true
             text: ''
             make_link: false
             path: ''
@@ -306,7 +284,7 @@ display:
           element_class: ''
           element_label_type: ''
           element_label_class: ''
-          element_label_colon: true
+          element_label_colon: false
           element_wrapper_type: ''
           element_wrapper_class: ''
           element_default_classes: true
@@ -328,17 +306,17 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-          entity_type: event
+          entity_type: alert
           entity_field: channel
           plugin_id: field
-        type:
-          id: type
-          table: event
-          field: type
+        enabled:
+          id: enabled
+          table: alert
+          field: enabled
           relationship: none
           group_type: group
           admin_label: ''
-          label: Type
+          label: Status
           exclude: false
           alter:
             alter_text: false
@@ -380,9 +358,11 @@ display:
           empty_zero: false
           hide_alter_empty: true
           click_sort_column: value
-          type: string
+          type: boolean
           settings:
-            link_to_entity: false
+            format: enabled-disabled
+            format_custom_true: ''
+            format_custom_false: ''
           group_column: value
           group_columns: {  }
           group_rows: true
@@ -393,208 +373,13 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-          entity_type: event
-          entity_field: type
+          entity_type: alert
+          entity_field: enabled
           plugin_id: field
-        severity:
-          id: severity
-          table: event
-          field: severity
-          relationship: none
-          group_type: group
-          admin_label: ''
-          label: Severity
-          exclude: false
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: true
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          click_sort_column: value
-          type: list_default
-          settings: {  }
-          group_column: value
-          group_columns: {  }
-          group_rows: true
-          delta_limit: 0
-          delta_offset: 0
-          delta_reversed: false
-          delta_first_last: false
-          multi_type: separator
-          separator: ', '
-          field_api_classes: false
-          entity_type: event
-          entity_field: severity
-          plugin_id: field
-        message:
-          id: message
-          table: event
-          field: message
-          relationship: none
-          group_type: group
-          admin_label: ''
-          label: Message
-          exclude: false
-          alter:
-            alter_text: false
-            text: ''
-            make_link: true
-            path: 'event/{{ uuid }}'
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 200
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: true
-            trim: true
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: true
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          click_sort_column: value
-          type: basic_string
-          settings: {  }
-          group_column: value
-          group_columns: {  }
-          group_rows: true
-          delta_limit: 0
-          delta_offset: 0
-          delta_reversed: false
-          delta_first_last: false
-          multi_type: separator
-          separator: ', '
-          field_api_classes: false
-          entity_type: event
-          entity_field: message
-          plugin_id: field
-        created:
-          id: created
-          table: event
-          field: created
-          relationship: none
-          group_type: group
-          admin_label: ''
-          label: Date
-          exclude: false
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: true
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          click_sort_column: value
-          type: timestamp
-          settings:
-            date_format: short
-            custom_date_format: ''
-            timezone: ''
-          group_column: value
-          group_columns: {  }
-          group_rows: true
-          delta_limit: 0
-          delta_offset: 0
-          delta_reversed: false
-          delta_first_last: false
-          multi_type: separator
-          separator: ', '
-          field_api_classes: false
-          entity_type: event
-          entity_field: created
-          plugin_id: field
-        edit_event:
-          id: edit_event
-          table: event
-          field: edit_event
+        edit_alert:
+          id: edit_alert
+          table: alert
+          field: edit_alert
           relationship: none
           group_type: group
           admin_label: ''
@@ -642,12 +427,52 @@ display:
           text: Edit
           output_url_as_text: false
           absolute: false
-          entity_type: event
+          entity_type: alert
           plugin_id: entity_link_edit
       filters:
+        name:
+          id: name
+          table: alert
+          field: name
+          relationship: none
+          group_type: group
+          admin_label: ''
+          operator: contains
+          value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: name_op
+            label: Name
+            description: ''
+            use_operator: false
+            operator: name_op
+            identifier: name
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+            placeholder: ''
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          entity_type: alert
+          entity_field: name
+          plugin_id: string
         channel:
           id: channel
-          table: event
+          table: alert
           field: channel
           relationship: none
           group_type: group
@@ -687,34 +512,33 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          entity_type: event
+          entity_type: alert
           entity_field: channel
           plugin_id: numeric
-        type:
-          id: type
-          table: event
-          field: type
+        enabled:
+          id: enabled
+          table: alert
+          field: enabled
           relationship: none
           group_type: group
           admin_label: ''
           operator: '='
-          value: ''
+          value: All
           group: 1
           exposed: true
           expose:
-            operator_id: type_op
-            label: Type
+            operator_id: ''
+            label: Enabled
             description: ''
             use_operator: false
-            operator: type_op
-            identifier: type
+            operator: enabled_op
+            identifier: enabled
             required: false
             remember: false
             multiple: false
             remember_roles:
               authenticated: authenticated
               anonymous: '0'
-            placeholder: ''
           is_grouped: false
           group_info:
             label: ''
@@ -727,91 +551,11 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          entity_type: event
-          entity_field: type
-          plugin_id: string
-        severity:
-          id: severity
-          table: event
-          field: severity
-          relationship: none
-          group_type: group
-          admin_label: ''
-          operator: '='
-          value: ''
-          group: 1
-          exposed: true
-          expose:
-            operator_id: severity_op
-            label: Severity
-            description: ''
-            use_operator: false
-            operator: severity_op
-            identifier: severity
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-              anonymous: '0'
-            placeholder: ''
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
-          entity_type: event
-          entity_field: severity
-          plugin_id: string
-        user:
-          id: user
-          table: event
-          field: user
-          relationship: none
-          group_type: group
-          admin_label: ''
-          operator: contains
-          value: ''
-          group: 1
-          exposed: true
-          expose:
-            operator_id: user_op
-            label: User
-            description: ''
-            use_operator: false
-            operator: user_op
-            identifier: user
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-              anonymous: '0'
-            placeholder: ''
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
-          entity_type: event
-          entity_field: user
-          plugin_id: string
+          entity_type: alert
+          entity_field: enabled
+          plugin_id: boolean
       sorts: {  }
-      title: Events
+      title: Alerts
       header: {  }
       footer:
         result:
@@ -834,13 +578,13 @@ display:
           admin_label: ''
           empty: true
           tokenize: false
-          content: 'No events were found.'
+          content: 'There are currently no alerts defined.'
           plugin_id: text_custom
       relationships: {  }
       arguments:
         user_id:
           id: user_id
-          table: event
+          table: alert
           field: user_id
           relationship: none
           group_type: group
@@ -871,15 +615,15 @@ display:
           validate_options: {  }
           break_phrase: false
           not: false
-          entity_type: event
+          entity_type: alert
           entity_field: user_id
           plugin_id: numeric
       display_extenders: {  }
+      use_ajax: false
       filter_groups:
         operator: AND
         groups:
           1: AND
-      use_ajax: false
     cache_metadata:
       max-age: 0
       contexts:
@@ -894,10 +638,19 @@ display:
     display_plugin: page
     id: page_1
     display_title: Page
-    position: 2
+    position: 1
     display_options:
       display_extenders: {  }
-      path: events
+      path: alerts
+      menu:
+        type: none
+        title: Alerts
+        description: ''
+        expanded: false
+        parent: ''
+        weight: 10
+        context: '0'
+        menu_name: main
     cache_metadata:
       max-age: 0
       contexts:

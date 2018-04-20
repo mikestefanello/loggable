@@ -134,7 +134,7 @@ class SidebarNavigation extends BlockBase implements ContainerFactoryPluginInter
     // Add alerts link.
     $items['alerts'] = [
       'title' => t('Alerts'),
-      'url' => Url::fromRoute('<none>', [], ['fragment' => 'alerts']),
+      'url' => Url::fromRoute('view.beacon_alerts.page_1'),
       'icon' => 'bullhorn',
       'below' => [],
     ];

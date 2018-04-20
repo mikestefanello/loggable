@@ -246,3 +246,17 @@ function beacon_ui_views_exposed_form_beacon_events_form_alter(&$form, FormState
   ] + beacon_get_user_channels();
   $form['channel']['#size'] = NULL;
 }
+
+/**
+ * Views exposed form alter callback for view: beacon_alerts
+ *
+ * @see beacon_ui_form_views_exposed_form_alter()
+ */
+function beacon_ui_views_exposed_form_beacon_alerts_form_alter(&$form, FormStateInterface $form_state) {
+  // Convert channel to a select list.
+  $form['channel']['#type'] = 'select';
+  $form['channel']['#options'] = [
+    '' => t('- Any -'),
+  ] + beacon_get_user_channels();
+  $form['channel']['#size'] = NULL;
+}
