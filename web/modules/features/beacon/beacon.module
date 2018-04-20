@@ -127,23 +127,6 @@ function beacon_mail($key, &$message, $params) {
 }
 
 /**
- * Implements hook_views_data_alter().
- */
-function beacon_views_data_alter(array &$data) {
-  // There is a bug in core where entity edit links include a broken destination
-  // if the view uses AJAX.
-  // @see https://www.drupal.org/project/drupal/issues/2828733
-  // To bypass this, we'll use a custom field that does not include the destination.
-  return;
-  // TODO
-  $data['company']['edit_company']['field']['id'] = 'entity_link_edit_no_destination';
-  $data['teams']['edit_team']['field']['id'] = 'entity_link_edit_no_destination';
-  $data['positions']['edit_position']['field']['id'] = 'entity_link_edit_no_destination';
-  $data['applicants']['edit_applicant']['field']['id'] = 'entity_link_edit_no_destination';
-  $data['evaluations']['edit_evaluation']['field']['id'] = 'entity_link_edit_no_destination';
-}
-
-/**
  * Implements hook_theme().
  */
 function beacon_theme($existing, $type, $theme, $path) {
