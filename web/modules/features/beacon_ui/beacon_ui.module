@@ -1,6 +1,7 @@
 <?php
 
 use Drupal\views\Views;
+use Drupal\beacon\Entity\Channel;
 use Drupal\user\Entity\User;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
@@ -190,16 +191,58 @@ function beacon_ui_views_exposed_form_beacon_channel_events_form_alter(&$form, F
 
   // Extract the channel.
   if ($channel_id = $form_state->get('view')->argument['channel']->getValue()) {
-    // Convert type in to a select list.
+    // Load the event types for this channel.
+    $types = beacon_get_channel_event_types(Channel::load($channel_id));
+
+    // Convert type in to a select list only if there are less than 200 types.
+    if (count($types) < 200) {
+      $form['type']['#type'] = 'select';
+      $form['type']['#options'] = [
+        '' => t('- Any -'),
+      ] + $types;
+      $form['type']['#size'] = NULL;
+    }
+  }
+}
+
+/**
+ * Views exposed form alter callback for view: beacon_events
+ *
+ * @see beacon_ui_form_views_exposed_form_alter()
+ */
+function beacon_ui_views_exposed_form_beacon_events_form_alter(&$form, FormStateInterface $form_state) {
+  // Convert severity in to a select list.
+  // Core does not automatically do this for base fields.
+  $form['severity']['#type'] = 'select';
+  $form['severity']['#options'] = [
+    '' => t('- Any -'),
+    LogLevel::DEBUG => t('Debug'),
+    LogLevel::INFO => t('Info'),
+    LogLevel::NOTICE => t('Notice'),
+    LogLevel::WARNING => t('Warning'),
+    LogLevel::ERROR => t('Error'),
+    LogLevel::CRITICAL => t('Critical'),
+    LogLevel::ALERT => t('Alert'),
+    LogLevel::EMERGENCY => t('Emergency'),
+  ];
+  $form['severity']['#size'] = NULL;
+
+  // Load the event types for this user.
+  $types = beacon_get_user_event_types(NULL, TRUE);
+
+  // Convert type in to a select list only if there are less than 200 types.
+  if (count($types) < 200) {
     $form['type']['#type'] = 'select';
     $form['type']['#options'] = [
       '' => t('- Any -'),
-    ];
+    ] + $types;
     $form['type']['#size'] = NULL;
-
-    // Add the types.
-    foreach (beacon_get_channel_event_types($channel_id) as $type) {
-      $form['type']['#options'][$type] = $type;
-    }
   }
+
+  // Convert channel to a select list.
+  $form['channel']['#type'] = 'select';
+  $form['channel']['#options'] = [
+    '' => t('- Any -'),
+  ] + beacon_get_user_channels();
+  $form['channel']['#size'] = NULL;
 }

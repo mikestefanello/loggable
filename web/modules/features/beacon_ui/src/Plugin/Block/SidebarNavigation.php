@@ -75,6 +75,14 @@ class SidebarNavigation extends BlockBase implements ContainerFactoryPluginInter
   public function build() {
     $items = [];
 
+    // Add a dashboard link.
+    $items['dashboard'] = [
+      'title' => t('Dashboard'),
+      'url' => Url::fromRoute('<none>', [], ['fragment' => 'dashboard']),
+      'icon' => 'desktop',
+      'below' => [],
+    ];
+
     // Load channel storage.
     $channel_storage = $this->entityTypeManager
       ->getStorage('channel');
@@ -114,6 +122,30 @@ class SidebarNavigation extends BlockBase implements ContainerFactoryPluginInter
         'icon' => 'plus',
       ];
     }
+
+    // Add events link.
+    $items['events'] = [
+      'title' => t('Events'),
+      'url' => Url::fromRoute('view.beacon_events.page_1'),
+      'icon' => 'database',
+      'below' => [],
+    ];
+
+    // Add alerts link.
+    $items['alerts'] = [
+      'title' => t('Alerts'),
+      'url' => Url::fromRoute('<none>', [], ['fragment' => 'alerts']),
+      'icon' => 'bullhorn',
+      'below' => [],
+    ];
+
+    // Add API link.
+    $items['api'] = [
+      'title' => t('API information'),
+      'url' => Url::fromRoute('<none>', [], ['fragment' => 'api']),
+      'icon' => 'plug',
+      'below' => [],
+    ];
 
     // Add support link.
     $items['support'] = [

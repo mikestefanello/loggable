@@ -1,5 +1,6 @@
 <?php
 
+use Drupal\beacon\Entity\ChannelInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityInterface;
@@ -259,41 +260,132 @@ function _beacon_entity_post_save_cache_invalidate(EntityInterface $entity) {
       // For some reason, the entity's tags are required here too.
       // TODO: Why is this ^ ?
       // TODO: New events do NOT CLEAR the channel events view.
-      Cache::invalidateTags($entity->getCacheTags() + ['channel.events:' . $entity->channel->entity->id()]);
+      Cache::invalidateTags([
+        'channel.events:' . $entity->channel->entity->id(),
+        'user.events:' . $entity->getOwnerId(),
+      ]);
       break;
   }
 }
 
 /**
- * Get a list of the event types for the events within a given channel.
+ * Get a list of the channels events belonging to a given user.
  *
- * @param int $channel_id
- *   The channel entity ID.
+ * @param int $user_id
+ *   The user entity ID, or NULL to use the current user.
  * @return array
- *   An array of event type strings.
+ *   An array of channel labels keyed by entity ID.
  */
-function beacon_get_channel_event_types(int $channel_id) {
+function beacon_get_user_channels(int $user_id = NULL) {
+  // Get the current user ID, if needed.
+  $user_id = $user_id ? $user_id : \Drupal::currentUser()->id();
+
   // Generate a cache ID.
-  $cache_id = "channel_event_types:{$channel_id}";
+  $cache_id = "user_channels:{$user_id}";
 
   // Load the cache.
   $cache = \Drupal::cache();
 
   // Check the cache for data.
   if ($data = $cache->get($cache_id)) {
+    // Extract the cached data.
     return $data->data;
   }
 
-  // Find all of the event types within this channel.
-  $query = \Drupal::database()->select('event');
-  $query->fields('event', ['type']);
-  $query->condition('channel', $channel_id);
-  $query->groupBy('type');
-  $query->orderBy('type');
-  $types = $query->execute()->fetchCol();
+  // Find all of the channels belonging to the user.
+  $query = \Drupal::database()->select('channel')
+    ->fields('channel', ['id', 'name'])
+    ->condition('user_id', $user_id)
+    ->orderBy('name');
+
+  // Execute the query.
+  $channels = $query->execute()->fetchAllKeyed();
 
   // Cache the types.
-  $cache->set($cache_id, $types, CacheBackendInterface::CACHE_PERMANENT, ["channel:{$channel_id}", "channel.events:{$channel_id}"]);
+  $cache->set($cache_id, $channels, CacheBackendInterface::CACHE_PERMANENT, ["user.channels:{$user_id}"]);
+
+  return $channels;
+}
+
+/**
+ * Get a list of the event types for the events belonging to a given user.
+ *
+ * @param int $user_id
+ *   The user entity ID, or NULL to use the current user.
+ * @param bool $merge
+ *   TRUE if the types should be merged across all channels, otherwise FALSE.
+ *   Defaults to FALSE.
+ * @return array
+ *   An array of event type strings.
+ */
+function beacon_get_user_event_types(int $user_id = NULL, $merge = FALSE) {
+  // Get the current user ID, if needed.
+  $user_id = $user_id ? $user_id : \Drupal::currentUser()->id();
+
+  // Generate a cache ID.
+  $cache_id = "user_event_types:{$user_id}";
+
+  // Load the cache.
+  $cache = \Drupal::cache();
+
+  // Check the cache for data.
+  if ($data = $cache->get($cache_id)) {
+    // Extract the cached data.
+    $types = $data->data;
+  }
+  else {
+    $types = [];
+
+    // Find all of the event types belonging to the user.
+    $query = \Drupal::database()->select('event')
+      ->fields('event', ['type', 'channel'])
+      ->condition('user_id', $user_id)
+      ->groupBy('type')
+      ->groupBy('channel')
+      ->orderBy('type');
+
+    // Execute the query.
+    $results = $query->execute()->fetchAll();
+
+    // Iterate the results.
+    foreach ($results as $result) {
+      // Group by channel.
+      $types[$result->channel][$result->type] = $result->type;
+    }
+
+    // Cache the types.
+    $cache->set($cache_id, $types, CacheBackendInterface::CACHE_PERMANENT, ["user.events:{$user_id}"]);
+  }
+
+  // Check if we should merge.
+  if ($merge) {
+    $merged = [];
+    foreach ($types as $channel => $values) {
+      foreach ($values as $value) {
+        $merged[$value] = $value;
+      }
+    }
+    $types = $merged;
+
+    // Sort by key.
+    ksort($types);
+  }
 
   return $types;
+}
+
+/**
+ * Get a list of the event types for the events within a given channel.
+ *
+ * @param \Drupal\beacon\Entity\ChannelInterface $channel
+ *   The channel entity.
+ * @return array
+ *   An array of event type strings.
+ */
+function beacon_get_channel_event_types(ChannelInterface $channel) {
+  // Get event types for the user that owns this channel.
+  $types = beacon_get_user_event_types($channel->getOwnerId());
+
+  // Return the types just for this channel.
+  return isset($types[$channel->id()]) ? $types[$channel->id()] : [];
 }
