@@ -22,6 +22,12 @@ channel.alerts.add_form:
   appears_on:
     - view.beacon_channel_alerts.page_1
 
+alerts.alert_add_form:
+  route_name: entity.alert.add_form
+  title: 'Add alert'
+  appears_on:
+    - view.beacon_alerts.page_1
+
 channel.channel_ids_add_form:
   route_name: entity.channel.add_form
   title: 'Add channel'

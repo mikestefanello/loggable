@@ -139,9 +139,9 @@ class SidebarNavigation extends BlockBase implements ContainerFactoryPluginInter
       'below' => [],
     ];
 
-    // Add API link.
+    // Add API links.
     $items['api'] = [
-      'title' => t('API information'),
+      'title' => t('API'),
       'url' => Url::fromRoute('<none>', [], ['fragment' => 'api']),
       'icon' => 'plug',
       'below' => [
