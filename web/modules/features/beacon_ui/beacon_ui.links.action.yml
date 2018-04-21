@@ -8,7 +8,6 @@ channel.manage_alerts:
 channel.url_redirect:
   route_name: entity.channel.url_redirect
   title: 'Channel URL'
-  #class: \Drupal\beacon_ui\Plugin\Menu\LocalAction\NewWindowLocalAction
   weight: 2
   options:
     attributes:
@@ -22,3 +21,9 @@ channel.alerts.add_form:
   class: \Drupal\beacon_ui\Plugin\Menu\LocalAction\ChannelEntityContextual
   appears_on:
     - view.beacon_channel_alerts.page_1
+
+channel.channel_ids_add_form:
+  route_name: entity.channel.add_form
+  title: 'Add channel'
+  appears_on:
+    - view.beacon_api_channel_ids.page_1

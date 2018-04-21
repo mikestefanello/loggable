@@ -150,6 +150,16 @@ class SidebarNavigation extends BlockBase implements ContainerFactoryPluginInter
           'url' => Url::fromRoute('beacon_ui.api.key_auth'),
           'icon' => 'key',
         ],
+        'channels' => [
+          'title' => t('Channel IDs'),
+          'url' => Url::fromRoute('view.beacon_api_channel_ids.page_1'),
+          'icon' => 'list-alt',
+        ],
+        'documentation' => [
+          'title' => t('Documentation'),
+          'url' => Url::fromRoute('<none>', [], ['fragment' => 'todo']),
+          'icon' => 'book',
+        ],
       ],
     ];
 
