@@ -1,4 +1,11 @@
+administer alert entities:
+  title: 'Administer Alert entities'
+  restrict access: true
+
 administer channel entities:
   title: 'Administer Channel entities'
-  description: 'Allow to access the administration form to configure Channel entities.'
+  restrict access: true
+
+administer event entities:
+  title: 'Administer Event entities'
   restrict access: true

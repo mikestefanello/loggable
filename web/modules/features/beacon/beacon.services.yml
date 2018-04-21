@@ -8,6 +8,10 @@ services:
     class: Drupal\beacon\BreadcrumbBuilder
     tags:
       - { name: breadcrumb_builder, priority: 1000 }
+  beacon.route_subscriber:
+    class: Drupal\beacon\Routing\RouteSubscriber
+    tags:
+      - { name: event_subscriber }
   plugin.manager.alert_type:
     class: Drupal\beacon\Plugin\AlertTypeManager
     parent: default_plugin_manager
