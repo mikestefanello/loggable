@@ -218,28 +218,6 @@ class Event extends BeaconContentEntityBase implements EventInterface {
       ->setDisplayConfigurable('view', TRUE)
       ->setRequired(TRUE);
 
-    $fields['unread'] = BaseFieldDefinition::create('boolean')
-      ->setLabel(t('Unread'))
-      ->setDescription(t('Indicate if this event has not yet been read.'))
-      ->setDefaultValue(TRUE)
-      ->setDisplayOptions('view', [
-        'label' => 'hidden',
-        'type' => 'boolean',
-        'weight' => -3,
-        'settings' => [
-          'format' => 'yes-no',
-        ],
-      ])
-      ->setDisplayOptions('form', [
-        'type' => 'boolean_checkbox',
-        'settings' => [
-          'display_label' => TRUE,
-        ],
-        'weight' => 1,
-      ])
-      ->setDisplayConfigurable('form', TRUE)
-      ->setDisplayConfigurable('view', TRUE);
-
     $fields['expire'] = BaseFieldDefinition::create('timestamp')
       ->setLabel(t('Expires on'))
       ->setDescription(t('The time when this event expires.'))
