@@ -22,7 +22,8 @@ entity.channel.url_redirect:
 beacon_ui.user_edit:
   path: '/user/account/edit'
   defaults:
-    _controller: '\Drupal\beacon_ui\Controller\UserEditRedirect::redirectUser'
+    _controller: '\Drupal\beacon_ui\Controller\UserEdit::form'
+    _title: 'Edit account'
   requirements:
     _role: 'authenticated'
 

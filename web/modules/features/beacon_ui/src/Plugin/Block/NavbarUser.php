@@ -26,11 +26,6 @@ class NavbarUser extends BlockBase {
       'icon' => 'user',
       'links' => [
         [
-          'title' => t('Profile'),
-          'url' => Url::fromRoute('user.page'),
-          'icon' => 'user',
-        ],
-        [
           'title' => t('Edit account'),
           'url' => Url::fromRoute('beacon_ui.user_edit'),
           'icon' => 'cog',
