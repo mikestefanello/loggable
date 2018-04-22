@@ -9,14 +9,14 @@ use Drupal\Core\Entity\EntityFormBuilder;
 use Drupal\user\Entity\User;
 
 /**
- * Class UserEdit.
+ * Class UserEditController.
  *
  * This allows us to expose a route to edit a user account that does not
  * have to be dynamic with the user ID, thus the element that the link resides
  * in can be cached indefinitely. It also allows for editing without the other
  * local tasks and the user ID exposed in the URL.
  */
-class UserEdit extends ControllerBase {
+class UserEditController extends ControllerBase {
 
   /**
    * The current user.
@@ -33,7 +33,7 @@ class UserEdit extends ControllerBase {
   protected $entityFormBuilder;
 
   /**
-   * Construct a UserEdit class.
+   * Construct a UserEditController class.
    *
    * @param \Drupal\Core\Session\AccountInterface $account
    *   The current user.

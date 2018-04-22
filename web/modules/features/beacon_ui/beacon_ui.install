@@ -1,0 +1,14 @@
+<?php
+
+/**
+ * Implements hook_install().
+ */
+function beacon_ui_install() {
+  // Load the config factory.
+  $config = \Drupal::configFactory();
+
+  // Set the frontpage.
+  $config->getEditable('system.site')
+    ->set('page.front', '/dashboard')
+    ->save();
+}

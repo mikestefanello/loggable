@@ -22,12 +22,12 @@ entity.channel.url_redirect:
 beacon_ui.user_edit:
   path: '/user/account/edit'
   defaults:
-    _controller: '\Drupal\beacon_ui\Controller\UserEdit::form'
+    _controller: '\Drupal\beacon_ui\Controller\UserEditController::form'
     _title: 'Edit account'
   requirements:
     _role: 'authenticated'
 
-beacon_ui.api.key_auth:
+beacon_ui.key_auth:
   path: '/key'
   defaults:
     _controller: '\Drupal\beacon_ui\Controller\KeyAuthController::keyAuthForm'
@@ -35,3 +35,11 @@ beacon_ui.api.key_auth:
   requirements:
     _role: 'authenticated'
     _permission: 'use key authentication'
+
+beacon_ui.dashboard:
+  path: '/dashboard'
+  defaults:
+    _controller: '\Drupal\beacon_ui\Controller\DashboardController::page'
+    _title: 'Dashboard'
+  requirements:
+    _role: 'authenticated'

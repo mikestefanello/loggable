@@ -78,7 +78,7 @@ class SidebarNavigation extends BlockBase implements ContainerFactoryPluginInter
     // Add a dashboard link.
     $items['dashboard'] = [
       'title' => t('Dashboard'),
-      'url' => Url::fromRoute('<none>', [], ['fragment' => 'dashboard']),
+      'url' => Url::fromRoute('beacon_ui.dashboard'),
       'icon' => 'desktop',
       'below' => [],
     ];
@@ -147,7 +147,7 @@ class SidebarNavigation extends BlockBase implements ContainerFactoryPluginInter
       'below' => [
         'key' => [
           'title' => t('Key authentication'),
-          'url' => Url::fromRoute('beacon_ui.api.key_auth'),
+          'url' => Url::fromRoute('beacon_ui.key_auth'),
           'icon' => 'key',
         ],
         'channels' => [
