@@ -126,6 +126,28 @@ function beacon_ui_entity_presave(EntityInterface $entity) {
 }
 
 /**
+ * Implements hook_theme().
+ */
+function beacon_ui_theme($existing, $type, $theme, $path) {
+  $items = [];
+  $items['beacon_dashboard'] = [
+    'template'  => 'beacon-dashboard',
+    'variables' => [
+      'no_channels' => NULL,
+      'channel_event_per_day_count_chart' => NULL,
+      'channel_event_count_chart' => NULL,
+      'event_severity_count_chart' => NULL,
+      'channel_count' => 0,
+      'event_count' => 0,
+      'enabled_alerts_count' => 0,
+      'event_today_count' => 0,
+    ],
+    'path' => $path . '/templates',
+  ];
+  return $items;
+}
+
+/**
  * Implements hook_preprocess_HOOK().
  */
 function beacon_ui_preprocess_block(&$variables) {
