@@ -99,8 +99,7 @@ class DashboardController extends ControllerBase {
         'tags' => [
           'user.channels:' . $this->currentUser->id(),
         ],
-        'max-age' => 0,
-        //'max-age' => self::CACHE_MAX_AGE,
+        'max-age' => self::CACHE_MAX_AGE,
       ],
     ];
 
