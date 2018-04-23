@@ -2,6 +2,7 @@
 
 namespace Drupal\beacon_billing\Form;
 
+use Drupal\beacon_billing\Plugin\SubscriptionPlanManager;
 use Drupal\beacon_billing\BeaconBilling;
 use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Form\FormStateInterface;
@@ -10,6 +11,7 @@ use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Component\Datetime\TimeInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Stripe\Subscription as StripeSubscription;
+use Drupal\Component\Utility\SortArray;
 
 /**
  * Form controller for Subscription edit forms.
@@ -26,6 +28,13 @@ class SubscriptionForm extends ContentEntityForm {
   protected $beaconBilling;
 
   /**
+   * The subscription plan plugin manager.
+   *
+   * @var \Drupal\beacon_billing\Plugin\SubscriptionPlanManager
+   */
+  protected $subscriptionPlanManager;
+
+  /**
    * Constructs a SubscriptionForm object.
    *
    * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
@@ -36,10 +45,13 @@ class SubscriptionForm extends ContentEntityForm {
    *   The time service.
    * @param \Drupal\beacon_billing\BeaconBilling $beacon_billing
    *   The beacon billing service.
+   * @param \Drupal\beacon_billing\Plugin\SubscriptionPlanManager $subscription_plan_manager
+   *   The subscription plan plugin manager.
    */
-  public function __construct(EntityManagerInterface $entity_manager, EntityTypeBundleInfoInterface $entity_type_bundle_info = NULL, TimeInterface $time = NULL, BeaconBilling $beacon_billing) {
+  public function __construct(EntityManagerInterface $entity_manager, EntityTypeBundleInfoInterface $entity_type_bundle_info = NULL, TimeInterface $time = NULL, BeaconBilling $beacon_billing, SubscriptionPlanManager $subscription_plan_manager) {
     parent::__construct($entity_manager, $entity_type_bundle_info, $time);
     $this->beaconBilling = $beacon_billing;
+    $this->subscriptionPlanManager = $subscription_plan_manager;
   }
 
   /**
@@ -50,7 +62,8 @@ class SubscriptionForm extends ContentEntityForm {
       $container->get('entity.manager'),
       $container->get('entity_type.bundle.info'),
       $container->get('datetime.time'),
-      $container->get('beacon_billing')
+      $container->get('beacon_billing'),
+      $container->get('plugin.manager.subscription_plan')
     );
   }
 
@@ -89,6 +102,58 @@ class SubscriptionForm extends ContentEntityForm {
         '#markup' => $entity->status->value ? $status_values[$entity->status->value] : '',
       ],
     ];
+
+    // Add the plan to a wrapper.
+    $form['plan_wrapper'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Subscription'),
+      '#open' => TRUE,
+      '#weight' => -35,
+    ];
+    $form['plan_wrapper']['plan'] = $form['plan'];
+    unset($form['plan']);
+
+    // Convert the plan to a select list.
+    $plan_form = &$form['plan_wrapper']['plan']['widget'][0]['value'];
+    $plan_form['#type'] = 'select';
+    $plan_form['#size'] = NULL;
+    $plan_form['#options'] = [];
+
+    // Load the plans.
+    $plans = $this->subscriptionPlanManager->getDefinitions();
+
+    // Sort by price.
+    usort($plans, function ($a, $b) {
+      return SortArray::sortByKeyInt($a, $b, 'price');
+    });
+
+    // Add the plan options.
+    foreach ($plans as $plan) {
+      $plan_form['#options'][$plan['id']] = $plan['label'] . ' ($' . $plan['price'] . '/' . $plan['period']  . ' ' . $this->t('per channel') . ')';
+
+      // Add information about the plan.
+      $form['plan_wrapper']['info'][$plan['id']] = [
+        '#type' => 'container',
+        'label' => [
+          '#type' => 'html_tag',
+          '#tag' => 'strong',
+          '#value' => $this->t('%plan plan includes', ['%plan' => $plan['label']]),
+        ],
+        'details' => [
+          '#theme' => 'item_list',
+          '#items' => [
+            $this->t('%quota events per channel', ['%quota' => $plan['quotaEvents']]),
+            $this->t('%quota alerts per channel', ['%quota' => $plan['quotaAlerts']]),
+            $this->t('%history day event history', ['%history' => $plan['eventHistory']]),
+          ],
+        ],
+        '#states' => [
+          'visible' => [
+            ':input#edit-plan-0-value' => ['value' => $plan['id']],
+          ],
+        ],
+      ];
+    }
 
     // Wrap the contact information.
     $form['contact'] = [

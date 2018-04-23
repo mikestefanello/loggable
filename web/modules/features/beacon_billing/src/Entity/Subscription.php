@@ -171,7 +171,7 @@ class Subscription extends ContentEntityBase implements SubscriptionInterface {
       ->setRequired(TRUE)
       ->setDisplayOptions('view', [
         'label' => 'above',
-        'type' => 'author',
+        'type' => 'string',
         'weight' => -5,
       ])
       ->setDisplayOptions('form', [
@@ -187,7 +187,7 @@ class Subscription extends ContentEntityBase implements SubscriptionInterface {
       ->setRequired(TRUE)
       ->setDisplayOptions('view', [
         'label' => 'above',
-        'type' => 'author',
+        'type' => 'email',
         'weight' => -4,
       ])
       ->setDisplayOptions('form', [
@@ -248,6 +248,21 @@ class Subscription extends ContentEntityBase implements SubscriptionInterface {
           'autocomplete_type' => 'tags',
           'placeholder' => '',
         ],
+      ])
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', TRUE);
+
+    $fields['plan'] = BaseFieldDefinition::create('string')
+      ->setLabel(t('Plan'))
+      ->setRequired(TRUE)
+      ->setDisplayOptions('view', [
+        'label' => 'above',
+        'type' => 'string',
+        'weight' => 1,
+      ])
+      ->setDisplayOptions('form', [
+        'type' => 'string_textfield',
+        'weight' => -5,
       ])
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);

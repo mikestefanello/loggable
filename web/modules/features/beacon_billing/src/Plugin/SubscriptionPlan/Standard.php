@@ -14,7 +14,8 @@ use Drupal\beacon_billing\Plugin\SubscriptionPlanBase;
  *   price = "5.00",
  *   period = "month",
  *   quotaEvents = 3000,
- *   quotaAlerts = 10
+ *   quotaAlerts = 10,
+ *   eventHistory = 14
  * )
  */
 class Standard extends SubscriptionPlanBase {

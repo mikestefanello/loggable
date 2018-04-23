@@ -65,4 +65,11 @@ class SubscriptionPlan extends Plugin {
    */
   public $quotaAlerts;
 
+  /**
+   * The history of events, in days.
+   *
+   * @var int
+   */
+  public $eventHistory;
+
 }
