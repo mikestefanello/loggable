@@ -1,2 +1,3 @@
+default_plan_id: 'standard'
 trial_period_days: 14
 alert_email: ''

@@ -21,3 +21,6 @@ services:
       - { name: cache.bin }
     factory: cache_factory:get
     arguments: [stripe]
+  plugin.manager.subscription_plan:
+    class: Drupal\beacon_billing\Plugin\SubscriptionPlanManager
+    parent: default_plugin_manager

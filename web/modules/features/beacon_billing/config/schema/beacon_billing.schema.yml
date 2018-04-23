@@ -2,6 +2,9 @@ beacon_billing.settings:
   type: config_object
   label: 'Billing settings'
   mapping:
+    default_plan_id:
+      type: string
+      label: 'Default plan ID'
     trial_period_days:
       type: integer
       label: 'Free trial period (days)'
