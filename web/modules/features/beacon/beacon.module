@@ -140,6 +140,18 @@ function beacon_theme($existing, $type, $theme, $path) {
     ];
   }
 
+  $items['beacon_dashboard'] = [
+    'template'  => 'beacon-dashboard',
+    'variables' => [
+      'no_channels' => NULL,
+      'channel_event_count_chart' => NULL,
+      'event_severity_count_chart' => NULL,
+      'channel_list' => NULL,
+      'recent_events' => NULL,
+    ],
+    'path' => $path . '/templates',
+  ];
+
   $items['chartjs'] = [
     'template'  => 'chartjs',
     'variables' => [

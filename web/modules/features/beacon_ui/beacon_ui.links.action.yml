@@ -28,8 +28,14 @@ alerts.alert_add_form:
   appears_on:
     - view.beacon_alerts.page_1
 
-channel.channel_ids_add_form:
+channel_ids.add_form:
   route_name: entity.channel.add_form
   title: 'Add channel'
   appears_on:
     - view.beacon_api_channel_ids.page_1
+
+dashboard.channel_add_form:
+  route_name: entity.channel.add_form
+  title: 'Add channel'
+  appears_on:
+    - beacon_ui.dashboard

@@ -1,0 +1,51 @@
+{#
+/**
+ * @file event.html.twig
+ * Default theme implementation for the dashboard.
+ *
+ * Available variables:
+ *   - no_channel: Markup to display if there are no channels.
+ *   - channel_event_count_chart: A bar chart that displays the event count per channel.
+ *   - event_severity_count_chart: A polar chart that displays the event count per severity.
+ *   - channel_list: A list of channels.
+ *   - recent_events: A list of recents events.
+ *
+ * @ingroup themeable
+ */
+#}
+{% if no_channels %}
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body">
+          {{ no_channels }}
+        </div>
+      </div>
+    </div>
+  </div>
+{% else %}
+  <div class="row">
+    <div class="col-md-7">
+      <div class="card">
+        <h4 class="card-header">Events per channel</h4>
+        <div class="card-body" style="height:400px;">
+          {{ channel_event_count_chart }}
+        </div>
+      </div>
+    </div>
+    <div class="col-md-5">
+      <div class="card">
+        <h4 class="card-header">Event severity</h4>
+        <div class="card-body" style="height:400px;">
+          {{ event_severity_count_chart }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12 mt-2 text-muted">
+      {{ 'Data is updated approximately every 15 minutes'|t }}
+    </div>
+  </div>
+{% endif %}

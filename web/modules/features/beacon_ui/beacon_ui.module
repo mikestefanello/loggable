@@ -134,11 +134,14 @@ function beacon_ui_preprocess_block(&$variables) {
     // Get the route name.
     $route_name = \Drupal::routeMatch()->getRouteName();
 
-    // Check for a canonical match on channel entities.
-    if ($route_name == "entity.channel.canonical") {
-      // Do not render this block as a tile since our theme will
-      // render everything as individual cards.
-      $variables['no_tile'] = TRUE;
+    // Check the route name.
+    switch ($route_name) {
+      case 'entity.channel.canonical':
+      case 'beacon_ui.dashboard':
+        // Do not render this block as a tile since our theme will
+        // render everything as individual cards.
+        $variables['no_tile'] = TRUE;
+        break;
     }
   }
 }
