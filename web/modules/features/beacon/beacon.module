@@ -61,11 +61,15 @@ function beacon_entity_base_field_info(EntityTypeInterface $entity_type) {
 }
 
 /**
- * Implements hook_entity_type_build().
+ * Implements hook_ENTITY_TYPE_predelete().
  */
-function beacon_entity_type_build(array &$entity_types) {
-  // Override the user entity type to support UUIDs in urls.
-  //$entity_types['user']->setClass('Drupal\beacon\Entity\User');
+function beacon_user_predelete($account) {
+  // Delete alert entities belonging to this user.
+  // Events will expire eventually.
+  $entity_query = \Drupal::entityQuery('alert');
+  $entity_query->condition('user_id', $account->id());
+  $ids = $entity_query->execute();
+  entity_delete_multiple('alert', $ids);
 }
 
 /**
