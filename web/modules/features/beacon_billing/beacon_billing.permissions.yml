@@ -1,0 +1,9 @@
+administer beacon billing:
+  title: 'Administer billing'
+  description: 'Administer the subscription billing.'
+  restrict access: true
+
+administer subscription entities:
+  title: 'Administer Subscription entities'
+  description: 'Allow to access the administration form to configure Subscription entities.'
+  restrict access: true

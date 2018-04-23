@@ -1,0 +1,49 @@
+beacon_billing.settings:
+  path: '/admin/structure/subscription/settings'
+  defaults:
+    _form: '\Drupal\beacon_billing\Form\BeaconBillingSettings'
+    _title: 'Billing settings'
+  requirements:
+    _permission: 'administer beacon billing'
+  options:
+    _admin_route: TRUE
+
+beacon_billing.manage_subscription:
+  path: '/billing'
+  defaults:
+    _controller: '\Drupal\beacon_billing\Controller\ManageSubscriptionController::form'
+    _title: 'Billing'
+  requirements:
+    _role: 'authenticated'
+
+beacon_billing.invoices:
+  path: '/billing/invoices'
+  defaults:
+    _controller: '\Drupal\beacon_billing\Controller\InvoicesController::invoiceList'
+    _title: 'Invoices'
+  requirements:
+    _role: 'authenticated'
+
+beacon_billing.invoice:
+  path: '/billing/invoices/{invoice_number}'
+  defaults:
+    _controller: '\Drupal\beacon_billing\Controller\InvoicesController::invoice'
+    _title: 'Invoice'
+  requirements:
+    _role: 'authenticated'
+
+beacon_billing.cancel_subscription_form:
+  path: '/billing/cancel'
+  defaults:
+    _form: '\Drupal\beacon_billing\Form\CancelSubscriptionForm'
+    _title: 'Cancel subscription'
+  requirements:
+    _custom_access: '\Drupal\beacon_billing\Form\CancelSubscriptionForm::access'
+
+beacon_billing.reactivate_subscription_form:
+  path: '/billing/reactivate'
+  defaults:
+    _form: '\Drupal\beacon_billing\Form\ReactivateSubscriptionForm'
+    _title: 'Reactivate subscription'
+  requirements:
+    _custom_access: '\Drupal\beacon_billing\Form\ReactivateSubscriptionForm::access'

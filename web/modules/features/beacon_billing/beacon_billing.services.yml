@@ -1,0 +1,23 @@
+services:
+  beacon_billing:
+    class: Drupal\beacon_billing\BeaconBilling
+    arguments: ['@entity_type.manager', '@current_user', '@config.factory', '@logger.channel.beacon_billing', '@cache.stripe', '@plugin.manager.mail']
+  beacon_billing.suspended_event_subscriber:
+    class: Drupal\beacon_billing\EventSubscriber\SuspendedEventSubscriber
+    arguments: ['@beacon_billing', '@request_stack']
+    tags:
+      - { name: event_subscriber }
+  beacon_billing.stripe_webhook_event_subscriber:
+    class: Drupal\beacon_billing\EventSubscriber\StripeWebhookEventSubscriber
+    arguments: ['@beacon_billing']
+    tags:
+      - { name: event_subscriber }
+  logger.channel.beacon_billing:
+    parent: logger.channel_base
+    arguments: ['beacon_billing']
+  cache.stripe:
+    class: Drupal\Core\Cache\CacheBackendInterface
+    tags:
+      - { name: cache.bin }
+    factory: cache_factory:get
+    arguments: [stripe]

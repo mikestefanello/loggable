@@ -118,7 +118,7 @@ class DashboardController extends ControllerBase {
     }
 
     // Add the channel count.
-    $build['#channel_count'] = count($channels);
+    $build['#channel_count'] = number_format(count($channels));
 
     // Add a chart for the number of events per channel per day over the last week.
     $build['#channel_event_per_day_count_chart'] = [
@@ -195,6 +195,8 @@ class DashboardController extends ControllerBase {
         }
       }
 
+      $build['#event_today_count'] = number_format($build['#event_today_count']);
+
       // Generate a random color.
       $color = $this->randomColor();
 
@@ -266,6 +268,8 @@ class DashboardController extends ControllerBase {
       $build['#event_count'] += $count;
     }
 
+    $build['#event_count'] = number_format($build['#event_today_count']);
+
     // Add a chart for the number of events per severity.
     $build['#event_severity_count_chart'] = [
       '#theme' => 'chartjs',
@@ -317,7 +321,7 @@ class DashboardController extends ControllerBase {
     }
 
     // Count the enabled alerts.
-    $build['#enabled_alerts_count'] = $this->getEnabledAlertCount();
+    $build['#enabled_alerts_count'] = number_format($this->getEnabledAlertCount());
 
     return $build;
   }

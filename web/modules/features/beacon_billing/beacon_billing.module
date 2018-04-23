@@ -1,0 +1,161 @@
+<?php
+
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Block\BlockPluginInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
+use Drupal\Core\Utility\Error;
+use Stripe\Subscription as StripeSubscription;
+
+/**
+ * Implements hook_entity_inser().
+ */
+function beacon_billing_entity_insert(EntityInterface $entity) {
+  // Check if this entity is a user.
+  if ($entity->getEntityTypeId() == 'company') {
+    // Create a subscription.
+    \Drupal::service('beacon_billing')->createSubscription($entity);
+  }
+}
+
+/**
+ * Implements hook_entity_delete().
+ */
+function beacon_billing_entity_delete(EntityInterface $entity) {
+  // Check if this entity is a user.
+  if ($entity->getEntityTypeId() == 'user') {
+    // Extract the subscription.
+    if ($subscription = \Drupal::service('beacon_billing')->getUserSubscription($entity)) {
+      // Delete the subscription.
+      $subscription->delete();
+    }
+  }
+
+  // Check if this entity is a subscription.
+  if ($entity->getEntityTypeId() == 'subscription') {
+    // Cancel the subscription.
+    \Drupal::service('beacon_billing')->cancelSubscription($entity, TRUE);
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function beacon_billing_theme($existing, $type, $theme, $path) {
+  $items = [];
+  $items['invoice'] = [
+    'template'  => 'invoice',
+    'variables' => [
+      'site_name' => NULL,
+      'date' => NULL,
+      'number' => NULL,
+      'discounted' => NULL,
+      'discount_percent' => NULL,
+      'discount_amount_off' => NULL,
+      'discount_total' => NULL,
+      'tax' => NULL,
+      'tax_percent' => NULL,
+      'subtotal' => NULL,
+      'total' => NULL,
+      'paid' => NULL,
+      'period_start' => NULL,
+      'period_end' => NULL,
+      'invoices_url' => NULL,
+      'lines' => NULL,
+    ],
+    'path' => $path . '/templates',
+  ];
+  return $items;
+}
+
+/**
+ * Implements hook_mail().
+ */
+function beacon_billing_mail($key, &$message, $params) {
+  switch ($key) {
+    // Billing error.
+    case 'billing_error':
+      $message['subject'] = '[Billing error] ' . $params['message'];
+      $message['body'][] = 'A error occurred during a billing/subscription operation:';
+      $message['body'][] = '';
+      $message['body'][] = 'Error: ' . $params['message'];
+
+      // Check for an exception.
+      if ($params['exception']) {
+        $message['body'][] = 'Exception: ' . strtr('%type: @message in %function (line %line of %file).', Error::decodeException($params['exception']));
+      }
+      break;
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function beacon_billing_form_add_members_form_alter(&$form, FormStateInterface &$form_state) {
+  // Add a consent checkbox.
+  $form['consent'] = [
+    '#type' => 'checkbox',
+    '#title' => t('I understand and agree that adding members may increase my monthly costs'),
+    '#required' => TRUE,
+  ];
+  $form['actions']['#weight'] = 100;
+
+  // Add a submit handler.
+  $form['#submit'][] = 'beacon_billing_form_add_members_form_submit';
+}
+
+/**
+ * Implements hook_form_views_exposed_form_alter().
+ */
+function beacon_billing_form_views_exposed_form_alter(&$form, FormStateInterface &$form_state) {
+  // Extract the view.
+  $view = $form_state->get('view');
+
+  // Check if this is the admin subscriptions view.
+  if ($view->id() == 'beacon_admin_subscriptions') {
+    // Convert status in to a select list.
+    $form['status']['#type'] = 'select';
+    $form['status']['#options'] = [
+      '' => t('- Any -'),
+      StripeSubscription::STATUS_ACTIVE => t('Active'),
+      StripeSubscription::STATUS_CANCELED => t('Canceled'),
+      StripeSubscription::STATUS_PAST_DUE => t('Past due'),
+      StripeSubscription::STATUS_TRIALING => t('Trialing'),
+      StripeSubscription::STATUS_UNPAID => t('Unpaid'),
+    ];
+    $form['status']['#size'] = NULL;
+  }
+}
+
+/**
+ * Implements hook_block_view_BASE_BLOCK_ID_alter().
+ */
+function beacon_billing_block_view_sidebar_navigation_alter(array &$build, BlockPluginInterface $block) {
+  $build['#pre_render'][] = 'beacon_billing_sidebar_navigation_alter';
+}
+
+/**
+ * Pre-render the sidebar navigation block.
+ *
+ * @see beacon_billing_block_view_sidebar_navigation_alter()
+ */
+function beacon_billing_sidebar_navigation_alter(array $build) {
+  // Check if the user is logged in.
+  if (\Drupal::currentUser()->isAuthenticated()) {
+    // Add a link to manage billing.
+    $build['content']['items']['billing'] = [
+      'title' => t('Billing'),
+      'url' => Url::fromRoute('beacon_billing.manage_subscription'),
+      'icon' => 'credit-card',
+    ];
+
+    // Check if the Drupal menu is present.
+    if (isset($build['content']['items']['drupal'])) {
+      // Move it to the end.
+      $drupal = $build['content']['items']['drupal'];
+      unset($build['content']['items']['drupal']);
+      $build['content']['items']['drupal'] = $drupal;
+    }
+  }
+  return $build;
+}

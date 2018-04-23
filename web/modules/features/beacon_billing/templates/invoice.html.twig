@@ -1,0 +1,39 @@
+{#
+/**
+ * @file subscription.html.twig
+ * Default theme implementation to present an invoice.
+ *
+ * Available variables:
+ *  site_name: The site title.
+ *  date: The invoice date.
+ *  number: The invoice number.
+ *  discounted: Boolean indicator of a discount present.
+ *  discount_percent: The percent discount.
+ *  discount_amount_off: The fixed discount amount.
+ *  discount_total: The total amount discounted.
+ *  tax: The tax amount.
+ *  tax_percent: The tax percentage.
+ *  subtotal: The invoice subtotal.
+ *  total: The invoice total.
+ *  paid: Boolean status if the invoice was paid.
+ *  period_start: The date of the starting period.
+ *  period_end: The date of the ending period.
+ *  invoices_url: The URL to the invoices page.
+ *  lines: A table of invoice lines.
+ *
+ * @see template_preprocess_invoice()
+ *
+ * @ingroup themeable
+ */
+#}
+<div{{ attributes.addClass('invoice') }}>
+  <h2>{{ site_name }}</h2>
+  <div>{{ date }}</div>
+  <div>{{ number }}</div>
+  <div>{{ total }}</div>
+  <div>{{ paid }}</div>
+  <div>{{ period_start }}</div>
+  <div>{{ period_end }}</div>
+  <div>{{ lines }}</div>
+  <a href="{{ invoices_url }}">{{ 'View all invoices'|t }}</a>
+</div>

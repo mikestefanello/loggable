@@ -1,0 +1,10 @@
+beacon_billing.settings:
+  type: config_object
+  label: 'Billing settings'
+  mapping:
+    trial_period_days:
+      type: integer
+      label: 'Free trial period (days)'
+    alert_email:
+      type: string
+      label: 'Alert email address'

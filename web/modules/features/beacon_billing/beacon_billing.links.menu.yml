@@ -1,0 +1,6 @@
+entity.subscription.collection:
+  title: 'Subscriptions'
+  route_name: entity.subscription.collection
+  description: 'List and manager subscription entities.'
+  parent: system.admin_structure
+  weight: 100
