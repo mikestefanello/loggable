@@ -118,6 +118,97 @@ class DashboardController extends ControllerBase {
       return $build;
     }
 
+    // Add the channel count.
+    $build['#channel_count'] = count($channels);
+
+    // Add a chart for the number of events per channel per day over the last week.
+    $build['#channel_event_per_day_count_chart'] = [
+      '#theme' => 'chartjs',
+      '#id' => 'channel-event-per-day-count-chart',
+      '#config' => [
+        'type' => 'line',
+        'data' => [
+          'labels' => [],
+          'datasets' => [],
+        ],
+        'options' => [
+          'maintainAspectRatio' => FALSE,
+          'responsive' => TRUE,
+          'legend' => [
+            'position' => 'top',
+          ],
+          'tooltips' => [
+            'mode' => 'index',
+            'intersect' => TRUE,
+          ],
+          'hover' => [
+            'mode' => 'nearest',
+            'intersect' => FALSE,
+          ],
+          'scales' => [
+            'xAxes' => [[
+              'display' => TRUE,
+              'scaleLabel' => [
+                'display' => TRUE,
+                'labelString' => t('Day'),
+              ],
+            ]],
+            'yAxes' => [[
+              'display' => TRUE,
+              'ticks' => [
+                'beginAtZero' => TRUE,
+                'labelString' => t('Events'),
+              ],
+            ]],
+          ],
+        ],
+      ],
+    ];
+
+    // Load the event counts per channel per day.
+    $counts = $this->getChannelEventCountPerDay();
+
+    // Count the events from today.
+    $build['#event_today_count'] = 0;
+
+    // Generate a date for today.
+    $today = format_date(time(), 'custom', 'Y-m-d');
+
+    // Add the counts to the chart.
+    foreach ($counts as $channel_id => $data) {
+      // Determine if we should populate the day labels.
+      $populate_day_labels = empty($build['#channel_event_per_day_count_chart']['#config']['data']['labels']);
+
+      // Reverse the days.
+      $data = array_reverse($data);
+
+      // Iterate the days.
+      foreach ($data as $day => $count) {
+        // Check if the day labels need to be populated.
+        if ($populate_day_labels) {
+          $build['#channel_event_per_day_count_chart']['#config']['data']['labels'][] = substr($day, 5);
+        }
+
+        // Check if this is for today.
+        if ($day == $today) {
+          // Add to today's count.
+          $build['#event_today_count'] += $count;
+        }
+      }
+
+      // Generate a random color.
+      $color = $this->randomColor();
+
+      // Add the data.
+      $build['#channel_event_per_day_count_chart']['#config']['data']['datasets'][] = [
+        'label' => $channels[$channel_id]->label(),
+        'fill' => FALSE,
+        'backgroundColor' => $color,
+        'borderColor' => $color,
+        'data' => array_values($data),
+      ];
+    }
+
     // Add a chart for the number of events per channel.
     $build['#channel_event_count_chart'] = [
       '#theme' => 'chartjs',
@@ -161,6 +252,9 @@ class DashboardController extends ControllerBase {
       ],
     ];
 
+    // Count all events.
+    $build['#event_count'] = 0;
+
     // Add the channels.
     foreach ($this->getChannelEventCounts() as $channel_id => $count) {
       // Add the channel.
@@ -168,6 +262,9 @@ class DashboardController extends ControllerBase {
 
       // Add the count.
       $build['#channel_event_count_chart']['#config']['data']['datasets'][0]['data'][] = $count;
+
+      // Add to the total event count.
+      $build['#event_count'] += $count;
     }
 
     // Add a chart for the number of events per severity.
@@ -220,7 +317,77 @@ class DashboardController extends ControllerBase {
       $build['#event_severity_count_chart']['#config']['data']['datasets'][0]['data'][] = $count;
     }
 
+    // Count the enabled alerts.
+    $build['#enabled_alerts_count'] = $this->getEnabledAlertCount();
+
     return $build;
+  }
+
+  /**
+   * Generate a random color string for a chart.
+   *
+   * @param float $alpha
+   *   The transparency value. Defauts to 0.5.
+   * @return string
+   *   A color string for ChartJS.
+   */
+  public function randomColor(float $alpha = 0.5) {
+    return 'rgba(' . rand(0, 255) . ', ' . rand(0, 255) . ', ' . rand(0, 255) . ', ' . $alpha . ')';
+  }
+
+  /**
+   * Get a count of enabled alerts.
+   *
+   * @return int
+   *   A count of enabled alerts for the given user.
+   */
+  public function getEnabledAlertCount() {
+    $query = $this->database->select('alert');
+    $query->addExpression('COUNT(id)', 'count');
+    $query->condition('enabled', 1);
+    $query->condition('user_id', $this->currentUser->id());
+    return $query->execute()->fetchField();
+  }
+
+  /**
+   * Get the counts of events per-channel, per-day, for the last week.
+   *
+   * @return array
+   *   An associative array of count data, keyed by the channel ID. The nested array
+   *   is keyed by the day in the format Y-m-d.
+   */
+  public function getChannelEventCountPerDay() {
+    $counts = [];
+
+    // Initialize the counts.
+    foreach ($this->getUserChannels() as $channel_id => $channel) {
+      $counts[$channel_id] = [];
+
+      // Default to 0 for each of the last 7 days.
+      for ($i = 0; $i < 7; $i++) {
+        $counts[$channel_id][format_date(strtotime("-{$i} days"), 'custom', 'Y-m-d')] = 0;
+      }
+    }
+
+    // Query the database to get counts per channel, per day for the last week.
+    $query = $this->database->select('event');
+    $query->addField('event', 'channel');
+    $query->addExpression('DATE(FROM_UNIXTIME(created))', 'createdDate');
+    $query->addExpression('COUNT(id)', 'eventCount');
+    $query->condition('user_id', $this->currentUser->id());
+    $query->condition('created', strtotime('midnight', strtotime('-1 week')), '>');
+    $query->groupBy('channel');
+    $query->groupBy('DATE(FROM_UNIXTIME(created))');
+
+    // Execute the query.
+    $results = $query->execute();
+
+    // Iterate the results.
+    foreach ($results as $result) {
+      $counts[$result->channel][$result->createdDate] = $result->eventCount;
+    }
+
+    return $counts;
   }
 
   /**

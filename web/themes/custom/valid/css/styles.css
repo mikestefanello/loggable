@@ -1,3 +1,7 @@
+.card {
+  margin-bottom: 30px;
+}
+
 .table-responsive > .table-bordered {
   border: 1px solid #dee2e6;
 }
