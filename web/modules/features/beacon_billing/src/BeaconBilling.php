@@ -330,7 +330,14 @@ class BeaconBilling {
           // Merge in tax metadata.
           $stripe_subscription->metadata->updateAttributes($tax['metadata']);
 
-          // TODO: Update the plan!
+          // Update the plan.
+          $stripe_subscription->items = [
+            [
+              'plan' => $subscription->plan->value,
+              'id' => $stripe_subscription->items->data[0]->id,
+              'quantity' => $this->getSubscriptionQuantity($subscription),
+            ]
+          ];
 
           // Save the subscription.
           $stripe_subscription->save();
@@ -602,7 +609,7 @@ class BeaconBilling {
           'tax_percent' => $tax['tax_rate'],
         ]);
 
-        // Add tax metadata..
+        // Add tax metadata.
         $stripe_subscription->metadata->updateAttributes($tax['metadata']);
 
         // Update the subscription ID in Drupal.
