@@ -118,7 +118,7 @@ class InvoicesController extends ControllerBase {
       ],
       '#cache' => [
         'contexts' => [
-          'user.company',
+          'user',
         ],
         'tags' => $this->beaconBilling->getUserSubscription()->getCacheTags(),
         'max-age' => BeaconBilling::CACHE_LIFETIME,

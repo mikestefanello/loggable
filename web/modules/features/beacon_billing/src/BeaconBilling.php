@@ -183,7 +183,7 @@ class BeaconBilling {
         'user_id' => $user->id(),
         'address' => [
           'country_code' => 'US',
-        ]
+        ],
       ]);
       $subscription->save();
 
@@ -733,6 +733,7 @@ class BeaconBilling {
         'TaxEstimatedCombinedRate' => 0,
         'TaxEstimatedCountyRate' => 0,
         'TaxEstimatedCityRate' => 0,
+        'TaxEstimatedSpecialRate' => 0,
       ],
       'tax_rate' => 0,
     ];
@@ -763,6 +764,7 @@ class BeaconBilling {
           'TaxEstimatedCombinedRate' => $rate['EstimatedCombinedRate'],
           'TaxEstimatedCountyRate' => $rate['EstimatedCountyRate'],
           'TaxEstimatedCityRate' => $rate['EstimatedCityRate'],
+          'TaxEstimatedSpecialRate' => $rate['EstimatedSpecialRate'],
         ];
       }
     }

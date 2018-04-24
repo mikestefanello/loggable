@@ -268,7 +268,7 @@ class DashboardController extends ControllerBase {
       $build['#event_count'] += $count;
     }
 
-    $build['#event_count'] = number_format($build['#event_today_count']);
+    $build['#event_count'] = number_format($build['#event_count']);
 
     // Add a chart for the number of events per severity.
     $build['#event_severity_count_chart'] = [
