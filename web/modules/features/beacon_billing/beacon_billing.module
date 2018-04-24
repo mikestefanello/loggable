@@ -12,9 +12,15 @@ use Stripe\Subscription as StripeSubscription;
  */
 function beacon_billing_entity_insert(EntityInterface $entity) {
   // Check if this entity is a user.
-  if ($entity->getEntityTypeId() == 'company') {
+  if ($entity->getEntityTypeId() == 'user') {
     // Create a subscription.
     \Drupal::service('beacon_billing')->createSubscription($entity);
+  }
+
+  // Check if this entity is a channel.
+  if ($entity->getEntityTypeId() == 'channel') {
+    // Update the subscription quantity for the current user.
+    \Drupal::service('beacon_billing')->updateSubscriptionQuantity();
   }
 }
 
@@ -35,6 +41,12 @@ function beacon_billing_entity_delete(EntityInterface $entity) {
   if ($entity->getEntityTypeId() == 'subscription') {
     // Cancel the subscription.
     \Drupal::service('beacon_billing')->cancelSubscription($entity, TRUE);
+  }
+
+  // Check if this entity is a channel.
+  if ($entity->getEntityTypeId() == 'channel') {
+    // Update the subscription quantity for the current user.
+    \Drupal::service('beacon_billing')->updateSubscriptionQuantity();
   }
 }
 
@@ -91,17 +103,14 @@ function beacon_billing_mail($key, &$message, $params) {
 /**
  * Implements hook_form_FORM_ID_alter().
  */
-function beacon_billing_form_add_members_form_alter(&$form, FormStateInterface &$form_state) {
+function beacon_billing_form_channel_add_form_alter(&$form, FormStateInterface &$form_state) {
   // Add a consent checkbox.
   $form['consent'] = [
     '#type' => 'checkbox',
-    '#title' => t('I understand and agree that adding members may increase my monthly costs'),
+    '#title' => t('I understand and agree that adding a channel may increase my monthly costs'),
     '#required' => TRUE,
   ];
   $form['actions']['#weight'] = 100;
-
-  // Add a submit handler.
-  $form['#submit'][] = 'beacon_billing_form_add_members_form_submit';
 }
 
 /**
