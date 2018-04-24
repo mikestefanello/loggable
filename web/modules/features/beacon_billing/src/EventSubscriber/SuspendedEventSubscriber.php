@@ -62,7 +62,7 @@ class SuspendedEventSubscriber implements EventSubscriberInterface {
     $requested_uri = $this->requestStack->getCurrentRequest()->getRequestUri();
 
     // Allow requests to the billing pages.
-    if (substr($requested_uri, 0, 7) != '/billing') {
+    if (substr($requested_uri, 0, 8) != '/billing') {
       // Allow requests to the API endpoints.
       if (substr($requested_uri, 0, 5) != '/api/') {
         // Get the user's subscription.
@@ -73,7 +73,7 @@ class SuspendedEventSubscriber implements EventSubscriberInterface {
             drupal_set_message(t('Your subscription is currently suspended. Please reactivate it in order to access this applicantion.'), 'error');
 
             // Redirect to the manage subscription page.
-            $event->setResponse(new RedirectResponse(Url::fromRoute('beacon_ui.manage_subscription')->toString()));
+            $event->setResponse(new RedirectResponse(Url::fromRoute('beacon_billing.manage_subscription')->toString()));
           }
         }
       }
