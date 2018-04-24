@@ -5,7 +5,6 @@ namespace Drupal\beacon_billing\Form;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\beacon\Beacon;
 use Drupal\beacon_billing\BeaconBilling;
 use Drupal\Core\Access\AccessResult;
 use Stripe\Subscription as StripeSubscription;
@@ -17,13 +16,6 @@ use Drupal\Core\Url;
 class CancelSubscriptionForm extends FormBase {
 
   /**
-   * Drupal\beacon\Beacon definition.
-   *
-   * @var \Drupal\beacon\Beacon
-   */
-  protected $beacon;
-
-  /**
    * Drupal\beacon_billing\BeaconBilling definition.
    *
    * @var \Drupal\beacon_billing\BeaconBilling
@@ -33,8 +25,7 @@ class CancelSubscriptionForm extends FormBase {
   /**
    * Constructs a new CancelSubscriptionForm object.
    */
-  public function __construct(Beacon $beacon, BeaconBilling $beacon_billing) {
-    $this->beacon = $beacon;
+  public function __construct(BeaconBilling $beacon_billing) {
     $this->beaconBilling = $beacon_billing;
   }
 
@@ -43,7 +34,6 @@ class CancelSubscriptionForm extends FormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('beacon'),
       $container->get('beacon_billing')
     );
   }
@@ -67,7 +57,7 @@ class CancelSubscriptionForm extends FormBase {
     $form['warning'] = [
       '#type' => 'html_tag',
       '#tag' => 'p',
-      '#value' => $this->t('Cancelling your subscription will immediately restrict access to this service for you and all of your company members. Your company data may be permanently deleted six months after your subscription is cancelled.'),
+      '#value' => $this->t('Cancelling your subscription will immediately restrict access to this service for you. Your data may be permanently deleted six months after your subscription is cancelled.'),
     ];
     $form['billing'] = [
       '#type' => 'html_tag',
@@ -117,7 +107,6 @@ class CancelSubscriptionForm extends FormBase {
 
     // Determine access.
     $access = AccessResult::allowedIf(
-      $this->beacon->userHasCompanyAdminRole() &&
       $subscription &&
       $subscription->getSubscriptionId() &&
       ($subscription->getStatus() != StripeSubscription::STATUS_CANCELED)

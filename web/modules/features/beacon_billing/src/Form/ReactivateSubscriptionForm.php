@@ -5,7 +5,6 @@ namespace Drupal\beacon_billing\Form;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\beacon\Beacon;
 use Drupal\beacon_billing\BeaconBilling;
 use Drupal\Core\Access\AccessResult;
 use Stripe\Subscription as StripeSubscription;
@@ -17,13 +16,6 @@ use Drupal\Core\Url;
 class ReactivateSubscriptionForm extends FormBase {
 
   /**
-   * Drupal\beacon\Beacon definition.
-   *
-   * @var \Drupal\beacon\Beacon
-   */
-  protected $beacon;
-
-  /**
    * Drupal\beacon_billing\BeaconBilling definition.
    *
    * @var \Drupal\beacon_billing\BeaconBilling
@@ -33,8 +25,7 @@ class ReactivateSubscriptionForm extends FormBase {
   /**
    * Constructs a new ReactivateSubscriptionForm object.
    */
-  public function __construct(Beacon $beacon, BeaconBilling $beacon_billing) {
-    $this->beacon = $beacon;
+  public function __construct(BeaconBilling $beacon_billing) {
     $this->beaconBilling = $beacon_billing;
   }
 
@@ -43,7 +34,6 @@ class ReactivateSubscriptionForm extends FormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('beacon'),
       $container->get('beacon_billing')
     );
   }
@@ -80,12 +70,12 @@ class ReactivateSubscriptionForm extends FormBase {
     $form['warning'] = [
       '#type' => 'html_tag',
       '#tag' => 'p',
-      '#value' => $this->t('Reactivating your subscription will immediately restore access to this service for you and all of your company members.'),
+      '#value' => $this->t('Reactivating your subscription will immediately restore access to this service for you.'),
     ];
     $form['billing'] = [
       '#type' => 'html_tag',
       '#tag' => 'p',
-      '#value' => $this->t('You will be billed upon submitting this form based on the number of member accounts your company has.'),
+      '#value' => $this->t('You will be billed upon submitting this form based on the number of channels your account has.'),
     ];
     $form['billing_info'] = [
       '#type' => 'html_tag',
@@ -148,7 +138,6 @@ class ReactivateSubscriptionForm extends FormBase {
 
     // Determine access.
     $access = AccessResult::allowedIf(
-      $this->beacon->userHasCompanyAdminRole() &&
       $subscription &&
       in_array($subscription->getStatus(), [StripeSubscription::STATUS_CANCELED, StripeSubscription::STATUS_UNPAID])
     );

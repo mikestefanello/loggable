@@ -141,11 +141,11 @@ class SubscriptionForm extends ContentEntityForm {
         ],
         'details' => [
           '#theme' => 'item_list',
-          '#items' => [
-            $this->t('%quota events per channel', ['%quota' => $plan['quotaEvents']]),
-            $this->t('%quota alerts per channel', ['%quota' => $plan['quotaAlerts']]),
-            $this->t('%history day event history', ['%history' => $plan['eventHistory']]),
-          ],
+          '#items' => array_merge([
+            $this->t('%quota events per channel', ['%quota' => number_format($plan['quotaEvents'])]),
+            $this->t('%quota alerts per channel', ['%quota' => number_format($plan['quotaAlerts'])]),
+            $this->t('%history day event history', ['%history' => number_format($plan['eventHistory'])]),
+          ], $this->subscriptionPlanManager->createInstance($plan['id'])->planInfoIncludes()),
         ],
         '#states' => [
           'visible' => [
@@ -228,9 +228,18 @@ class SubscriptionForm extends ContentEntityForm {
   public function validateForm(array &$form, FormStateInterface $form_state) {
     parent::validateForm($form, $form_state);
 
-    // Check if the zip contains invalid characters.
-    if (preg_match('/[^\d-]/', $form_state->getValue('address_zip')[0]['value'])) {
-      $form_state->setErrorByName('address_zip', t('The zip code can only contain numbers and dashes.'));
+    // Extract the address.
+    $address = $form_state->getValue('address')[0]['address'];
+
+    // Extract the zip.
+    $zip = $address['postal_code'];
+
+    // Check if the address is in the US.
+    if ($address['country_code'] == 'US') {
+      // Enforce that the zip is just 5 digits.
+      if (!$zip || !is_numeric($zip) || (strlen($zip) != 5)) {
+        $form_state->setErrorByName('address_zip', $this->t('The ZIP code must be 5 digits.'));
+      }
     }
   }
 

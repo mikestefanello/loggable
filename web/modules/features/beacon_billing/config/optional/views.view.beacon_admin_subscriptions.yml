@@ -2,9 +2,8 @@ langcode: en
 status: true
 dependencies:
   module:
-    - options
-    - beacon
     - beacon_billing
+    - options
 id: beacon_admin_subscriptions
 label: 'Admin subscriptions'
 module: views
@@ -38,7 +37,7 @@ display:
         type: basic
         options:
           submit_button: Filter
-          reset_button: false
+          reset_button: true
           reset_button_label: Reset
           exposed_sorts_label: 'Sort by'
           expose_sort_order: true
@@ -77,21 +76,21 @@ display:
           summary: ''
           description: ''
           columns:
-            company: company
-            email: email
+            user_id: user_id
+            plan: plan
             status: status
             created: created
             changed: changed
             edit_subscription: edit_subscription
           info:
-            company:
+            user_id:
               sortable: true
               default_sort_order: asc
               align: ''
               separator: ''
               empty_column: false
               responsive: ''
-            email:
+            plan:
               sortable: true
               default_sort_order: asc
               align: ''
@@ -131,14 +130,14 @@ display:
       row:
         type: fields
       fields:
-        company:
-          id: company
+        user_id:
+          id: user_id
           table: subscriptions
-          field: company
+          field: user_id
           relationship: none
           group_type: group
           admin_label: ''
-          label: Company
+          label: User
           exclude: false
           alter:
             alter_text: false
@@ -194,19 +193,16 @@ display:
           separator: ', '
           field_api_classes: false
           entity_type: subscription
-          entity_field: company
+          entity_field: user_id
           plugin_id: field
-        email:
+        plan:
+          id: plan
           table: subscriptions
-          field: email
-          id: email
-          entity_type: null
-          entity_field: email
-          plugin_id: field
+          field: plan
           relationship: none
           group_type: group
           admin_label: ''
-          label: Email
+          label: Plan
           exclude: false
           alter:
             alter_text: false
@@ -248,8 +244,9 @@ display:
           empty_zero: false
           hide_alter_empty: true
           click_sort_column: value
-          type: basic_string
-          settings: {  }
+          type: string
+          settings:
+            link_to_entity: false
           group_column: value
           group_columns: {  }
           group_rows: true
@@ -260,6 +257,9 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
+          entity_type: subscription
+          entity_field: plan
+          plugin_id: field
         status:
           id: status
           table: subscriptions
@@ -512,34 +512,36 @@ display:
           entity_type: subscription
           plugin_id: entity_link_edit
       filters:
-        name:
-          id: name
-          table: company
-          field: name
-          relationship: company
+        user_id:
+          id: user_id
+          table: subscriptions
+          field: user_id
+          relationship: none
           group_type: group
           admin_label: ''
-          operator: contains
-          value: ''
+          operator: '='
+          value:
+            min: ''
+            max: ''
+            value: ''
           group: 1
           exposed: true
           expose:
-            operator_id: name_op
-            label: Company
+            operator_id: user_id_op
+            label: 'User ID'
             description: ''
             use_operator: false
-            operator: name_op
-            identifier: name
+            operator: user_id_op
+            identifier: user_id
             required: false
             remember: false
             multiple: false
             remember_roles:
               authenticated: authenticated
               anonymous: '0'
-              company_administrator: '0'
-              team_administrator: '0'
-              team_member: '0'
             placeholder: ''
+            min_placeholder: ''
+            max_placeholder: ''
           is_grouped: false
           group_info:
             label: ''
@@ -552,9 +554,9 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          entity_type: company
-          entity_field: name
-          plugin_id: string
+          entity_type: subscription
+          entity_field: user_id
+          plugin_id: numeric
         email:
           id: email
           table: subscriptions
@@ -640,6 +642,46 @@ display:
             group_items: {  }
           entity_type: subscription
           entity_field: status
+          plugin_id: string
+        plan:
+          id: plan
+          table: subscriptions
+          field: plan
+          relationship: none
+          group_type: group
+          admin_label: ''
+          operator: '='
+          value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: plan_op
+            label: Plan
+            description: ''
+            use_operator: false
+            operator: plan_op
+            identifier: plan
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+            placeholder: ''
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          entity_type: subscription
+          entity_field: plan
           plugin_id: string
         customer_id:
           id: customer_id
@@ -753,18 +795,7 @@ display:
           tokenize: false
           content: 'No subscriptions were found.'
           plugin_id: text_custom
-      relationships:
-        company:
-          id: company
-          table: subscriptions
-          field: company
-          relationship: none
-          group_type: group
-          admin_label: Company
-          required: false
-          entity_type: subscription
-          entity_field: company
-          plugin_id: standard
+      relationships: {  }
       arguments: {  }
       display_extenders: {  }
       filter_groups:

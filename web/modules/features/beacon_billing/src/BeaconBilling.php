@@ -138,10 +138,12 @@ class BeaconBilling {
    * @param \Drupal\user\UserInterface $user
    *   A user entity to create a subscription for. If omitted, the current user
    *   will be used.
+   * @param string $plan_id
+   *   The Stripe plan ID to subscribe the user to, or NULL to use the default.
    * @return \Drupal\beacon_billing\Entity\Subscription|FALSE
    *   A subscription entity, if created, or FALSE if the operation failed.
    */
-  public function createSubscription(UserInterface $user = NULL) {
+  public function createSubscription(UserInterface $user = NULL, string $plan_id = NULL) {
     // Load the user.
     $user = $this->getUser($user);
 
@@ -152,8 +154,8 @@ class BeaconBilling {
       // Initialize Stripe.
       $this->stripe();
 
-      // TODO: Get the plan ID.
-      $plan = "TODO";
+      // Get the plan ID, if needed.
+      $plan_id = $plan_id ? $plan_id : $settings->get('default_plan_id');
 
       // Create a customer in Stripe.
       $stripe_customer = StripeCustomer::create([
@@ -166,7 +168,7 @@ class BeaconBilling {
       // Create a subscription for the customer.
       $stripe_subscription = StripeSubscription::create([
         'customer' => $stripe_customer->id,
-        'items' => [['plan' => $plan]],
+        'items' => [['plan' => $plan_id]],
         'trial_period_days' => $settings->get('trial_period_days'),
       ]);
 
@@ -174,10 +176,11 @@ class BeaconBilling {
       $subscription = Subscription::create([
         'name' => $user->getDisplayName(),
         'email' => $user->mail->value,
+        'plan' => $plan_id,
         'customer_id' => $stripe_customer->id,
         'subscription_id' => $stripe_subscription->id,
         'status' => $stripe_subscription->status,
-        'user_id' => ['target' => $user->id()],
+        'user_id' => $user->id(),
         'address' => [
           'country_code' => 'US',
         ]
@@ -318,15 +321,19 @@ class BeaconBilling {
           // Fetch the subscription.
           $stripe_subscription = StripeSubscription::retrieve($subscription->getSubscriptionId());
 
-          // Calculate the tax rate for this subscription.
-          $tax_rate = $this->getSubscriptionTaxRate($subscription);
+          // Load the tax information for this subscription.
+          $tax = $this->getSubscriptionTaxInformation($subscription);
 
-          // Check if the tax rate changed.
-          if ($tax_rate != $stripe_subscription->tax_percent) {
-            // Update the tax rate.
-            $stripe_subscription->tax_percent = $tax_rate;
-            $stripe_subscription->save();
-          }
+          // Update the tax rate.
+          $stripe_subscription->tax_percent = $tax['tax_rate'];
+
+          // Merge in tax metadata.
+          $stripe_subscription->metadata->updateAttributes($tax['metadata']);
+
+          // TODO: Update the plan!
+
+          // Save the subscription.
+          $stripe_subscription->save();
         }
       }
 
@@ -575,28 +582,28 @@ class BeaconBilling {
     $settings = $this->getSettings();
 
     try {
-      // Make sure a plan ID is set.
-      // TODO: plan id!
-      if (!$settings->get('plan_id')) {
-        throw new \Exception('Missing plan ID.');
-      }
-
       // Initialize Stripe.
       $this->stripe();
 
       // Check if the subscription was canceled.
       if ($subscription->getStatus() == StripeSubscription::STATUS_CANCELED) {
+        // Load the tax rate information.
+        $tax = $this->getSubscriptionTaxInformation($subscription);
+
         // Create a new subscription.
         $stripe_subscription = StripeSubscription::create([
           'customer' => $subscription->getCustomerId(),
           'items' => [
             [
-              'plan' => $settings->get('plan_id'),
+              'plan' => $subscription->plan->value,
               'quantity' => $this->getSubscriptionQuantity($subscription),
             ],
           ],
-          'tax_percent' => $this->getSubscriptionTaxRate($subscription),
+          'tax_percent' => $tax['tax_rate'],
         ]);
+
+        // Add tax metadata..
+        $stripe_subscription->metadata->updateAttributes($tax['metadata']);
 
         // Update the subscription ID in Drupal.
         $subscription->set('subscription_id', $stripe_subscription->id);
@@ -681,12 +688,6 @@ class BeaconBilling {
     $settings = $this->getSettings();
 
     try {
-      // Make sure a plan ID is set.
-      // TODO: Plan id!
-      if (!$settings->get('plan_id')) {
-        throw new \Exception('Missing plan ID.');
-      }
-
       // Initialize Stripe.
       $this->stripe();
 
@@ -718,45 +719,107 @@ class BeaconBilling {
    *
    * @param \Drupal\beacon_billing\Entity\Subscription $subscription
    *   A subscription entity.
-   * @return float|NULL
-   *   A tax rate for the given subscription, based on the billing state, or NULL
-   *   if there is none.
+   * @return array
+   *   An array of tax information for a given subscription. Includes:
+   *     'metadata': An array of metadata that explains the taxes.
+   *     'tax_rate': The effective tax rate (0-100).
    */
-  public function getSubscriptionTaxRate(Subscription $subscription) {
+  public function getSubscriptionTaxInformation(Subscription $subscription) {
+    // Default the tax info to return.
+    $info = [
+      'metadata' => [
+        'TaxRegionName' => 'None',
+        'TaxStateRate' => 0,
+        'TaxEstimatedCombinedRate' => 0,
+        'TaxEstimatedCountyRate' => 0,
+        'TaxEstimatedCityRate' => 0,
+      ],
+      'tax_rate' => 0,
+    ];
+
     // Extract the address.
     $address = $subscription->address->first()->getValue();
 
     // Extract the state.
     $state = $address['administrative_area'];
 
-    // No tax if a state is not supplied.
-    if (!$state) {
-      return NULL;
+    // Check if the address is a state in the US.
+    if ($state && ($address['country_code'] == 'US')) {
+      // Load the rate table.
+      $rates = $this->loadTaxRates();
+
+      // Check if there is a tax rate for the zip code.
+      if (isset($rates[$address['postal_code']])) {
+        // Extract the rate info.
+        $rate = $rates[$address['postal_code']];
+
+        // Add the tax rate.
+        $info['tax_rate'] = number_format($rate['EstimatedCombinedRate'] * 100, 4);
+
+        // Add metadata.
+        $info['metadata'] = [
+          'TaxRegionName' => $rate['TaxRegionName'],
+          'TaxStateRate' => $rate['StateRate'],
+          'TaxEstimatedCombinedRate' => $rate['EstimatedCombinedRate'],
+          'TaxEstimatedCountyRate' => $rate['EstimatedCountyRate'],
+          'TaxEstimatedCityRate' => $rate['EstimatedCityRate'],
+        ];
+      }
     }
 
-    // Skip if this is not inside the US.
-    // TODO: Does this need to be configurable?
-    if ($address['country_code'] != 'US') {
-      return NULL;
+    return $info;
+  }
+
+  /**
+   * Load the tax rates from the CSV data file.
+   *
+   * @return array
+   *   An array of tax rates keyed by zip code.
+   */
+  public static function loadTaxRates() {
+    $rows = &drupal_static(__METHOD__, NULL);
+
+    // Return if the cache was populated.
+    if ($rows !== NULL) {
+      return $rows;
     }
 
-    // Load the billing settings.
-    $settings = $this->getSettings();
+    // Open the tax rates file.
+    $file = fopen(drupal_get_path('module', 'beacon_billing') . '/data/tax_rates.csv', 'r');
+    $rows = $headers = [];
 
-    // Extract the tax rates.
-    $taxes = $settings->get('taxes');
+    // Iterate the file rows.
+    while ($data = fgetcsv($file, 0, ',')) {
+      // Check if the headers were not yet populated.
+      if (empty($headers)) {
+        $headers = $data;
+        continue;
+      }
 
-    // TODO: Load the rate table.
+      // Create the row.
+      $row = [];
+      foreach ($data as $index => $value) {
+        // Key using the headers.
+        $row[$headers[$index]] = $value;
+      }
 
-    // Check if there is a tax-rate for this state.
-    return isset($taxes[$state]) ? $taxes[$state] : NULL;
+      // Add the row using the zip as the key.
+      $rows[$row['ZipCode']] = $row;
+    }
+
+    // Close the file.
+    fclose($file);
+
+    return $rows;
   }
 
   /**
    * Calculate the quantity for a given subscription.
    *
-   * This counts the amount of users in the company that is associated with
-   * the subscription.
+   * This counts the amount of channels the user has.
+   *
+   * If the user has no channels, a value of 1 will be returned as that is the
+   * minimum.
    *
    * @param \Drupal\beacon_billing\Entity\Subscription $subscription
    *   A subscription entity.
@@ -764,12 +827,14 @@ class BeaconBilling {
    *   A subscription quantity.
    */
   public function getSubscriptionQuantity(Subscription $subscription) {
-    return $this->entityTypeManager
+    $quantity = $this->entityTypeManager
       ->getStorage('channel')
       ->getQuery()
       ->condition('user_id', $subscription->getOwnerId())
       ->count()
       ->execute();
+
+    return max($quantity, 1);
   }
 
   /**

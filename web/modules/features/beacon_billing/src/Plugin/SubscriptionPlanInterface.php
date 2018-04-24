@@ -9,4 +9,16 @@ use Drupal\Component\Plugin\PluginInspectionInterface;
  */
 interface SubscriptionPlanInterface extends PluginInspectionInterface {
 
+  /**
+   * Return an array of additional plan information regarding what the plan includes.
+   *
+   * This is used to display information about the plan to the user.
+   *
+   * All quota information is already automatically included.
+   *
+   * @return array
+   *   An array of strings.
+   */
+  public function planInfoIncludes();
+
 }

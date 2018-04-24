@@ -20,4 +20,13 @@ use Drupal\beacon_billing\Plugin\SubscriptionPlanBase;
  */
 class Basic extends SubscriptionPlanBase {
 
+  /**
+   * {@inheritdoc}
+   */
+  public function planInfoIncludes() {
+    return [
+      $this->t('No text message alerts'),
+    ];
+  }
+
 }
