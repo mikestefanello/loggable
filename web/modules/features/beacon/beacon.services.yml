@@ -18,3 +18,6 @@ services:
   beacon.alert_dispatcher:
     class: Drupal\beacon\AlertDispatcher
     arguments: ['@entity_type.manager', '@plugin.manager.alert_type', '@path.matcher']
+  beacon.stats:
+    class: Drupal\beacon\BeaconStats
+    arguments: ['@current_user', '@entity_type.manager', '@entity_field.manager', '@database']

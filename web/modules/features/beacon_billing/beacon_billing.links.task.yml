@@ -42,10 +42,16 @@ beacon_billing.reactivate_subscription_form:
   route_name: beacon_billing.reactivate_subscription_form
   base_route: beacon_billing.manage_subscription
   title: Reactivate subscription
-  weight: -6
+  weight: -5
 
 beacon_billing.cancel_subscription_form:
   route_name: beacon_billing.cancel_subscription_form
   base_route: beacon_billing.manage_subscription
   title: Cancel subscription
-  weight: -5
+  weight: -4
+
+beacon_billing.quotas:
+  route_name: beacon_billing.quotas
+  base_route: beacon_billing.manage_subscription
+  title: Quotas
+  weight: -6

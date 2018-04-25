@@ -1,0 +1,50 @@
+{#
+/**
+ * @file beacon-billing-quotas.html.twig
+ * Default theme implementation for the quotas page.
+ *
+ * Available variables:
+ *   - no_content: Markup to display if there are no quotas to render.
+ *   - channel_event_quota_chart: A bar chart that displays the event count per channel.
+ *   - channel_alert_quota_chart: A bar chart that displays the alert count per channel.
+ *
+ * @ingroup themeable
+ */
+#}
+{% if no_content %}
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body">
+          {{ no_content }}
+        </div>
+      </div>
+    </div>
+  </div>
+{% else %}
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <h4 class="card-header">{{ 'Events'|t }}</h4>
+        <div class="card-body" style="height:400px;">
+          {{ channel_event_quota_chart }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <h4 class="card-header">{{ 'Alerts'|t }}</h4>
+        <div class="card-body" style="height:400px;">
+          {{ channel_alert_quota_chart }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12 text-muted">
+      {{ 'Data is updated approximately every 30 minutes'|t }}
+    </div>
+  </div>
+{% endif %}

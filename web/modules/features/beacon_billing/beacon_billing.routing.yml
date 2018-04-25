@@ -47,3 +47,11 @@ beacon_billing.reactivate_subscription_form:
     _title: 'Reactivate subscription'
   requirements:
     _custom_access: '\Drupal\beacon_billing\Form\ReactivateSubscriptionForm::access'
+
+beacon_billing.quotas:
+  path: '/billing/quotas'
+  defaults:
+    _controller: '\Drupal\beacon_billing\Controller\QuotasController::page'
+    _title: 'Quotas'
+  requirements:
+    _role: 'authenticated'

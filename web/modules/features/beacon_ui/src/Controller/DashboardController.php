@@ -2,12 +2,9 @@
 
 namespace Drupal\beacon_ui\Controller;
 
+use Drupal\beacon\BeaconStats;
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Core\Session\AccountProxyInterface;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Entity\EntityFieldManager;
-use Drupal\Core\Database\Driver\mysql\Connection;
 
 /**
  * Class DashboardController.
@@ -24,50 +21,20 @@ class DashboardController extends ControllerBase {
   const CACHE_MAX_AGE = 900;
 
   /**
-   * The current user.
+   * The beacon stats service.
    *
-   * @var \Drupal\Core\Session\AccountProxyInterface
+   * @var \Drupal\beacon\BeaconStats
    */
-  protected $currentUser;
-
-  /**
-   * The entity type manager.
-   *
-   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
-   */
-  protected $entityTypeManager;
-
-  /**
-   * The entity field manager.
-   *
-   * @var \Drupal\Core\Entity\EntityFieldManager
-   */
-  protected $entityFieldManager;
-
-  /**
-   * The database.
-   *
-   * @var \Drupal\Core\Database\Driver\mysql\Connection
-   */
-  protected $database;
+  protected $stats;
 
   /**
    * Constructs a new DashboardController object.
    *
-   * @param \Drupal\Core\Session\AccountProxyInterface $current_user
-   *   The current user.
-   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
-   *   The entity type manager.
-   * @param \Drupal\Core\Entity\EntityFieldManager $entity_field_manager
-   *   The entity field manager.
-   * @param \Drupal\Core\Database\Driver\mysql\Connection $database
-   *   The database.
+   * @param \Drupal\beacon\BeaconStats $stats
+   *   The beacon stats service.
    */
-  public function __construct(AccountProxyInterface $current_user, EntityTypeManagerInterface $entity_type_manager, EntityFieldManager $entity_field_manager, Connection $database) {
-    $this->currentUser = $current_user;
-    $this->entityTypeManager = $entity_type_manager;
-    $this->entityFieldManager = $entity_field_manager;
-    $this->database = $database;
+  public function __construct(BeaconStats $stats) {
+    $this->stats = $stats;
   }
 
   /**
@@ -75,10 +42,7 @@ class DashboardController extends ControllerBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('current_user'),
-      $container->get('entity_type.manager'),
-      $container->get('entity_field.manager'),
-      $container->get('database')
+      $container->get('beacon.stats')
     );
   }
 
@@ -97,14 +61,14 @@ class DashboardController extends ControllerBase {
           'user',
         ],
         'tags' => [
-          'user.channels:' . $this->currentUser->id(),
+          'user.channels:' . $this->stats->getCurrentUserId(),
         ],
         'max-age' => self::CACHE_MAX_AGE,
       ],
     ];
 
     // Load the user's channels.
-    $channels = $this->getUserChannels();
+    $channels = $this->stats->getUserChannels();
 
     // Check if there are no channels.
     if (!$channels) {
@@ -165,7 +129,7 @@ class DashboardController extends ControllerBase {
     ];
 
     // Load the event counts per channel per day.
-    $counts = $this->getChannelEventCountPerDay();
+    $counts = $this->stats->getChannelEventCountPerDay();
 
     // Count the events from today.
     $build['#event_today_count'] = 0;
@@ -257,7 +221,7 @@ class DashboardController extends ControllerBase {
     $build['#event_count'] = 0;
 
     // Add the channels.
-    foreach ($this->getChannelEventCounts() as $channel_id => $count) {
+    foreach ($this->stats->getChannelEventCounts() as $channel_id => $count) {
       // Add the channel.
       $build['#channel_event_count_chart']['#config']['data']['labels'][] = $channels[$channel_id]->label();
 
@@ -312,7 +276,7 @@ class DashboardController extends ControllerBase {
     ];
 
     // Add the severity counts and labels.
-    foreach ($this->getEventSeverityCounts() as $severity => $count) {
+    foreach ($this->stats->getEventSeverityCounts() as $severity => $count) {
       // Add the channel.
       $build['#event_severity_count_chart']['#config']['data']['labels'][] = $severity;
 
@@ -321,7 +285,7 @@ class DashboardController extends ControllerBase {
     }
 
     // Count the enabled alerts.
-    $build['#enabled_alerts_count'] = number_format($this->getEnabledAlertCount());
+    $build['#enabled_alerts_count'] = number_format($this->stats->getEnabledAlertCount());
 
     return $build;
   }
@@ -336,158 +300,6 @@ class DashboardController extends ControllerBase {
    */
   public function randomColor(float $alpha = 0.5) {
     return 'rgba(' . rand(0, 255) . ', ' . rand(0, 255) . ', ' . rand(0, 255) . ', ' . $alpha . ')';
-  }
-
-  /**
-   * Get a count of enabled alerts.
-   *
-   * @return int
-   *   A count of enabled alerts for the given user.
-   */
-  public function getEnabledAlertCount() {
-    $query = $this->database->select('alert');
-    $query->addExpression('COUNT(id)', 'count');
-    $query->condition('enabled', 1);
-    $query->condition('user_id', $this->currentUser->id());
-    return $query->execute()->fetchField();
-  }
-
-  /**
-   * Get the counts of events per-channel, per-day, for the last week.
-   *
-   * @return array
-   *   An associative array of count data, keyed by the channel ID. The nested array
-   *   is keyed by the day in the format Y-m-d.
-   */
-  public function getChannelEventCountPerDay() {
-    $counts = [];
-
-    // Initialize the counts.
-    foreach ($this->getUserChannels() as $channel_id => $channel) {
-      $counts[$channel_id] = [];
-
-      // Default to 0 for each of the last 7 days.
-      for ($i = 0; $i < 7; $i++) {
-        $counts[$channel_id][format_date(strtotime("-{$i} days"), 'custom', 'Y-m-d')] = 0;
-      }
-    }
-
-    // Query the database to get counts per channel, per day for the last week.
-    $query = $this->database->select('event');
-    $query->addField('event', 'channel');
-    $query->addExpression('DATE(FROM_UNIXTIME(created))', 'createdDate');
-    $query->addExpression('COUNT(id)', 'eventCount');
-    $query->condition('user_id', $this->currentUser->id());
-    $query->condition('created', strtotime('midnight', strtotime('-1 week')), '>');
-    $query->groupBy('channel');
-    $query->groupBy('DATE(FROM_UNIXTIME(created))');
-
-    // Execute the query.
-    $results = $query->execute();
-
-    // Iterate the results.
-    foreach ($results as $result) {
-      $counts[$result->channel][$result->createdDate] = $result->eventCount;
-    }
-
-    return $counts;
-  }
-
-  /**
-   * Get event counts for each severity type.
-   *
-   * @return array
-   *   An array of event counts, keyed by severity label.
-   */
-  public function getEventSeverityCounts() {
-    // Get the allowed severity values.
-    $severity_values = $this->entityFieldManager
-      ->getFieldStorageDefinitions('event')['severity']
-      ->getSetting('allowed_values');
-
-    // Query to find the counts for each severity value.
-    $query = $this->database->select('event');
-    $query->addField('event', 'severity');
-    $query->addExpression('COUNT(id)', 'count');
-    $query->condition('event.user_id', $this->currentUser->id());
-    $query->groupBy('severity');
-    $results = $query->execute()->fetchAllKeyed();
-
-    // Replace the values with labels.
-    foreach ($results as $severity => $count) {
-      $results[$severity_values[$severity]] = $count;
-      unset($results[$severity]);
-    }
-
-    return $results;
-  }
-
-  /**
-   * Get all channels that the current user owns.
-   *
-   * @return array
-   *   An array of channel entities.
-   */
-  public function getUserChannels() {
-    $channels = &drupal_static(__METHOD__, NULL);
-
-    // Check if the channels haven't been loaded yet.
-    if ($channels === NULL) {
-      // Initialize the cache.
-      $channels = [];
-
-      // Query to find the channels.
-      $query = $this->database->select('channel');
-      $query->addField('channel', 'id');
-      $query->condition('user_id', $this->currentUser->id());
-      $query->orderBy('name');
-
-      // Execute the query.
-      $results = $query->execute()->fetchCol();
-
-      // Load the channels.
-      if ($results) {
-        $channels = $this->entityTypeManager
-          ->getStorage('channel')
-          ->loadMultiple($results);
-      }
-    }
-
-    return $channels;
-  }
-
-  /**
-   * Get event counts per-channel.
-   *
-   * @return array
-   *   An array of event counts, keyed by channel ID.
-   */
-  public function getChannelEventCounts() {
-    $counts = [];
-
-    // Load the user channels.
-    $channels = $this->getUserChannels();
-
-    // Stop if there are no channels.
-    if (!$channels) {
-      return [];
-    }
-
-    // Query to find the counts.
-    $query = $this->database->select('event');
-    $query->addField('event', 'channel');
-    $query->addExpression('COUNT(id)', 'count');
-    $query->condition('event.user_id', $this->currentUser->id());
-    $query->groupBy('channel');
-    $results = $query->execute()->fetchAllKeyed();
-
-    // Iterate the channels.
-    foreach ($channels as $channel) {
-      // Add the counts.
-      $counts[$channel->id()] = isset($results[$channel->id()]) ? $results[$channel->id()] : 0;
-    }
-
-    return $counts;
   }
 
 }
