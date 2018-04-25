@@ -117,6 +117,7 @@ class InvoicesController extends ControllerBase {
         '#markup' => t('Invoices are updated approximately every 24 hours.'),
       ],
       '#cache' => [
+        'keys' => ['invoices'],
         'contexts' => [
           'user',
         ],
@@ -232,6 +233,7 @@ class InvoicesController extends ControllerBase {
         '#rows' => [],
       ],
       '#cache' => [
+        'keys' => ['invoice:' . $invoice->number],
         'max-age' => BeaconBilling::CACHE_LIFETIME,
         'tags' => $this->beaconBilling->getUserSubscription()->getCacheTags(),
         'contexts' => [
