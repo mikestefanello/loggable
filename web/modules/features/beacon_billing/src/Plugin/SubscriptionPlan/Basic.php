@@ -29,4 +29,6 @@ class Basic extends SubscriptionPlanBase {
     ];
   }
 
+  // TODO: Restrict text message alerts
+
 }

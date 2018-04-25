@@ -90,16 +90,19 @@ class AlertForm extends BeaconContentEntityForm {
       if (!$form_state->getValue('channel')) {
         // Attempt to extract the target channel UUID from the URL.
         if ($channel_uuid = $this->requestStack->getCurrentRequest()->query->get('channel')) {
-          // Attempt to load the channel.
-          if ($channel = $this->entityRepository->loadEntityByUuid('channel', $channel_uuid)) {
-            // Check if this channel is an option.
-            if (isset($form['channel']['widget']['#options'][$channel->id()])) {
-              // Set the channel as the default.
-              $form['channel']['widget']['#default_value'] = $channel->id();
-            }
-            else {
-              // Disregard the channel.
-              unset($channel);
+          // Validate that the UUID contains no invalid characters.
+          if (!preg_match('/[^\d\w\-]/', $channel_uuid)) {
+            // Attempt to load the channel.
+            if ($channel = $this->entityRepository->loadEntityByUuid('channel', $channel_uuid)) {
+              // Check if this channel is an option.
+              if (isset($form['channel']['widget']['#options'][$channel->id()])) {
+                // Set the channel as the default.
+                $form['channel']['widget']['#default_value'] = $channel->id();
+              }
+              else {
+                // Disregard the channel.
+                unset($channel);
+              }
             }
           }
         }

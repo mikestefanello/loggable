@@ -77,7 +77,7 @@ class InvoicesController extends ControllerBase {
       t('Paid'),
     ];
 
-    // Generate the build
+    // Generate the build.
     $build = [
       'upcoming' => [
         '#type' => 'details',
@@ -236,6 +236,7 @@ class InvoicesController extends ControllerBase {
         'tags' => $this->beaconBilling->getUserSubscription()->getCacheTags(),
         'contexts' => [
           'url.path',
+          'user',
         ]
       ],
     ];

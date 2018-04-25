@@ -57,7 +57,7 @@ class DashboardController extends ControllerBase {
     $build = [
       '#theme' => 'beacon_dashboard',
       '#cache' => [
-        'context' => [
+        'contexts' => [
           'user',
         ],
         'tags' => [

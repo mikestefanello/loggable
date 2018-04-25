@@ -72,7 +72,7 @@ class QuotasController extends ControllerBase {
     $build = [
       '#theme' => 'beacon_billing_quotas',
       '#cache' => [
-        'context' => [
+        'contexts' => [
           'user',
         ],
         'tags' => array_merge([
