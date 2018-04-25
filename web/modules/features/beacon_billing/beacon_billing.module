@@ -51,6 +51,15 @@ function beacon_billing_entity_delete(EntityInterface $entity) {
 }
 
 /**
+ * Implements hook_entity_type_build().
+ */
+function beacon_billing_entity_type_build(array &$entity_types) {
+  // Add quota constraints to alerts and events.
+  $entity_types['event']->addConstraint('EventQuota');
+  $entity_types['alert']->addConstraint('AlertQuota');
+}
+
+/**
  * Implements hook_theme().
  */
 function beacon_billing_theme($existing, $type, $theme, $path) {
