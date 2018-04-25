@@ -19,7 +19,7 @@ class QuotasController extends ControllerBase {
    *
    * @var int
    */
-  const CACHE_MAX_AGE = 1800;
+  const CACHE_MAX_AGE = 900;
 
   /**
    * The beacon stats service.
@@ -75,9 +75,9 @@ class QuotasController extends ControllerBase {
         'context' => [
           'user',
         ],
-        'tags' => [
+        'tags' => array_merge([
           'user.channels:' . $this->stats->getCurrentUserId(),
-        ] + $subscription->getCacheTags(),
+        ], $subscription->getCacheTags()),
         'max-age' => self::CACHE_MAX_AGE,
       ],
     ];
@@ -202,7 +202,7 @@ class QuotasController extends ControllerBase {
                 'beginAtZero' => TRUE,
                 'max' => $plan['quotaAlerts'],
                 'min' => 0,
-                'fixedStepSize' => 1,
+                'fixedStepSize' => ($plan['quotaAlerts'] > 14) ? 2 : 1,
               ],
             ]],
           ],
