@@ -2,7 +2,6 @@
 
 namespace Drupal\beacon_billing\Form;
 
-use Drupal\beacon_billing\Plugin\SubscriptionPlanManager;
 use Drupal\beacon_billing\BeaconBilling;
 use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Form\FormStateInterface;
@@ -28,13 +27,6 @@ class SubscriptionForm extends ContentEntityForm {
   protected $beaconBilling;
 
   /**
-   * The subscription plan plugin manager.
-   *
-   * @var \Drupal\beacon_billing\Plugin\SubscriptionPlanManager
-   */
-  protected $subscriptionPlanManager;
-
-  /**
    * Constructs a SubscriptionForm object.
    *
    * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
@@ -45,13 +37,10 @@ class SubscriptionForm extends ContentEntityForm {
    *   The time service.
    * @param \Drupal\beacon_billing\BeaconBilling $beacon_billing
    *   The beacon billing service.
-   * @param \Drupal\beacon_billing\Plugin\SubscriptionPlanManager $subscription_plan_manager
-   *   The subscription plan plugin manager.
    */
-  public function __construct(EntityManagerInterface $entity_manager, EntityTypeBundleInfoInterface $entity_type_bundle_info = NULL, TimeInterface $time = NULL, BeaconBilling $beacon_billing, SubscriptionPlanManager $subscription_plan_manager) {
+  public function __construct(EntityManagerInterface $entity_manager, EntityTypeBundleInfoInterface $entity_type_bundle_info = NULL, TimeInterface $time = NULL, BeaconBilling $beacon_billing) {
     parent::__construct($entity_manager, $entity_type_bundle_info, $time);
     $this->beaconBilling = $beacon_billing;
-    $this->subscriptionPlanManager = $subscription_plan_manager;
   }
 
   /**
@@ -62,8 +51,7 @@ class SubscriptionForm extends ContentEntityForm {
       $container->get('entity.manager'),
       $container->get('entity_type.bundle.info'),
       $container->get('datetime.time'),
-      $container->get('beacon_billing'),
-      $container->get('plugin.manager.subscription_plan')
+      $container->get('beacon_billing')
     );
   }
 
@@ -120,7 +108,7 @@ class SubscriptionForm extends ContentEntityForm {
     $plan_form['#options'] = [];
 
     // Load the plans.
-    $plans = $this->subscriptionPlanManager->getDefinitions();
+    $plans = $this->beaconBilling->getSubscriptionPlanDefinitions();
 
     // Sort by price.
     usort($plans, function ($a, $b) {
@@ -145,7 +133,7 @@ class SubscriptionForm extends ContentEntityForm {
             $this->t('%quota events per channel', ['%quota' => number_format($plan['quotaEvents'])]),
             $this->t('%quota alerts per channel', ['%quota' => number_format($plan['quotaAlerts'])]),
             $this->t('%history day event history', ['%history' => number_format($plan['eventHistory'])]),
-          ], $this->subscriptionPlanManager->createInstance($plan['id'])->planInfoIncludes()),
+          ], $this->beaconBilling->createSubscriptionPlanInstance($plan['id'])->planInfoIncludes()),
         ],
         '#states' => [
           'visible' => [

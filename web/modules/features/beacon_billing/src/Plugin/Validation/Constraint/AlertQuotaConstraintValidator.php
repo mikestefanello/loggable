@@ -19,7 +19,7 @@ class AlertQuotaConstraintValidator extends QuotaConstraintValidatorBase {
     }
 
     // Load the subscription plan for the entity owner.
-    if ($plan = $this->getSubscriptionPlanDefinition($value->getOwner())) {
+    if ($plan = $this->beaconBilling->getUserSubscriptionPlanDefinition($value->getOwner())) {
       // Extract the quota for alerts.
       if ($quota = $plan['quotaAlerts']) {
         // Get the entity count for this channel.

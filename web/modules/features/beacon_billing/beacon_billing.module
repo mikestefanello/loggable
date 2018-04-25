@@ -51,6 +51,26 @@ function beacon_billing_entity_delete(EntityInterface $entity) {
 }
 
 /**
+ * Implements hook_entity_presave().
+ */
+function beacon_billing_entity_presave(EntityInterface $entity) {
+  // Check if this entity is an event.
+  if ($entity->getEntityTypeId() == 'event') {
+    // Check if the entity is new.
+    if ($entity->isNew()) {
+      // Get the user's subscription plan.
+      if ($plan = \Drupal::service('beacon_billing')->getUserSubscriptionPlanDefinition()) {
+        // Check if there is an event history setting.
+        if ($plan['eventHistory'] !== NULL) {
+          // Set the expiration field.
+          $entity->set('expire', strtotime('+' . $plan['eventHistory'] . ' days'));
+        }
+      }
+    }
+  }
+}
+
+/**
  * Implements hook_entity_type_build().
  */
 function beacon_billing_entity_type_build(array &$entity_types) {

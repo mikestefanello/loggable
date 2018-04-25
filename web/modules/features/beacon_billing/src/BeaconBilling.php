@@ -2,6 +2,7 @@
 
 namespace Drupal\beacon_billing;
 
+use Drupal\beacon_billing\Plugin\SubscriptionPlanManager;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Session\AccountProxy;
 use Drupal\user\Entity\User;
@@ -82,6 +83,13 @@ class BeaconBilling {
   protected $mailManager;
 
   /**
+   * The subscription plan plugin manager.
+   *
+   * @var \Drupal\beacon_billing\Plugin\SubscriptionPlanManager
+   */
+  protected $subscriptionPlanManager;
+
+  /**
    * Constructs the BeaconBilling object.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
@@ -96,14 +104,17 @@ class BeaconBilling {
    *    A Stripe cache.
    * @param \Drupal\Core\Mail\MailManagerInterface $mail_manager
    *   The mail sender service.
+   * @param \Drupal\beacon_billing\Plugin\SubscriptionPlanManager $subscription_plan_manager
+   *   The subscription plan plugin manager.
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager, AccountProxy $current_user, ConfigFactoryInterface $config_factory, LoggerInterface $logger, CacheBackendInterface $cache, MailManagerInterface $mail_manager) {
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, AccountProxy $current_user, ConfigFactoryInterface $config_factory, LoggerInterface $logger, CacheBackendInterface $cache, MailManagerInterface $mail_manager, SubscriptionPlanManager $subscription_plan_manager) {
     $this->entityTypeManager = $entity_type_manager;
     $this->currentUser = $current_user;
     $this->configFactory = $config_factory;
     $this->logger = $logger;
     $this->cache = $cache;
     $this->mailManager = $mail_manager;
+    $this->subscriptionPlanManager = $subscription_plan_manager;
   }
 
   /**
@@ -207,6 +218,51 @@ class BeaconBilling {
    */
   public function getSettings() {
     return $this->configFactory->get('beacon_billing.settings');
+  }
+
+  /**
+   * Get all subscription plan plugin definitions.
+   *
+   * @return array
+   *   An array of subscription plan plugin definitions.
+   */
+  public function getSubscriptionPlanDefinitions() {
+    return $this->subscriptionPlanManager->getDefinitions();
+  }
+
+  /**
+   * Create an instance of a given subscription plan plugin.
+   *
+   * @param $id
+   *   The plugin ID.
+   * @return \Drupal\beacon_billing\Plugin\SubscriptionPlanInterface
+   *   A subscription plugin.
+   */
+  public function createSubscriptionPlanInstance($id) {
+    return $this->subscriptionPlanManager->createInstance($id);
+  }
+
+  /**
+   * Get the subscription plan plugin definition for the subscription belonging
+   * to a given user.
+   *
+   * @param  \Drupal\user\UserInterface $user
+   *   The user to fetch the subscription from, or NULL to use the current user.
+   * @return array|NULL
+   *   The subscription plan plugin definition, or NULL if no subscription exists.
+   */
+  public function getUserSubscriptionPlanDefinition(UserInterface $user = NULL) {
+    // Load the subscription.
+    if ($subscription = $this->getUserSubscription($user)) {
+      // Load the plan ID.
+      if ($plan_id = $subscription->plan->value) {
+        // Load the plan plugin definition.
+        return $this->subscriptionPlanManager
+          ->getDefinition($plan_id);
+      }
+    }
+
+    return NULL;
   }
 
   /**

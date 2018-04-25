@@ -1,7 +1,7 @@
 services:
   beacon_billing:
     class: Drupal\beacon_billing\BeaconBilling
-    arguments: ['@entity_type.manager', '@current_user', '@config.factory', '@logger.channel.beacon_billing', '@cache.stripe', '@plugin.manager.mail']
+    arguments: ['@entity_type.manager', '@current_user', '@config.factory', '@logger.channel.beacon_billing', '@cache.stripe', '@plugin.manager.mail', '@plugin.manager.subscription_plan']
   beacon_billing.suspended_event_subscriber:
     class: Drupal\beacon_billing\EventSubscriber\SuspendedEventSubscriber
     arguments: ['@beacon_billing', '@request_stack']
