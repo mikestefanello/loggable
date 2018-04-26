@@ -11,3 +11,4 @@ dependencies:
   - system
   - user
   - views
+  - views_custom_cache_tag

@@ -6,6 +6,7 @@ dependencies:
   module:
     - beacon
     - user
+    - views_custom_cache_tag
 id: beacon_channel_alerts
 label: 'Channel alerts'
 module: views
@@ -27,8 +28,9 @@ display:
           role:
             authenticated: authenticated
       cache:
-        type: tag
-        options: {  }
+        type: custom_tag
+        options:
+          custom_tag: 'channel.alerts:{{ arguments.channel }}'
       query:
         type: views_query
         options:

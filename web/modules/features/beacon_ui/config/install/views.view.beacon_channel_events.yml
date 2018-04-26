@@ -7,6 +7,7 @@ dependencies:
     - beacon
     - options
     - user
+    - views_custom_cache_tag
 id: beacon_channel_events
 label: 'Channel events'
 module: views
@@ -28,8 +29,9 @@ display:
           role:
             authenticated: authenticated
       cache:
-        type: tag
-        options: {  }
+        type: custom_tag
+        options:
+          custom_tag: 'channel.events:{{ arguments.channel }}'
       query:
         type: views_query
         options:

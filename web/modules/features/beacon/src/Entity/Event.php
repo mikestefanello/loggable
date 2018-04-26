@@ -264,7 +264,6 @@ class Event extends BeaconContentEntityBase implements EventInterface {
    *   An array of default values.
    */
   public static function getDefaultExpireTimestamp() {
-    // TODO: Hook?
     return [strtotime('+2 weeks')];
   }
 

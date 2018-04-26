@@ -243,14 +243,19 @@ function _beacon_entity_post_save_cache_invalidate(EntityInterface $entity) {
       Cache::invalidateTags(['user.channels:' . $entity->getOwnerId()]);
       break;
 
+    case 'alert':
+      Cache::invalidateTags([
+        'channel.alerts:' . $entity->channel->entity->id(),
+        'user.alerts:' . $entity->getOwnerId(),
+      ]);
+      break;
+
     case 'event':
       // For some reason, the entity's tags are required here too.
-      // TODO: Why is this ^ ?
-      // TODO: New events do NOT CLEAR the channel events view.
-      Cache::invalidateTags([
+      Cache::invalidateTags(array_merge([
         'channel.events:' . $entity->channel->entity->id(),
         'user.events:' . $entity->getOwnerId(),
-      ]);
+      ], $entity->getCacheTags()));
       break;
   }
 }

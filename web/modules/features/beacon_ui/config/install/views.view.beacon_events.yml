@@ -7,6 +7,7 @@ dependencies:
     - beacon
     - options
     - user
+    - views_custom_cache_tag
 id: beacon_events
 label: Events
 module: views
@@ -28,8 +29,9 @@ display:
           role:
             authenticated: authenticated
       cache:
-        type: tag
-        options: {  }
+        type: custom_tag
+        options:
+          custom_tag: 'user.events:{{ arguments.user_id }}'
       query:
         type: views_query
         options:
