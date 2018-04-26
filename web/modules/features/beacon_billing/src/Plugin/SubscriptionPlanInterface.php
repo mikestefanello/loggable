@@ -21,4 +21,16 @@ interface SubscriptionPlanInterface extends PluginInspectionInterface {
    */
   public function planInfoIncludes();
 
+  /**
+   * Validate the current user switching to this plan.
+   *
+   * This is especially useful to prevent a user from downgrading if their account
+   * currently has exceeded the chosen plan's limits.
+   *
+   * @return array
+   *   An array of error messages to present to the user, if the validation has
+   *   failed.
+   */
+  public function validate();
+
 }

@@ -11,6 +11,8 @@ use Drupal\Core\Database\Driver\mysql\Connection;
  * Class BeaconStats.
  *
  * Contains helper functions to generate stat-driven pages.
+ *
+ * TODO: Switch to all Entity queries rather than directly using the DB.
  */
 class BeaconStats {
 

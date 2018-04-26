@@ -18,6 +18,11 @@ class AlertQuotaConstraintValidator extends QuotaConstraintValidatorBase {
       return;
     }
 
+    // Stop if a channel has not yet been added.
+    if (!$value->channel->entity) {
+      return;
+    }
+
     // Load the subscription plan for the entity owner.
     if ($plan = $this->beaconBilling->getUserSubscriptionPlanDefinition($value->getOwner())) {
       // Extract the quota for alerts.

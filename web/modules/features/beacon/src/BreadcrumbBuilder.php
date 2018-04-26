@@ -72,19 +72,6 @@ class BreadcrumbBuilder implements BreadcrumbBuilderInterface {
       }
     }
 
-    // Iterate the types again.
-    foreach (beacon_entity_types() as $type) {
-      // Check if this is an add form.
-      if ($route_match->getRouteName() == "entity.{$type}.add_form") {
-        // Check if there is a contextual entity to use.
-        // TODO:
-        return NULL;
-        if ($entity = $this->rex->getContextualEntity($type)) {
-          return $entity;
-        }
-      }
-    }
-
     return NULL;
   }
 

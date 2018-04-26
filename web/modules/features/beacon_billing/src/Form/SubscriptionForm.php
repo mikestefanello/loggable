@@ -229,6 +229,23 @@ class SubscriptionForm extends ContentEntityForm {
         $form_state->setErrorByName('address_zip', $this->t('The ZIP code must be 5 digits.'));
       }
     }
+
+    // Create an instance of the selected plan.
+    $plan = $this
+      ->beaconBilling
+      ->createSubscriptionPlanInstance($form_state->getValue('plan')[0]['value']);
+
+    // Validate the plan.
+    $errors = $plan->validate();
+
+    // Check for errors.
+    if ($errors) {
+      $form_state->setErrorByName('plan', $this->t('The %plan subscription plan cannot be selected as this time.', ['%plan' => $plan->getPluginDefinition()['label']]));
+
+      foreach ($errors as $index => $error) {
+        $form_state->setErrorByName("plan_error:{$index}", $error);
+      }
+    }
   }
 
   /**

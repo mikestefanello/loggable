@@ -29,6 +29,15 @@ class Basic extends SubscriptionPlanBase {
     ];
   }
 
-  // TODO: Restrict text message alerts
+  /**
+   * {@inheritdoc}
+   */
+  public function validate() {
+    $errors = parent::validate();
+
+    // TODO: Check if text message alerts exist.
+
+    return $errors;
+  }
 
 }
