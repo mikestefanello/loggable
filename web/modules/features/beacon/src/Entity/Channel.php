@@ -8,6 +8,7 @@ use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\EntityChangedTrait;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\user\UserInterface;
+use Drupal\Core\Cache\Cache;
 
 /**
  * Defines the Channel entity.
@@ -61,6 +62,15 @@ use Drupal\user\UserInterface;
 class Channel extends BeaconContentEntityBase implements ChannelInterface {
 
   use EntityChangedTrait;
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getCacheTagsToInvalidate() {
+    return Cache::mergeTags(parent::getCacheTagsToInvalidate(), [
+      'user.channels:' . $this->getOwnerId()
+    ]);
+  }
 
   /**
    * {@inheritdoc}

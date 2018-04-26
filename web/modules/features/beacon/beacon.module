@@ -73,27 +73,6 @@ function beacon_user_predelete($account) {
 }
 
 /**
- * Implements hook_entity_insert().
- */
-function beacon_entity_insert(EntityInterface $entity) {
-  _beacon_entity_post_save_cache_invalidate($entity);
-}
-
-/**
- * Implements hook_entity_update().
- */
-function beacon_entity_update(EntityInterface $entity) {
-  _beacon_entity_post_save_cache_invalidate($entity);
-}
-
-/**
- * Implements hook_entity_delete().
- */
-function beacon_entity_delete(EntityInterface $entity) {
-  _beacon_entity_post_save_cache_invalidate($entity);
-}
-
-/**
  * Implements hook_query_TAG_alter().
  */
 function beacon_query_channel_access_alter(AlterableInterface $query) {
@@ -227,36 +206,6 @@ function _beacon_entity_query_access_alert(AlterableInterface $query, $entity_ty
 
     // Filter for entities that this user owns.
     $query->condition($alias . '.user_id', $user->id());
-  }
-}
-
-/**
- * Helper function to clear custom cache tags whenever certain entities are
- * saved or deleted.
- *
- * @param \Drupal\Core\Entity\EntityInterface $entity
- *   The entity being acted on.
- */
-function _beacon_entity_post_save_cache_invalidate(EntityInterface $entity) {
-  switch ($entity->getEntityTypeId()) {
-    case 'channel':
-      Cache::invalidateTags(['user.channels:' . $entity->getOwnerId()]);
-      break;
-
-    case 'alert':
-      Cache::invalidateTags([
-        'channel.alerts:' . $entity->channel->entity->id(),
-        'user.alerts:' . $entity->getOwnerId(),
-      ]);
-      break;
-
-    case 'event':
-      // For some reason, the entity's tags are required here too.
-      Cache::invalidateTags(array_merge([
-        'channel.events:' . $entity->channel->entity->id(),
-        'user.events:' . $entity->getOwnerId(),
-      ], $entity->getCacheTags()));
-      break;
   }
 }
 

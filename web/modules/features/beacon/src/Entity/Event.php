@@ -7,6 +7,7 @@ use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Entity\EntityChangedTrait;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Psr\Log\LogLevel;
+use Drupal\Core\Cache\Cache;
 
 /**
  * Defines the Event entity.
@@ -71,10 +72,22 @@ class Event extends BeaconContentEntityBase implements EventInterface {
    * {@inheritdoc}
    */
   public function postSave(EntityStorageInterface $storage, $update = TRUE) {
+    parent::postSave($storage, $update);
+
     // Dispatch alerts for new events.
     if (!$update) {
       \Drupal::service('beacon.alert_dispatcher')->dispatch($this);
     }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getCacheTagsToInvalidate() {
+    return Cache::mergeTags(parent::getCacheTagsToInvalidate(), [
+      'channel.events:' . $this->channel->entity->id(),
+      'user.events:' . $this->getOwnerId(),
+    ]);
   }
 
   /**

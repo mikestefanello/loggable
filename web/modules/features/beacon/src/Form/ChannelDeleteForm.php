@@ -17,8 +17,6 @@ class ChannelDeleteForm extends BeaconContentEntityDeleteForm {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $entity = $this->getEntity();
 
-    $form = parent::submitForm($form, $form_state);
-
     // Get the children of this entity.
     $children = [];
 
@@ -36,18 +34,25 @@ class ChannelDeleteForm extends BeaconContentEntityDeleteForm {
       $batch = [
         'title' => t('Processing delete request'),
         'operations' => [],
+        'finished' => ['Drupal\beacon\Form\ChannelDeleteForm', 'entityDeleteBatchFinished'],
       ];
 
       // Add the children.
       foreach ($children as $type => $ids) {
         foreach ($ids as $id) {
-          $batch['operations'][] = [['Drupal\beacon\Form\ChannelDeleteForm', 'childrenDeleteBatchOp'], [$type, $id]];
+          $batch['operations'][] = [['Drupal\beacon\Form\ChannelDeleteForm', 'entityDeleteBatchOp'], [$type, $id]];
         }
       }
+
+      // Add this channel to be deleted.
+      $batch['operations'][] = [['Drupal\beacon\Form\ChannelDeleteForm', 'entityDeleteBatchOp'], ['channel', $entity->id()]];
 
       // Start the batch.
       batch_set($batch);
     }
+
+    // Redirect home.
+    $form_state->setRedirect('<front>');
   }
 
   /**
@@ -59,11 +64,20 @@ class ChannelDeleteForm extends BeaconContentEntityDeleteForm {
    * @param int $entity_id
    *   The entity ID.
    */
-  public static function childrenDeleteBatchOp($entity_type_id, $entity_id) {
+  public static function entityDeleteBatchOp($entity_type_id, $entity_id) {
     \Drupal::entityTypeManager()
       ->getStorage($entity_type_id)
       ->load($entity_id)
       ->delete();
+  }
+
+  /**
+   * Batch finished callback to delete channel children entities.
+   *
+   * @see submitForm()
+   */
+  public static function entityDeleteBatchFinished() {
+    drupal_set_message(t('The channel has been deleted.'));
   }
 
 }

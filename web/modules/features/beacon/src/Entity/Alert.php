@@ -8,6 +8,7 @@ use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Entity\EntityChangedTrait;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Psr\Log\LogLevel;
+use Drupal\Core\Cache\Cache;
 
 /**
  * Defines the Alert entity.
@@ -83,6 +84,16 @@ class Alert extends BeaconContentEntityBase implements AlertInterface {
    */
   public function isEnabled() {
     return $this->enabled->value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getCacheTagsToInvalidate() {
+    return Cache::mergeTags(parent::getCacheTagsToInvalidate(), [
+      'channel.alerts:' . $this->channel->entity->id(),
+      'user.alerts:' . $this->getOwnerId(),
+    ]);
   }
 
   /**
