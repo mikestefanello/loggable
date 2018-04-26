@@ -7,6 +7,7 @@ use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\user\UserInterface;
+use Drupal\Core\Cache\Cache;
 
 /**
  * Content entity base class for Beacon entities.
@@ -23,6 +24,19 @@ abstract class BeaconContentEntityBase extends ContentEntityBase implements Beac
     $values += [
       'user_id' => \Drupal::currentUser()->id(),
     ];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function postSave(EntityStorageInterface $storage, $update = TRUE) {
+    parent::postSave($storage, $update);
+
+    // Check if the entity is new.
+    if (!$update) {
+      // For some reason, tags are only invalidated on updates and deletes.
+      Cache::invalidateTags($this->getCacheTagsToInvalidate());
+    }
   }
 
   /**

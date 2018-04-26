@@ -65,6 +65,9 @@ function beacon_billing_entity_presave(EntityInterface $entity) {
           // Set the expiration field.
           $entity->set('expire', strtotime('+' . $plan['eventHistory'] . ' days'));
         }
+        else {
+          // TODO: Remove the expiration?
+        }
       }
     }
   }
