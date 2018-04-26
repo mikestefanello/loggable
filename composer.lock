@@ -2515,20 +2515,20 @@
         },
         {
             "name": "drupal/jsonapi",
-            "version": "1.15.0",
+            "version": "1.16.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupal.org/project/jsonapi",
-                "reference": "8.x-1.15"
+                "reference": "8.x-1.16"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/jsonapi-8.x-1.15.zip",
-                "reference": "8.x-1.15",
-                "shasum": "6fd6f2efd1b117e21f44a8857cfca42ff460d455"
+                "url": "https://ftp.drupal.org/files/projects/jsonapi-8.x-1.16.zip",
+                "reference": "8.x-1.16",
+                "shasum": "2750ba9c137ef87da10089bc100d6f88d8ac4342"
             },
             "require": {
-                "drupal/core": "^8.3"
+                "drupal/core": "^8.4.3"
             },
             "require-dev": {
                 "drupal/schemata": "1.x-dev#8325d172e1d6880aa24073f8f751ef089282cf9a",
@@ -2541,8 +2541,8 @@
                     "dev-1.x": "1.x-dev"
                 },
                 "drupal": {
-                    "version": "8.x-1.15",
-                    "datestamp": "1522558384",
+                    "version": "8.x-1.16",
+                    "datestamp": "1524679677",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -2579,17 +2579,17 @@
         },
         {
             "name": "drupal/jsonapi_extras",
-            "version": "2.0.0-rc1",
+            "version": "2.0.0-rc2",
             "source": {
                 "type": "git",
                 "url": "https://git.drupal.org/project/jsonapi_extras",
-                "reference": "8.x-2.0-rc1"
+                "reference": "8.x-2.0-rc2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/jsonapi_extras-8.x-2.0-rc1.zip",
-                "reference": "8.x-2.0-rc1",
-                "shasum": "a876638e2d1810139946f33a5a65944472bdfaf1"
+                "url": "https://ftp.drupal.org/files/projects/jsonapi_extras-8.x-2.0-rc2.zip",
+                "reference": "8.x-2.0-rc2",
+                "shasum": "1548c50313e91e4b02e4503fa27b8ece039e37e6"
             },
             "require": {
                 "drupal/core": "^8.5",
@@ -2602,8 +2602,8 @@
                     "dev-2.x": "2.x-dev"
                 },
                 "drupal": {
-                    "version": "8.x-2.0-rc1",
-                    "datestamp": "1522473689",
+                    "version": "8.x-2.0-rc2",
+                    "datestamp": "1524209880",
                     "security-coverage": {
                         "status": "not-covered",
                         "message": "RC releases are not covered by Drupal security advisories."
