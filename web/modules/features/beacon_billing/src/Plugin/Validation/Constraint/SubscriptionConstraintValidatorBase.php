@@ -11,9 +11,9 @@ use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
 /**
- * Base constraint validator for enforcing an entity quota.
+ * Base constraint validator for enforcing subscription restrictions.
  */
-abstract class QuotaConstraintValidatorBase extends ConstraintValidator implements ContainerInjectionInterface {
+abstract class SubscriptionConstraintValidatorBase extends ConstraintValidator implements ContainerInjectionInterface {
 
   /**
    * The entity type manager.

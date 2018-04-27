@@ -7,7 +7,7 @@ use Symfony\Component\Validator\Constraint;
 /**
  * Constraint validator for event quotas.
  */
-class EventQuotaConstraintValidator extends QuotaConstraintValidatorBase {
+class EventQuotaConstraintValidator extends SubscriptionConstraintValidatorBase {
 
   /**
    * {@inheritdoc}

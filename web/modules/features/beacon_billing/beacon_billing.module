@@ -5,7 +5,7 @@ use Drupal\Core\Block\BlockPluginInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\Core\Utility\Error;
-use Stripe\Subscription as StripeSubscription;
+use Drupal\Core\Entity\EntityTypeInterface;
 
 /**
  * Implements hook_entity_inser().
@@ -70,6 +70,16 @@ function beacon_billing_entity_presave(EntityInterface $entity) {
         }
       }
     }
+  }
+}
+
+/**
+ * Implements hook_entity_base_field_info_alter().
+ */
+function beacon_billing_entity_base_field_info_alter(&$fields, EntityTypeInterface $entity_type) {
+  // Check for the alert entity type.
+  if ($entity_type->id() == 'alert') {
+    $fields['type']->addConstraint('SubscriptionPlanAlertType');
   }
 }
 

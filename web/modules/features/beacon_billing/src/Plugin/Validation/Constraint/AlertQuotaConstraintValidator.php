@@ -7,7 +7,7 @@ use Symfony\Component\Validator\Constraint;
 /**
  * Constraint validator for alert quotas.
  */
-class AlertQuotaConstraintValidator extends QuotaConstraintValidatorBase {
+class AlertQuotaConstraintValidator extends SubscriptionConstraintValidatorBase {
 
   /**
    * {@inheritdoc}
