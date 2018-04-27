@@ -240,7 +240,7 @@ class SubscriptionForm extends ContentEntityForm {
 
     // Check for errors.
     if ($errors) {
-      $form_state->setErrorByName('plan', $this->t('The %plan subscription plan cannot be selected as this time.', ['%plan' => $plan->getPluginDefinition()['label']]));
+      $form_state->setErrorByName('plan', $this->t('The %plan subscription plan cannot be selected at this time.', ['%plan' => $plan->getPluginDefinition()['label']]));
 
       foreach ($errors as $index => $error) {
         $form_state->setErrorByName("plan_error:{$index}", $error);
