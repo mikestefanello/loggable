@@ -72,4 +72,11 @@ class SubscriptionPlan extends Plugin {
    */
   public $eventHistory;
 
+  /**
+   * The restricted alert types.
+   *
+   * @var array
+   */
+  public $restrictedAlertTypes = [];
+
 }

@@ -90,6 +90,7 @@ abstract class SubscriptionPlanBase extends PluginBase implements SubscriptionPl
         ->getAggregateQuery('AND')
         ->conditionAggregate('channel', 'COUNT', $definition['quotaAlerts'], '>')
         ->groupBy('channel')
+        ->condition('user_id', $this->currentUser->id())
         ->execute();
 
       // Extract the channel IDs.
