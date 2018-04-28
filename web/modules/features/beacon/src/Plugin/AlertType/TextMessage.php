@@ -21,7 +21,7 @@ class TextMessage extends Webhook {
   public function send(EventInterface $event) {
     $settings = $this->getSettings();
 
-    // TODO
+    // TODO.
   }
 
   /**
@@ -46,7 +46,7 @@ class TextMessage extends Webhook {
       '#default_value' => $settings['number'],
       '#description' => t('The phone number to send a text message to.'),
     ];
-    // TODO
+    // TODO.
     return $form;
   }
 

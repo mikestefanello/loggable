@@ -1,15 +1,13 @@
 <?php
 
+/**
+ * @file
+ * Core module for the Beacon platform.
+ */
+
 use Drupal\beacon\Entity\ChannelInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\Core\Entity\EntityInterface;
-use Drupal\Core\Field\FieldStorageDefinitionInterface;
-use Drupal\Core\Field\FieldDefinitionInterface;
-use Drupal\Core\Session\AccountInterface;
-use Drupal\Core\Field\FieldItemListInterface;
-use Drupal\Core\Access\AccessResult;
-use Drupal\user\Entity\User;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Database\Query\AlterableInterface;
@@ -167,14 +165,15 @@ function beacon_entity_types() {
  * will be returned, unless it's an entity reference query, in which case
  * admin permissions are ignored.
  *
- * @see hook_query_TAG_alter()
  * @param \Drupal\Core\Database\Query\AlterableInterface $query
  *   The query to alter for access control.
- * @param $entity_type_id
- *   The entity type to add access for. This can usually be extract from the query
- *   metadata but there is no guarantee.
+ * @param string $entity_type_id
+ *   The entity type to add access for. This can usually be extract from the
+ *   query metadata but there is no guarantee.
+ *
+ * @see hook_query_TAG_alter()
  */
-function _beacon_entity_query_access_alert(AlterableInterface $query, $entity_type_id) {
+function _beacon_entity_query_access_alert(AlterableInterface $query, string $entity_type_id) {
   $filter = FALSE;
 
   // Get the current user.
@@ -214,6 +213,7 @@ function _beacon_entity_query_access_alert(AlterableInterface $query, $entity_ty
  *
  * @param int $user_id
  *   The user entity ID, or NULL to use the current user.
+ *
  * @return array
  *   An array of channel labels keyed by entity ID.
  */
@@ -256,6 +256,7 @@ function beacon_get_user_channels(int $user_id = NULL) {
  * @param bool $merge
  *   TRUE if the types should be merged across all channels, otherwise FALSE.
  *   Defaults to FALSE.
+ *
  * @return array
  *   An array of event type strings.
  */
@@ -320,6 +321,7 @@ function beacon_get_user_event_types(int $user_id = NULL, $merge = FALSE) {
  *
  * @param \Drupal\beacon\Entity\ChannelInterface $channel
  *   The channel entity.
+ *
  * @return array
  *   An array of event type strings.
  */

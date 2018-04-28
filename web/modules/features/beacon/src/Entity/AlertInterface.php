@@ -31,7 +31,7 @@ interface AlertInterface extends ContentEntityInterface, EntityChangedInterface,
    * Returns whether or not the alert is enabled.
    *
    * @return bool
-   *  TRUE if the alert is enabled, otherwise FALSE.
+   *   TRUE if the alert is enabled, otherwise FALSE.
    */
   public function isEnabled();
 

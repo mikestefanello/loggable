@@ -16,7 +16,7 @@ class EntityUuidConverter implements ParamConverterInterface {
   /**
    * The entity repository.
    *
-   * @var \Drupal\Core\Entity\EntityRepositoryInterface;
+   * @var \Drupal\Core\Entity\EntityRepositoryInterface
    */
   protected $entityRepository;
 

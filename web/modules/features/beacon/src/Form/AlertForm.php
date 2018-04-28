@@ -28,7 +28,7 @@ class AlertForm extends BeaconContentEntityForm {
   /**
    * The entity repository.
    *
-   * @var \Drupal\Core\Entity\EntityRepositoryInterface;
+   * @var \Drupal\Core\Entity\EntityRepositoryInterface
    */
   protected $entityRepository;
 
@@ -158,9 +158,19 @@ class AlertForm extends BeaconContentEntityForm {
     }
 
     // Add details wrappers.
-    $this->addDetails($form, 'info', $this->t('Alert info'), ['name', 'channel', 'enabled']);
-    $this->addDetails($form, 'type', $this->t('Alert type'), ['type', 'alert_type_settings']);
-    $this->addDetails($form, 'filters', $this->t('Event filters'), ['event_types', 'event_severity']);
+    $this->addDetails($form, 'info', $this->t('Alert info'), [
+      'name',
+      'channel',
+      'enabled',
+    ]);
+    $this->addDetails($form, 'type', $this->t('Alert type'), [
+      'type',
+      'alert_type_settings',
+    ]);
+    $this->addDetails($form, 'filters', $this->t('Event filters'), [
+      'event_types',
+      'event_severity',
+    ]);
 
     return $form;
   }
@@ -224,6 +234,7 @@ class AlertForm extends BeaconContentEntityForm {
    *   The form array.
    * @param \Drupal\Core\Form\FormStateInterface $form_state
    *   The form state.
+   *
    * @return array
    *   The form component to render.
    */

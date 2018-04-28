@@ -76,6 +76,7 @@ class AlertDispatcher implements AlertDispatcherInterface {
    *
    * @param \Drupal\beacon\Entity\EventInterface $event
    *   An event entity.
+   *
    * @return array
    *   An array of Alert entities.
    */

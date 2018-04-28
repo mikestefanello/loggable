@@ -56,9 +56,10 @@ class BreadcrumbBuilder implements BreadcrumbBuilderInterface {
   /**
    * Get a beacon entity from the route, if available.
    *
-   * @param RouteMatchInterface $route_match
+   * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
    *   The route match.
-   * @return mixed|NULL
+   *
+   * @return mixed|null
    *   The entity, if found, otherwise NULL.
    */
   public function getRouteParameterEntity(RouteMatchInterface $route_match) {

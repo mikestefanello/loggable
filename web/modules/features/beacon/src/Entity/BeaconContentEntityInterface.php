@@ -48,32 +48,35 @@ interface BeaconContentEntityInterface extends ContentEntityInterface, EntityCha
   /**
    * Get the parent entity reference field name.
    *
-   * @return string|NULL
+   * @return string|null
    *   The entity reference field name or NULL if this entity does not have one.
    */
   public static function getParentReferenceFieldName();
 
   /**
-   * Get hte parent entity reference entity type ID.
+   * Get the parent entity reference entity type ID.
    *
-   * This should automatically derive a value using getParentReferenceFieldName().
+   * This should automatically derive a value using
+   * getParentReferenceFieldName().
    *
-   * @return string|NULL
-   *   The parent entity reference target entity type ID, or NULL if there is not
-   *   one defined.
+   * @return string|null
+   *   The parent entity reference target entity type ID, or NULL if there is
+   *   not one defined.
    */
-   public function getParentReferenceEntityTypeId();
+  public function getParentReferenceEntityTypeId();
 
   /**
-   * Get the parent entity, if one is defined and present, either one or infinite
-   * levels up the relationship tree.
+   * Get the parent entity, if one is defined and present.
    *
-   * @param string|NULL $parent_entity_type
+   * This searches either one or infinite levels up the relationship tree.
+   *
+   * @param string|null $parent_entity_type
    *   The parent entity type to search for. If omitted, the type used in
    *   getParentReferenceFieldName() will be used which is the immediate parent
    *   of this entity. If you specific a different type, this function will look
    *   at parent's parent until the target entity type is found.
-   * @return mixed|NULL
+   *
+   * @return mixed|null
    *   The parent entity, if found, or NULL.
    */
   public function getParent($parent_entity_type = NULL);

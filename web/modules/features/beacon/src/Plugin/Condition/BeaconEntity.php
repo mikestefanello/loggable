@@ -30,6 +30,12 @@ class BeaconEntity extends ConditionPluginBase implements ContainerFactoryPlugin
    *
    * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
    *   The route match.
+   * @param array $configuration
+   *   The plugin configuration.
+   * @param mixed $plugin_id
+   *   The plugin ID.
+   * @param array $plugin_definition
+   *   The plugin definition.
    */
   public function __construct(RouteMatchInterface $route_match, array $configuration, $plugin_id, array $plugin_definition) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);

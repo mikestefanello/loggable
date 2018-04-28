@@ -3,7 +3,6 @@
 namespace Drupal\beacon;
 
 use Drupal\Core\Entity\EntityTypeInterface;
-use Symfony\Component\Routing\Route;
 
 /**
  * Provides routes for Event entities.

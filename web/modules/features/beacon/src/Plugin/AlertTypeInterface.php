@@ -35,6 +35,7 @@ interface AlertTypeInterface extends PluginInspectionInterface {
    *
    * @param \Drupal\Core\Form\FormStateInterface $form_state
    *   The form state.
+   *
    * @return array
    *   A form array.
    */

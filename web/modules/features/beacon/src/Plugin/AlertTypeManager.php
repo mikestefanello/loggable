@@ -38,8 +38,9 @@ class AlertTypeManager extends DefaultPluginManager {
    *
    * @param \Drupa\beacon\Entity\AlertInterface $alert
    *   An alert entity.
-   * @param $plugin_id
+   * @param mixed $plugin_id
    *   The plugin ID, or NULL to load the type from the Alert.
+   *
    * @return \Drupal\beacon\Plugin\AlertTypeInterface
    *   An alert type plugin instance.
    */

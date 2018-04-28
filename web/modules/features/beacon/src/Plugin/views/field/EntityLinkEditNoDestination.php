@@ -9,6 +9,7 @@ use Drupal\views\Plugin\views\field\EntityLink;
  *
  * This is a duplicate of the plugin in Views but it does not include the
  * destination link because it breaks with AJAX.
+ *
  * @see https://www.drupal.org/project/drupal/issues/2828733
  *
  * @ingroup views_field_handlers

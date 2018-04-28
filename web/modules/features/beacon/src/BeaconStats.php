@@ -62,11 +62,12 @@ class BeaconStats {
   /**
    * Get the counts of events per-channel, per-day, for the last week.
    *
-   * @param $days
+   * @param int $days
    *   The amount of days to look back. Defaults to 7.
+   *
    * @return array
-   *   An associative array of count data, keyed by the channel ID. The nested array
-   *   is keyed by the day in the format Y-m-d.
+   *   An associative array of count data, keyed by the channel ID. The nested
+   *   array is keyed by the day in the format Y-m-d.
    */
   public function getChannelEventCountPerDay($days = 7) {
     $counts = [];
@@ -190,6 +191,7 @@ class BeaconStats {
    *
    * @param string $entity_type_id
    *   The entity type ID to count within each of the current user's channels.
+   *
    * @return array
    *   An array of entity counts, keyed by channel ID.
    */

@@ -14,6 +14,7 @@ interface AlertDispatcherInterface {
    *
    * @param \Drupal\beacon\Entity\EventInterface $event
    *   An event entity.
+   *
    * @return bool|int
    *   The amount of alerts dispatched, otherwise FALSE if there were none.
    */

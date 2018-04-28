@@ -4,16 +4,15 @@ namespace Drupal\beacon\Plugin\views\argument_default;
 
 use Drupal\views\Plugin\views\argument_default\Raw;
 use Drupal\Core\Entity\EntityRepositoryInterface;
-use Drupal\Core\Cache\Cache;
-use Drupal\Core\Cache\CacheableDependencyInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Path\AliasManagerInterface;
 use Drupal\Core\Path\CurrentPathStack;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Default argument plugin to use the raw UUID value from the URL and convert
- * it to an entity ID.
+ * Default argument plugin to convert a raw UUID value from the URL.
+ *
+ * The value is converted to an entity ID.
  *
  * @ingroup views_argument_default_plugins
  *
@@ -27,7 +26,7 @@ class ConvertUuidToIdRaw extends Raw {
   /**
    * The entity repository.
    *
-   * @var \Drupal\Core\Entity\EntityRepositoryInterface;
+   * @var \Drupal\Core\Entity\EntityRepositoryInterface
    */
   protected $entityRepository;
 

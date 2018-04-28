@@ -194,7 +194,7 @@ class Event extends BeaconContentEntityBase implements EventInterface {
           'target' => '_blank',
           'url_only' => FALSE,
           'url_plain' => FALSE,
-          'rel' => '0'
+          'rel' => '0',
         ],
       ])
       ->setDisplayOptions('form', [
@@ -213,7 +213,7 @@ class Event extends BeaconContentEntityBase implements EventInterface {
         'Length' => [
           'max' => self::MESSAGE_MAX_LENGTH,
           'maxMessage' => 'This message is too long. It should have ' . self::MESSAGE_MAX_LENGTH . ' characters or less.',
-        ]
+        ],
       ])
       ->setDisplayOptions('view', [
         'label' => 'above',

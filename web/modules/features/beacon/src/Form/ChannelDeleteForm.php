@@ -40,12 +40,18 @@ class ChannelDeleteForm extends BeaconContentEntityDeleteForm {
       // Add the children.
       foreach ($children as $type => $ids) {
         foreach ($ids as $id) {
-          $batch['operations'][] = [['Drupal\beacon\Form\ChannelDeleteForm', 'entityDeleteBatchOp'], [$type, $id]];
+          $batch['operations'][] = [
+            ['Drupal\beacon\Form\ChannelDeleteForm', 'entityDeleteBatchOp'],
+            [$type, $id],
+          ];
         }
       }
 
       // Add this channel to be deleted.
-      $batch['operations'][] = [['Drupal\beacon\Form\ChannelDeleteForm', 'entityDeleteBatchOp'], ['channel', $entity->id()]];
+      $batch['operations'][] = [
+        ['Drupal\beacon\Form\ChannelDeleteForm', 'entityDeleteBatchOp'],
+        ['channel', $entity->id()],
+      ];
 
       // Start the batch.
       batch_set($batch);
@@ -58,11 +64,12 @@ class ChannelDeleteForm extends BeaconContentEntityDeleteForm {
   /**
    * Batch operation callback to delete an entity.
    *
-   * @see submitForm()
    * @param string $entity_type_id
    *   The entity type ID.
    * @param int $entity_id
    *   The entity ID.
+   *
+   * @see submitForm()
    */
   public static function entityDeleteBatchOp($entity_type_id, $entity_id) {
     \Drupal::entityTypeManager()

@@ -2,10 +2,8 @@
 
 namespace Drupal\beacon\Routing;
 
-use Drupal\user\Entity\User;
 use Drupal\Core\Routing\RouteSubscriberBase;
 use Symfony\Component\Routing\RouteCollection;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * Modify routes.
