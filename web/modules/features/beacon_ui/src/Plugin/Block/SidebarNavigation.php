@@ -8,7 +8,6 @@ use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\user\Entity\User;
 use Drupal\Core\Url;
 
 /**
@@ -219,7 +218,7 @@ class SidebarNavigation extends BlockBase implements ContainerFactoryPluginInter
    */
   public function getCacheContexts() {
     return Cache::mergeContexts(parent::getCacheContexts(), [
-      'user'
+      'user',
     ]);
   }
 

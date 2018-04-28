@@ -2,12 +2,10 @@
 
 namespace Drupal\beacon_billing\Plugin\Validation\Constraint;
 
-use Drupal\user\UserInterface;
 use Drupal\beacon_billing\BeaconBilling;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
 /**

@@ -10,8 +10,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
- * Base class to add a local action link which appends an entity being viewed
- * of a given type as a query parameter.
+ * Base class to add a local action entity contextual link.
+ *
+ * This appends an entity being viewed of a given type as a query parameter.
  *
  * For example, if you're viewing a channel, you can append ?channel={uuid}
  * to the link URL.

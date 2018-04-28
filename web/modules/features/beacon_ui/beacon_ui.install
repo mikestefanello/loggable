@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Install/uninstall/update hooks and functions.
+ */
+
+/**
  * Implements hook_install().
  */
 function beacon_ui_install() {

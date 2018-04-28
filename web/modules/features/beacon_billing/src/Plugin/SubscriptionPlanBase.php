@@ -36,9 +36,9 @@ abstract class SubscriptionPlanBase extends PluginBase implements SubscriptionPl
    *
    * @param array $configuration
    *   The plugin configuration.
-   * @param $plugin_id
+   * @param mixed $plugin_id
    *   The plugin ID.
-   * @param $plugin_definition
+   * @param mixed $plugin_definition
    *   The plugin definition.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager service.

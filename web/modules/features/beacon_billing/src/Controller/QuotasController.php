@@ -136,21 +136,25 @@ class QuotasController extends ControllerBase {
             'display' => FALSE,
           ],
           'scales' => [
-            'xAxes' => [[
-              'display' => TRUE,
-              'scaleLabel' => [
-                'display' => FALSE,
-                'labelString' => t('Channel'),
+            'xAxes' => [
+              [
+                'display' => TRUE,
+                'scaleLabel' => [
+                  'display' => FALSE,
+                  'labelString' => t('Channel'),
+                ],
               ],
-            ]],
-            'yAxes' => [[
-              'display' => TRUE,
-              'ticks' => [
-                'beginAtZero' => TRUE,
-                'max' => $plan['quotaEvents'],
-                'min' => 0,
+            ],
+            'yAxes' => [
+              [
+                'display' => TRUE,
+                'ticks' => [
+                  'beginAtZero' => TRUE,
+                  'max' => $plan['quotaEvents'],
+                  'min' => 0,
+                ],
               ],
-            ]],
+            ],
           ],
         ],
       ],
@@ -190,22 +194,26 @@ class QuotasController extends ControllerBase {
             'display' => FALSE,
           ],
           'scales' => [
-            'xAxes' => [[
-              'display' => TRUE,
-              'scaleLabel' => [
-                'display' => FALSE,
-                'labelString' => t('Channel'),
+            'xAxes' => [
+              [
+                'display' => TRUE,
+                'scaleLabel' => [
+                  'display' => FALSE,
+                  'labelString' => t('Channel'),
+                ],
               ],
-            ]],
-            'yAxes' => [[
-              'display' => TRUE,
-              'ticks' => [
-                'beginAtZero' => TRUE,
-                'max' => $plan['quotaAlerts'],
-                'min' => 0,
-                'fixedStepSize' => ($plan['quotaAlerts'] > 14) ? 2 : 1,
+            ],
+            'yAxes' => [
+              [
+                'display' => TRUE,
+                'ticks' => [
+                  'beginAtZero' => TRUE,
+                  'max' => $plan['quotaAlerts'],
+                  'min' => 0,
+                  'fixedStepSize' => ($plan['quotaAlerts'] > 14) ? 2 : 1,
+                ],
               ],
-            ]],
+            ],
           ],
         ],
       ],

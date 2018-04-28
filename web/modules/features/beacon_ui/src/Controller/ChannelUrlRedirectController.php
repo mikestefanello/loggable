@@ -19,6 +19,7 @@ class ChannelUrlRedirectController extends ControllerBase {
    *
    * @param \Drupal\beacon\Entity\ChannelInterface $channel
    *   The channel entity.
+   *
    * @return \Drupal\Core\Routing\TrustedRedirectResponse
    *   A redirect response.
    */
@@ -31,6 +32,7 @@ class ChannelUrlRedirectController extends ControllerBase {
    *
    * @param \Drupal\beacon\Entity\ChannelInterface $channel
    *   The channel entity.
+   *
    * @return \Drupal\Core\Access\AccessResult
    *   An access result.
    */

@@ -8,7 +8,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\beacon_billing\BeaconBilling;
 use Drupal\Core\Access\AccessResult;
 use Stripe\Subscription as StripeSubscription;
-use Drupal\Core\Url;
 
 /**
  * Class CancelSubscriptionForm.

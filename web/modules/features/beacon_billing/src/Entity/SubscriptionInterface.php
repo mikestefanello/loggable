@@ -49,8 +49,9 @@ interface SubscriptionInterface extends ContentEntityInterface, EntityChangedInt
   public function getStatus();
 
   /**
-   * Determine if the subscription is suspended, meaning the functionality
-   * that is provided should be revoked.
+   * Determine if the subscription is suspended.
+   *
+   * Suspended means the functionality that is provided should be revoked.
    *
    * @return bool
    *   TRUE if the subscription is suspended, otherwise FALSE.

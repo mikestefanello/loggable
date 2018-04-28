@@ -10,7 +10,7 @@ use Drupal\Component\Plugin\PluginInspectionInterface;
 interface SubscriptionPlanInterface extends PluginInspectionInterface {
 
   /**
-   * Return an array of additional plan information regarding what the plan includes.
+   * Return an array of plan information regarding what the plan includes.
    *
    * This is used to display information about the plan to the user.
    *
@@ -24,8 +24,8 @@ interface SubscriptionPlanInterface extends PluginInspectionInterface {
   /**
    * Validate the current user switching to this plan.
    *
-   * This is especially useful to prevent a user from downgrading if their account
-   * currently has exceeded the chosen plan's limits.
+   * This is especially useful to prevent a user from downgrading if their
+   * account currently has exceeded the chosen plan's limits.
    *
    * @return array
    *   An array of error messages to present to the user, if the validation has

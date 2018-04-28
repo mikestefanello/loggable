@@ -35,7 +35,7 @@ class StripeWebhookEventSubscriber implements EventSubscriberInterface {
   /**
    * {@inheritdoc}
    */
-  static function getSubscribedEvents() {
+  public static function getSubscribedEvents() {
     $events[StripeEvents::WEBHOOK][] = ['stripeWebhook', 1000];
     return $events;
   }

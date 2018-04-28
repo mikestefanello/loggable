@@ -5,10 +5,8 @@ namespace Drupal\beacon_billing\EventSubscriber;
 use Drupal\beacon_billing\BeaconBilling;
 use Drupal\Core\Url;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
@@ -49,7 +47,7 @@ class SuspendedEventSubscriber implements EventSubscriberInterface {
   /**
    * {@inheritdoc}
    */
-  static function getSubscribedEvents() {
+  public static function getSubscribedEvents() {
     $events[KernelEvents::RESPONSE][] = ['suspendedRedirect', 1000];
     return $events;
   }

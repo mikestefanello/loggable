@@ -45,7 +45,7 @@ class ManageSubscriptionController extends ControllerBase {
   }
 
   /**
-   * Provide the subscription entity edit form for the user's company's subscription.
+   * Provide the subscription entity edit form for the user's subscription.
    */
   public function form() {
     return $this->entityFormBuilder->getForm($this->beaconBilling->getUserSubscription(), 'default');

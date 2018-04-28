@@ -8,7 +8,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\beacon_billing\BeaconBilling;
 use Drupal\Core\Access\AccessResult;
 use Stripe\Subscription as StripeSubscription;
-use Drupal\Core\Url;
 
 /**
  * Class ReactivateSubscriptionForm.
@@ -57,7 +56,7 @@ class ReactivateSubscriptionForm extends FormBase {
       // Return a message.
       $form['no_card'] = [
         '#type' => 'item',
-        '#markup' => $this->t('Please add a credit card and confirm your billing information before reactivating your subscription.')
+        '#markup' => $this->t('Please add a credit card and confirm your billing information before reactivating your subscription.'),
       ];
       return $form;
     }

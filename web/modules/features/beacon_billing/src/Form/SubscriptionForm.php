@@ -117,7 +117,7 @@ class SubscriptionForm extends ContentEntityForm {
 
     // Add the plan options.
     foreach ($plans as $plan) {
-      $plan_form['#options'][$plan['id']] = $plan['label'] . ' ($' . $plan['price'] . '/' . $plan['period']  . ' ' . $this->t('per channel') . ')';
+      $plan_form['#options'][$plan['id']] = $plan['label'] . ' ($' . $plan['price'] . '/' . $plan['period'] . ' ' . $this->t('per channel') . ')';
 
       // Add information about the plan.
       $form['plan_wrapper']['info'][$plan['id']] = [

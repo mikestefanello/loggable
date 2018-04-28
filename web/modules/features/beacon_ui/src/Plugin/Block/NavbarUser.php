@@ -3,7 +3,6 @@
 namespace Drupal\beacon_ui\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
-use Drupal\Core\Cache\Cache;
 use Drupal\Core\Url;
 
 /**

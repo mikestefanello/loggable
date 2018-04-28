@@ -85,7 +85,8 @@ class DashboardController extends ControllerBase {
     // Add the channel count.
     $build['#channel_count'] = number_format(count($channels));
 
-    // Add a chart for the number of events per channel per day over the last week.
+    // Add a chart for the number of events per channel per day over the
+    // last week.
     $build['#channel_event_per_day_count_chart'] = [
       '#theme' => 'chartjs',
       '#id' => 'channel-event-per-day-count-chart',
@@ -110,20 +111,24 @@ class DashboardController extends ControllerBase {
             'intersect' => FALSE,
           ],
           'scales' => [
-            'xAxes' => [[
-              'display' => TRUE,
-              'scaleLabel' => [
+            'xAxes' => [
+              [
                 'display' => TRUE,
-                'labelString' => t('Day'),
+                'scaleLabel' => [
+                  'display' => TRUE,
+                  'labelString' => t('Day'),
+                ],
               ],
-            ]],
-            'yAxes' => [[
-              'display' => TRUE,
-              'ticks' => [
-                'beginAtZero' => TRUE,
-                'labelString' => t('Events'),
+            ],
+            'yAxes' => [
+              [
+                'display' => TRUE,
+                'ticks' => [
+                  'beginAtZero' => TRUE,
+                  'labelString' => t('Events'),
+                ],
               ],
-            ]],
+            ],
           ],
         ],
       ],
@@ -200,19 +205,23 @@ class DashboardController extends ControllerBase {
             'position' => 'bottom',
           ],
           'scales' => [
-            'xAxes' => [[
-              'display' => TRUE,
-              'scaleLabel' => [
-                'display' => FALSE,
-                'labelString' => t('Channel'),
+            'xAxes' => [
+              [
+                'display' => TRUE,
+                'scaleLabel' => [
+                  'display' => FALSE,
+                  'labelString' => t('Channel'),
+                ],
               ],
-            ]],
-            'yAxes' => [[
-              'display' => TRUE,
-              'ticks' => [
-                'beginAtZero' => TRUE,
+            ],
+            'yAxes' => [
+              [
+                'display' => TRUE,
+                'ticks' => [
+                  'beginAtZero' => TRUE,
+                ],
               ],
-            ]],
+            ],
           ],
         ],
       ],
@@ -250,12 +259,12 @@ class DashboardController extends ControllerBase {
               'borderWidth' => 1,
               'backgroundColor' => [
                 'rgba(255, 99, 132, 0.3)',
-              	'rgba(255, 159, 64, 0.3)',
-              	'rgba(255, 205, 86, 0.3)',
-              	'rgba(75, 192, 192, 0.3)',
-              	'rgba(54, 162, 235, 0.3)',
-              	'rgba(153, 102, 255, 0.3)',
-              	'rgba(201, 203, 207, 0.3)'
+                'rgba(255, 159, 64, 0.3)',
+                'rgba(255, 205, 86, 0.3)',
+                'rgba(75, 192, 192, 0.3)',
+                'rgba(54, 162, 235, 0.3)',
+                'rgba(153, 102, 255, 0.3)',
+                'rgba(201, 203, 207, 0.3)',
               ],
             ],
           ],
@@ -296,6 +305,7 @@ class DashboardController extends ControllerBase {
    *
    * @param float $alpha
    *   The transparency value. Defauts to 0.5.
+   *
    * @return string
    *   A color string for ChartJS.
    */

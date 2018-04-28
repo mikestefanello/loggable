@@ -2,9 +2,7 @@
 
 namespace Drupal\beacon_billing;
 
-use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\Routing\AdminHtmlRouteProvider;
-use Symfony\Component\Routing\Route;
 
 /**
  * Provides routes for Subscription entities.

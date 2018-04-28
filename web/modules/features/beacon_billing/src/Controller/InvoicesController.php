@@ -2,6 +2,7 @@
 
 namespace Drupal\beacon_billing\Controller;
 
+use Stripe\Invoice;
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\beacon_billing\BeaconBilling;
@@ -139,10 +140,11 @@ class InvoicesController extends ControllerBase {
    *
    * @param \Stripe\Invoice $invoice
    *   A Stripe invoice.
+   *
    * @return array
    *   An array to be used in an invoice table.
    */
-  public function formatInvoiceTableRow(\Stripe\Invoice $invoice) {
+  public function formatInvoiceTableRow(Invoice $invoice) {
     return [
       Link::fromTextAndUrl($invoice->number, Url::fromRoute('beacon_billing.invoice', ['invoice_number' => $invoice->number])),
       format_date($invoice->date, 'custom', 'F j, Y'),
@@ -156,8 +158,9 @@ class InvoicesController extends ControllerBase {
   /**
    * Format the price of an invoice.
    *
-   * @param int
+   * @param int $price
    *   An invoice price.
+   *
    * @return string
    *   The invoice price formatted..
    */
@@ -170,6 +173,7 @@ class InvoicesController extends ControllerBase {
    *
    * @param string $invoice_number
    *   An invoice name.
+   *
    * @return array
    *   A renderable array.
    */
@@ -239,7 +243,7 @@ class InvoicesController extends ControllerBase {
         'contexts' => [
           'url.path',
           'user',
-        ]
+        ],
       ],
     ];
 

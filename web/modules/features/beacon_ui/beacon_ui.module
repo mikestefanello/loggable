@@ -1,14 +1,18 @@
 <?php
 
-use Drupal\views\Views;
+/**
+ * @file
+ * UI components for the Beacon platform.
+ */
+
 use Drupal\views\ViewExecutable;
 use Drupal\beacon\Entity\Channel;
 use Drupal\user\Entity\User;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Url;
-use Psr\Log\LogLevel;
 use Drupal\Core\Cache\Cache;
+use Drupal\Core\Block\BlockPluginInterface;
+use Psr\Log\LogLevel;
 
 /**
  * Implements hook_user_format_name_alter().
@@ -172,7 +176,7 @@ function beacon_ui_preprocess_block(&$variables) {
 /**
  * Implements hook_block_build_alter().
  */
-function beacon_ui_block_build_alter(array &$build, \Drupal\Core\Block\BlockPluginInterface $block) {
+function beacon_ui_block_build_alter(array &$build, BlockPluginInterface $block) {
   // Check for the local actions block.
   if ($block->getPluginId() == 'local_actions_block') {
     // Load the route match.
@@ -235,7 +239,7 @@ function beacon_ui_user_login_form_submit(&$form, FormStateInterface $form_state
 }
 
 /**
- * Views exposed form alter callback for view: beacon_channel_events
+ * Views exposed form alter callback for view: beacon_channel_events.
  *
  * @see beacon_ui_form_views_exposed_form_alter()
  */
@@ -273,7 +277,7 @@ function beacon_ui_views_exposed_form_beacon_channel_events_form_alter(&$form, F
 }
 
 /**
- * Views exposed form alter callback for view: beacon_events
+ * Views exposed form alter callback for view: beacon_events.
  *
  * @see beacon_ui_form_views_exposed_form_alter()
  */
@@ -315,7 +319,7 @@ function beacon_ui_views_exposed_form_beacon_events_form_alter(&$form, FormState
 }
 
 /**
- * Views exposed form alter callback for view: beacon_alerts
+ * Views exposed form alter callback for view: beacon_alerts.
  *
  * @see beacon_ui_form_views_exposed_form_alter()
  */

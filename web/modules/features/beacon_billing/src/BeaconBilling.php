@@ -8,7 +8,6 @@ use Drupal\Core\Session\AccountProxy;
 use Drupal\user\Entity\User;
 use Drupal\user\UserInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Entity\EntityInterface;
 use Psr\Log\LoggerInterface;
 use Drupal\beacon_billing\Entity\Subscription;
 use Drupal\Core\Cache\CacheBackendInterface;
@@ -101,7 +100,7 @@ class BeaconBilling {
    * @param \Psr\Log\LoggerInterface $logger
    *   A logger instance.
    * @param \Drupal\Core\Cache\CacheBackendInterface $cache
-   *    A Stripe cache.
+   *   A Stripe cache.
    * @param \Drupal\Core\Mail\MailManagerInterface $mail_manager
    *   The mail sender service.
    * @param \Drupal\beacon_billing\Plugin\SubscriptionPlanManager $subscription_plan_manager
@@ -121,6 +120,7 @@ class BeaconBilling {
    * Return the logger service.
    *
    * @return \Psr\Log\LoggerInterface
+   *   The logger.
    */
   public function getLogger() {
     return $this->logger;
@@ -133,6 +133,7 @@ class BeaconBilling {
    *
    * @param \Drupal\user\UserInterface $user
    *   A user entity. If omitted, the current user will be used.
+   *
    * @return \Drupal\user\UserInterface
    *   A user entity.
    */
@@ -151,7 +152,8 @@ class BeaconBilling {
    *   will be used.
    * @param string $plan_id
    *   The Stripe plan ID to subscribe the user to, or NULL to use the default.
-   * @return \Drupal\beacon_billing\Entity\Subscription|FALSE
+   *
+   * @return \Drupal\beacon_billing\Entity\Subscription|false
    *   A subscription entity, if created, or FALSE if the operation failed.
    */
   public function createSubscription(UserInterface $user = NULL, string $plan_id = NULL) {
@@ -233,8 +235,9 @@ class BeaconBilling {
   /**
    * Create an instance of a given subscription plan plugin.
    *
-   * @param $id
+   * @param mixed $id
    *   The plugin ID.
+   *
    * @return \Drupal\beacon_billing\Plugin\SubscriptionPlanInterface
    *   A subscription plugin.
    */
@@ -243,13 +246,14 @@ class BeaconBilling {
   }
 
   /**
-   * Get the subscription plan plugin definition for the subscription belonging
-   * to a given user.
+   * Get the subscription plan definition belonging to a given user.
    *
-   * @param  \Drupal\user\UserInterface $user
+   * @param \Drupal\user\UserInterface $user
    *   The user to fetch the subscription from, or NULL to use the current user.
-   * @return array|NULL
-   *   The subscription plan plugin definition, or NULL if no subscription exists.
+   *
+   * @return array|null
+   *   The subscription plan plugin definition, or NULL if no subscription
+   *   exists.
    */
   public function getUserSubscriptionPlanDefinition(UserInterface $user = NULL) {
     // Load the subscription.
@@ -270,10 +274,11 @@ class BeaconBilling {
    *
    * @param \Drupal\user\UserInterface $user
    *   A user entity. Omit to use the current user.
-   * @return \Drupal\beacon_billing\Entity\Subscription|NULL
+   *
+   * @return \Drupal\beacon_billing\Entity\Subscription|null
    *   A subscription entity, if found, otherwise NULL.
    */
-  public function getUserSubscription(User $user = NULL) {
+  public function getUserSubscription(UserInterface $user = NULL) {
     return $this->subscriptionQuery('user_id', $this->getUser($user)->id());
   }
 
@@ -282,7 +287,8 @@ class BeaconBilling {
    *
    * @param string $id
    *   A subscription ID (not entity ID).
-   * @return \Drupal\beacon_billing\Entity\Subscription|NULL
+   *
+   * @return \Drupal\beacon_billing\Entity\Subscription|null
    *   A subscription entity, if found, otherwise NULL.
    */
   public function getSubscriptionById(string $id) {
@@ -292,14 +298,15 @@ class BeaconBilling {
   /**
    * Helper function to query for subscription entities with a static cache.
    *
-   * @param $field
+   * @param string $field
    *   The field to query on.
-   * @param $value
+   * @param mixed $value
    *   The value to query for.
-   * @return \Drupal\beacon_billing\Entity\Subscription|NULL
+   *
+   * @return \Drupal\beacon_billing\Entity\Subscription|null
    *   A subscription entity, if found, otherwise NULL.
    */
-  private function subscriptionQuery($field, $value) {
+  private function subscriptionQuery(string $field, $value) {
     $ids = &drupal_static(__METHOD__, []);
 
     // Generate a cache ID.
@@ -333,8 +340,10 @@ class BeaconBilling {
    *   A subscription entity.
    * @param string $cc_token
    *   An optional credit card source token from Stripe.
+   *
    * @return mixed
-   *   The \Drupal\beacon_billing\Entity\Subscription subscription entity, if successful.
+   *   The \Drupal\beacon_billing\Entity\Subscription subscription entity, if
+   *   successful.
    *   NULL if the operation was skipped.
    *   FALSE if the API call failed.
    *   \Stripe\Error\Card if the payment information was declined.
@@ -392,7 +401,7 @@ class BeaconBilling {
               'plan' => $subscription->plan->value,
               'id' => $stripe_subscription->items->data[0]->id,
               'quantity' => $this->getSubscriptionQuantity($subscription),
-            ]
+            ],
           ];
 
           // Save the subscription.
@@ -421,7 +430,8 @@ class BeaconBilling {
    *   company.
    * @param bool $reset
    *   TRUE if the cache should be reset, otherwise FALSE. Defaults to FALSE.
-   * @return array|FALSE
+   *
+   * @return array|false
    *   An array of Stripe invoice objects, or FALSE if an error occurred.
    */
   public function getInvoices(Subscription $subscription = NULL, $reset = FALSE) {
@@ -478,7 +488,8 @@ class BeaconBilling {
    *   company.
    * @param bool $reset
    *   TRUE if the cache should be reset, otherwise FALSE. Defaults to FALSE.
-   * @return \Stripe\Invoice|FALSE|NULL
+   *
+   * @return \Stripe\Invoice|false|null
    *   A Stripe invoice object, FALSE if an error occurred, or NULL if there`is
    *   no upcoming invoice..
    */
@@ -562,9 +573,10 @@ class BeaconBilling {
    *   A subscription entity, or NULL to attempt to find the current user's
    *   company.
    * @param bool $delete
-   *   TRUE if the subscription entity is being deleted, otherwise FALSE. Defaults
-   *   to FALSE.
-   * @return boolean
+   *   TRUE if the subscription entity is being deleted, otherwise FALSE.
+   *   Defaults to FALSE.
+   *
+   * @return bool
    *   TRUE if the operation was successful, otherwise FALSE.
    */
   public function cancelSubscription(Subscription $subscription = NULL, $delete = FALSE) {
@@ -621,6 +633,7 @@ class BeaconBilling {
    * @param \Drupal\beacon_billing\Entity\Subscription $subscription
    *   A subscription entity, or NULL to attempt to find the current user's
    *   company.
+   *
    * @return mixed
    *   TRUE if the operation was successful.
    *   NULL if the operation was not attempted.
@@ -728,6 +741,7 @@ class BeaconBilling {
    * @param \Drupal\beacon_billing\Entity\Subscription $subscription
    *   A subscription entity, or NULL to attempt to find the current user's
    *   company.
+   *
    * @return mixed
    *   A \Stripe\Subscription if the operation was successful.
    *   NULL if the operation was skipped.
@@ -782,6 +796,7 @@ class BeaconBilling {
    *
    * @param \Drupal\beacon_billing\Entity\Subscription $subscription
    *   A subscription entity.
+   *
    * @return array
    *   An array of tax information for a given subscription. Includes:
    *     'metadata': An array of metadata that explains the taxes.
@@ -888,6 +903,7 @@ class BeaconBilling {
    *
    * @param \Drupal\beacon_billing\Entity\Subscription $subscription
    *   A subscription entity.
+   *
    * @return int
    *   A subscription quantity.
    */
@@ -962,4 +978,5 @@ class BeaconBilling {
       $this->mailManager->mail('beacon_billing', 'billing_error', $email, 'en', $params);
     }
   }
+
 }
