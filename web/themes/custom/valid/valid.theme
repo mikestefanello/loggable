@@ -1,8 +1,14 @@
 <?php
 
+/**
+ * @file
+ * The Valid theme.
+ */
+
 use Drupal\Core\Template\Attribute;
 use Drupal\block\Entity\Block;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Component\Render\MarkupInterface;
 
 /**
  * Implements hook_preprocess_HOOK().
@@ -63,10 +69,10 @@ function valid_preprocess_menu_local_action(&$variables) {
  */
 function valid_preprocess_form_element(&$variables) {
   if (!empty($variables['label']['#title'])) {
-    if (is_object($variables['label']['#title']) && !$variables['label']['#title'] instanceof \Drupal\Component\Render\MarkupInterface) {
+    if (is_object($variables['label']['#title']) && !$variables['label']['#title'] instanceof MarkupInterface) {
       $variables['input_title'] = NULL;
     }
-    elseif (is_object($variables['label']['#title']) ) {
+    elseif (is_object($variables['label']['#title'])) {
       $variables['input_title'] = $variables['label']['#title'];
     }
     else {
@@ -154,15 +160,16 @@ function valid_form_alter(&$form, FormStateInterface $form_state) {
 }
 
 /**
- * Determine if the portal template should be used, which is on user login,
- * register, and password pages.
+ * Determine if the portal template should be used.
+ *
+ * This happens on the user login, register, and password pages.
  *
  * @return bool
  *   TRUE if the portal should be used, otherwise FALSE.
  */
 function valid_is_portal() {
   $route_match = \Drupal::routeMatch()->getRouteName();
-  $portal_paths = array('user.pass', 'user.login', 'user.register');
+  $portal_paths = ['user.pass', 'user.login', 'user.register'];
   if (in_array($route_match, $portal_paths, TRUE)) {
     return TRUE;
   }
