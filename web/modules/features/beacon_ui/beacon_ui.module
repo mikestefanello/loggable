@@ -8,6 +8,7 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Psr\Log\LogLevel;
+use Drupal\Core\Cache\Cache;
 
 /**
  * Implements hook_user_format_name_alter().
@@ -166,6 +167,35 @@ function beacon_ui_preprocess_block(&$variables) {
         break;
     }
   }
+}
+
+/**
+ * Implements hook_block_build_alter().
+ */
+function beacon_ui_block_build_alter(array &$build, \Drupal\Core\Block\BlockPluginInterface $block) {
+  // Check for the local actions block.
+  if ($block->getPluginId() == 'local_actions_block') {
+    // Load the route match.
+    $route_match = \Drupal::routeMatch();
+
+    // Get the route name.
+    $route_name = $route_match->getRouteName();
+
+    // Check if we're viewing a channel.
+    if ($route_name == 'entity.channel.canonical') {
+      // Get the channel.
+      if ($channel = $route_match->getParameter('channel')) {
+        // Add cache tags for this channel.
+        // This should be done automatically but there's a possible bug in core.
+        // @see: https://www.drupal.org/project/drupal/issues/2962518
+        if (empty($build['#cache']['tags'])) {
+          $build['#cache']['tags'] = [];
+        }
+        $build['#cache']['tags'] = Cache::mergeTags($build['#cache']['tags'], $channel->getCacheTags());
+      }
+    }
+  }
+
 }
 
 /**
