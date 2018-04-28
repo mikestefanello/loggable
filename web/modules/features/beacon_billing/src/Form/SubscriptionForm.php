@@ -71,7 +71,7 @@ class SubscriptionForm extends ContentEntityForm {
         if ($entity->getStatus() == StripeSubscription::STATUS_TRIALING) {
           // Alert the user.
           // TODO: This is showing even after the form submits with a CC.
-          drupal_set_message($this->t('Your subscription is currently in trial. Please add a credit card to avoid any service interruptions.'), 'warning');
+          //drupal_set_message($this->t('Your subscription is currently in trial. Please add a credit card to avoid any service interruptions.'), 'warning');
         }
       }
     }

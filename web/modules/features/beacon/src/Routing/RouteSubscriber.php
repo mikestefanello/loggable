@@ -20,6 +20,29 @@ class RouteSubscriber extends RouteSubscriberBase {
         $route->setRequirement('_role', 'authenticated');
       }
     }
+
+    // List the endpoints.
+    $endpoints = [
+      'collection',
+      'individual',
+      'related',
+      'relationship',
+    ];
+
+    // Remove CSRF requirement and only allow key authentication for the beacon
+    // entity type API routes.
+    foreach (beacon_entity_types() as $type) {
+      // Iterate the endpoints.
+      foreach ($endpoints as $endpoint) {
+        // Load the route.
+        if ($route = $collection->get("jsonapi.{$type}.{$endpoint}")) {
+          $requirements = $route->getRequirements();
+          unset($requirements['_csrf_request_header_token']);
+          $route->setRequirements($requirements);
+          $route->setOption('_auth', ['key_auth']);
+        }
+      }
+    }
   }
 
 }

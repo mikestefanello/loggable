@@ -67,7 +67,7 @@ function beacon_ui_form_user_register_form_alter(&$form, FormStateInterface $for
     // Block access to the username since we will make it the email address.
     $form['account']['name']['#access'] = FALSE;
 
-    // Add our validation and submit handlers.
+    // Add our validation handler.
     $form['#validate'] = array_merge(['beacon_ui_form_user_register_form_validate'], $form['#validate']);
   }
 }

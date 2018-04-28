@@ -190,6 +190,18 @@ function beacon_billing_form_channel_add_form_alter(&$form, FormStateInterface &
 }
 
 /**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function beacon_billing_form_user_register_form_alter(&$form, FormStateInterface $form_state) {
+  // Proceed if the user is actually registering, rather than an admin creating
+  // a new user.
+  if (\Drupal::currentUser()->isAnonymous()) {
+    // Add our submit handler.
+    $form['actions']['submit']['#submit'] = array_merge(['beacon_billing_form_user_register_form_submit'], $form['actions']['submit']['#submit']);
+  }
+}
+
+/**
  * Implements hook_form_views_exposed_form_alter().
  */
 function beacon_billing_form_views_exposed_form_alter(&$form, FormStateInterface &$form_state) {
@@ -243,4 +255,15 @@ function beacon_billing_sidebar_navigation_alter(array $build) {
     }
   }
   return $build;
+}
+
+/**
+ * Submit handler for the user registration form.
+ */
+function beacon_billing_form_user_register_form_submit(&$form, FormStateInterface $form_state) {
+  // Set a message about the trial.
+  drupal_set_message(t('Your %day day free trial has begun. Please visit the <a href=":link">billing page</a> to choose your subscription plan and add a payment method before your trial ends.', [
+    '%day' => \Drupal::config('beacon_billing.settings')->get('trial_period_days'),
+    ':link' => Url::fromRoute('beacon_billing.manage_subscription')->toString(),
+  ]), 'warning');
 }

@@ -68,7 +68,7 @@ class SuspendedEventSubscriber implements EventSubscriberInterface {
           // Check if the subscription is suspended.
           if ($subscription->isSuspended()) {
             // Alert the user.
-            drupal_set_message(t('Your subscription is currently suspended. Please reactivate it in order to access this applicantion.'), 'error');
+            drupal_set_message(t('Your subscription is currently suspended. Please reactivate it in order to access this application.'), 'error');
 
             // Redirect to the manage subscription page.
             $event->setResponse(new RedirectResponse(Url::fromRoute('beacon_billing.manage_subscription')->toString()));
