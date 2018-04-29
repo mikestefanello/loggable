@@ -11,6 +11,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\Core\Utility\Error;
 use Drupal\Core\Entity\EntityTypeInterface;
+use Stripe\Subscription as StripeSubscription;
 
 /**
  * Implements hook_entity_inser().
@@ -95,6 +96,11 @@ function beacon_billing_entity_type_build(array &$entity_types) {
   // Add quota constraints to alerts and events.
   $entity_types['event']->addConstraint('EventQuota');
   $entity_types['alert']->addConstraint('AlertQuota');
+
+  // Add subscription status contraints to alerts, events, and channels.
+  $entity_types['channel']->addConstraint('SubscriptionStatus');
+  $entity_types['event']->addConstraint('SubscriptionStatus');
+  $entity_types['alert']->addConstraint('SubscriptionStatus');
 }
 
 /**

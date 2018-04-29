@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\beacon\Routing;
+namespace Drupal\beacon_billing\Routing;
 
 use Drupal\Core\Routing\RouteSubscriberBase;
 use Symfony\Component\Routing\RouteCollection;
@@ -22,18 +22,14 @@ class RouteSubscriber extends RouteSubscriberBase {
       'relationship',
     ];
 
-    // Remove CSRF requirement, require auth user role, only allow key
-    // authentication for the beacon entity type API routes.
+    // Iterate the entity types.
     foreach (beacon_entity_types() as $type) {
       // Iterate the endpoints.
       foreach ($endpoints as $endpoint) {
         // Load the route.
         if ($route = $collection->get("jsonapi.{$type}.{$endpoint}")) {
-          $route->setRequirement('_role', 'authenticated');
-          $requirements = $route->getRequirements();
-          unset($requirements['_csrf_request_header_token']);
-          $route->setRequirements($requirements);
-          $route->setOption('_auth', ['key_auth']);
+          // Add subscription requirements to the endpoints.
+          $route->setRequirement('_active_subscription', 'TRUE');
         }
       }
     }

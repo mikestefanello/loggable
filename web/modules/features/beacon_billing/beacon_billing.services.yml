@@ -24,3 +24,12 @@ services:
   plugin.manager.subscription_plan:
     class: Drupal\beacon_billing\Plugin\SubscriptionPlanManager
     parent: default_plugin_manager
+  beacon_billing.route_subscriber:
+    class: Drupal\beacon_billing\Routing\RouteSubscriber
+    tags:
+      - { name: event_subscriber }
+  access_check.active_subscription:
+    class: Drupal\beacon_billing\Access\ActiveSubscriptionAccessCheck
+    arguments: ['@beacon_billing']
+    tags:
+      - { name: access_check, applies_to: _active_subscription }
