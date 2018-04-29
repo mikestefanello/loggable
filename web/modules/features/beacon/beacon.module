@@ -20,16 +20,20 @@ function beacon_cron() {
   $event_storage = \Drupal::entityTypeManager()
     ->getStorage('event');
 
-  // Find up to 50 expired events.
+  // Find up to 100 expired events.
   $event_ids = $event_storage
     ->getQuery()
-    ->condition('expire', time(), '<')
+    ->condition('expire', REQUEST_TIME, '<')
+    ->addTag('access_bypass')
     // Constant or setting?
-    ->range(0, 50)
+    ->range(0, 100)
     ->execute();
 
-  // Load and delete the events.
-  $event_storage->delete($event_storage->loadMultiple($event_ids));
+  // Check for event IDs.
+  if ($event_ids) {
+    // Load and delete the events.
+    $event_storage->delete($event_storage->loadMultiple($event_ids));
+  }
 }
 
 /**
@@ -64,10 +68,21 @@ function beacon_entity_base_field_info(EntityTypeInterface $entity_type) {
 function beacon_user_predelete($account) {
   // Delete alert entities belonging to this user.
   // Events will expire eventually.
-  $entity_query = \Drupal::entityQuery('alert');
-  $entity_query->condition('user_id', $account->id());
-  $ids = $entity_query->execute();
-  entity_delete_multiple('alert', $ids);
+  $alert_storage = \Drupal::entityTypeManager()
+    ->getStorage('alert');
+
+  // Find the user's alerts.
+  $alert_ids = $alert_storage
+    ->getQuery()
+    ->addTag('access_bypass')
+    ->condition('user_id', $account->id())
+    ->execute();
+
+  // Check for alert IDs.
+  if ($alert_ids) {
+    // Load and delete the alerts.
+    $alert_storage->delete($alert_storage->loadMultiple($alert_ids));
+  }
 }
 
 /**
@@ -179,8 +194,13 @@ function _beacon_entity_query_access_alert(AlterableInterface $query, string $en
   // Get the current user.
   $user = \Drupal::currentUser();
 
+  // Check if the query should bypass access.
+  // This is useful for queries done by cron, hooks, etc.
+  if ($query->hasTag('access_bypass')) {
+    $filter = FALSE;
+  }
   // Check if this is an entity reference query.
-  if ($query->hasTag('entity_reference')) {
+  elseif ($query->hasTag('entity_reference')) {
     $filter = TRUE;
   }
   else {
@@ -203,8 +223,27 @@ function _beacon_entity_query_access_alert(AlterableInterface $query, string $en
     // Determine the alias.
     $alias = isset($tables[$entity_type_id]) ? $tables[$entity_type_id]['alias'] : $tables['base_table']['alias'];
 
-    // Filter for entities that this user owns.
-    $query->condition($alias . '.user_id', $user->id());
+    // Generate the field to filter on.
+    $field = $alias . '.user_id';
+
+    // Iterate the existing conditions.
+    foreach ($query->conditions() as $condition) {
+      if (is_array($condition)) {
+        // Check if the user filter condition already exists.
+        if (($condition['field'] == $field) &&
+          ($condition['value'] == $user->id()) &&
+          ($condition['operator'] == '=')) {
+          // No need to filter any more.
+          $filter = FALSE;
+          break;
+        }
+      }
+    }
+
+    // Filter for entities that this user owns, if needed.
+    if ($filter) {
+      $query->condition($alias . '.user_id', $user->id());
+    }
   }
 }
 
