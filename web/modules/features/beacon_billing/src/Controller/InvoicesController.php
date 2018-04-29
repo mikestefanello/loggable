@@ -122,7 +122,10 @@ class InvoicesController extends ControllerBase {
         'contexts' => [
           'user',
         ],
-        'tags' => $this->beaconBilling->getUserSubscription()->getCacheTags(),
+        'tags' => array_merge(
+          $this->beaconBilling->getUserSubscription()->getCacheTags(),
+          ['user.channels:' . $this->beaconBilling->getUser()->id()]
+        ),
         'max-age' => BeaconBilling::CACHE_LIFETIME,
       ],
     ];
@@ -239,7 +242,10 @@ class InvoicesController extends ControllerBase {
       '#cache' => [
         'keys' => ['invoice:' . $invoice->number],
         'max-age' => BeaconBilling::CACHE_LIFETIME,
-        'tags' => $this->beaconBilling->getUserSubscription()->getCacheTags(),
+        'tags' => array_merge(
+          $this->beaconBilling->getUserSubscription()->getCacheTags(),
+          ['user.channels:' . $this->beaconBilling->getUser()->id()]
+        ),
         'contexts' => [
           'url.path',
           'user',
