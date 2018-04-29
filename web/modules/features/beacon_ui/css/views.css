@@ -1,0 +1,9 @@
+.view-beacon-events td.views-field-edit-event,
+.view-beacon-channel-events td.views-field-edit-event,
+.view-beacon-alerts td.views-field-enabled,
+.view-beacon-alerts td.views-field-edit-alert,
+.view-beacon-channel-alerts td.views-field-enabled,
+.view-beacon-channel-alerts td.views-field-edit-alert {
+  width: 1%;
+  white-space: nowrap;
+}

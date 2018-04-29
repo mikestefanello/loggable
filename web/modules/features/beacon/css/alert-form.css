@@ -1,0 +1,26 @@
+.alert-form .tabledrag-toggle-weight-wrapper {
+  display: none;
+}
+
+.alert-form .field-multiple-table th {
+  border: none;
+  padding: 8px 0;
+}
+
+.alert-form .field-multiple-table h4.label {
+  font-weight: normal;
+  font-size: 1.5rem;
+}
+
+.alert-form .field-multiple-table td.field-multiple-drag {
+  width: 1%;
+  padding: 0 0px 0 6px;
+}
+
+.alert-form .field-multiple-table tr.odd {
+  background-color: white;
+}
+
+.alert-form .field-multiple-table .form-group {
+  margin-bottom: 0;
+}

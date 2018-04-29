@@ -84,6 +84,9 @@ class AlertForm extends BeaconContentEntityForm {
 
     $entity = $this->entity;
 
+    // Add the library.
+    $form['#attached']['library'][] = 'beacon/alert_form';
+
     // Check if the entity is new.
     if ($entity->isNew()) {
       // Check if a channel was not yet selected.

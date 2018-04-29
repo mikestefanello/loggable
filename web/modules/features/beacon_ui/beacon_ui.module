@@ -174,6 +174,20 @@ function beacon_ui_preprocess_block(&$variables) {
 }
 
 /**
+ * Implements hook_preprocess_views_view().
+ */
+function beacon_ui_preprocess_views_view(&$variables) {
+  switch ($variables['view_array']['#name']) {
+    case 'beacon_events':
+    case 'beacon_channel_events':
+    case 'beacon_alerts':
+    case 'beacon_channel_alerts':
+      $variables['#attached']['library'][] = 'beacon_ui/views';
+      break;
+  }
+}
+
+/**
  * Implements hook_block_build_alter().
  */
 function beacon_ui_block_build_alter(array &$build, BlockPluginInterface $block) {

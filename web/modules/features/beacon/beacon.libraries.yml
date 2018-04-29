@@ -5,3 +5,8 @@ chartjs:
   dependencies:
     - core/jquery
     - core/drupal
+
+alert_form:
+  css:
+    component:
+      css/alert-form.css: {}

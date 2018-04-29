@@ -1,0 +1,4 @@
+views:
+  css:
+    component:
+      css/views.css: {}
