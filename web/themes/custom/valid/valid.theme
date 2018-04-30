@@ -51,6 +51,13 @@ function valid_preprocess_menu_local_task(&$variables) {
 /**
  * Implements hook_preprocess_HOOK().
  */
+function valid_preprocess_page(&$variables) {
+  $variables['site_name'] = \Drupal::config('system.site')->get('name');
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
 function valid_preprocess_menu_local_tasks(&$variables) {
   $variables['is_portal'] = valid_is_portal();
 }

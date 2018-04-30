@@ -54,13 +54,21 @@ class CurrentUserInfo extends BlockBase implements ContainerFactoryPluginInterfa
     // Load the current user.
     $user = User::load($this->account->id());
 
+    // Extract the user's email.
+    $mail = $user->mail->value;
+
+    // Check if it needs to be trimmed.
+    if (strlen($mail) > 23) {
+      $mail = substr($mail, 0, 23) . '...';
+    }
+
     // Return the user info.
     return [
       'name' => [
         '#markup' => $user->getDisplayName(),
       ],
       'designation' => [
-        '#markup' => $user->mail->value,
+        '#markup' => $mail,
       ],
     ];
   }

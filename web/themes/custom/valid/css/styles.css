@@ -1,3 +1,19 @@
+@import url(https://fonts.googleapis.com/css?family=Rubik);
+
+.login-content .logo {
+  font-family: 'Rubik', sans-serif;
+  font-size: 3rem;
+  letter-spacing: -1px;
+  text-shadow: 1px 1px 1px #555;
+  text-transform: uppercase;
+}
+
+.app-header__logo {
+  font-family: 'Rubik', sans-serif;
+  font-size: 16px;
+  text-transform: uppercase;
+}
+
 .card {
   margin-bottom: 30px;
 }
