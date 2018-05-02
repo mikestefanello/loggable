@@ -5,6 +5,7 @@
 docker-compose.yml
 web/sites/*/settings.local.php
 web/sites/*/files
+web/sites/simpletest
 
 # Allow composer to build everything
 vendor
