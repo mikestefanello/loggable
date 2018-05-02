@@ -97,7 +97,7 @@ class BeaconStats {
 
     // Iterate the results.
     foreach ($results as $result) {
-      $counts[$result->channel][$result->createdDate] = $result->eventCount;
+      $counts[$result->channel][$result->createdDate] = (int) $result->eventCount;
     }
 
     return $counts;

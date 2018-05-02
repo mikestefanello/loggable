@@ -165,8 +165,6 @@ class DashboardController extends ControllerBase {
         }
       }
 
-      $build['#event_today_count'] = number_format($build['#event_today_count']);
-
       // Generate a random color.
       $color = $this->randomColor();
 
@@ -179,6 +177,9 @@ class DashboardController extends ControllerBase {
         'data' => array_values($data),
       ];
     }
+
+    // Format the count.
+    $build['#event_today_count'] = number_format($build['#event_today_count']);
 
     // Add a chart for the number of events per channel.
     $build['#channel_event_count_chart'] = [
