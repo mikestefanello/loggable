@@ -11,3 +11,9 @@ beacon_billing.settings:
     alert_email:
       type: string
       label: 'Alert email address'
+    tos_url:
+      type: string
+      label: 'Terms of service URL'
+    privacy_url:
+      type: string
+      label: 'Privacy policy URL'

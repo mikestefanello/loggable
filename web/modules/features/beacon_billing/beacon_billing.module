@@ -204,6 +204,20 @@ function beacon_billing_form_user_register_form_alter(&$form, FormStateInterface
   if (\Drupal::currentUser()->isAnonymous()) {
     // Add our submit handler.
     $form['actions']['submit']['#submit'] = array_merge(['beacon_billing_form_user_register_form_submit'], $form['actions']['submit']['#submit']);
+
+    // Load the settings.
+    $config = \Drupal::config('beacon_billing.settings');
+
+    // Add an agreement checkbox.
+    $form['consent'] = [
+      '#type' => 'checkbox',
+      '#title' => t('I accept the <a href=":tos" target="_blank">terms of service</a> and <a href=":privacy" target="_blank">privacy policy</a>.', [
+        ':tos' => $config->get('tos_url'),
+        ':privacy' => $config->get('privacy_url'),
+      ]),
+      '#required' => TRUE,
+      '#weight' => 50,
+    ];
   }
 }
 

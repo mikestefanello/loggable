@@ -82,6 +82,18 @@ class BeaconBillingSettings extends ConfigFormBase implements ContainerInjection
       '#description' => $this->t('Enter an email address to be alerted whenever there are billing or subscription errors.'),
       '#default_value' => $config->get('alert_email'),
     ];
+    $form['tos_url'] = [
+      '#type' => 'url',
+      '#title' => $this->t('Terms of service URL'),
+      '#description' => $this->t('The URL to the terms of service agreement.'),
+      '#default_value' => $config->get('tos_url'),
+    ];
+    $form['privacy_url'] = [
+      '#type' => 'url',
+      '#title' => $this->t('Privacy policy URL'),
+      '#description' => $this->t('The URL to the privacy policy.'),
+      '#default_value' => $config->get('privacy_url'),
+    ];
 
     // Add the subscription plans as options.
     foreach ($this->subscriptionPlanManager->getDefinitions() as $plan_id => $plan) {
@@ -102,6 +114,8 @@ class BeaconBillingSettings extends ConfigFormBase implements ContainerInjection
       ->set('default_plan_id', $form_state->getValue('default_plan_id'))
       ->set('trial_period_days', $form_state->getValue('trial_period_days'))
       ->set('alert_email', $form_state->getValue('alert_email'))
+      ->set('tos_url', $form_state->getValue('tos_url'))
+      ->set('privacy_url', $form_state->getValue('privacy_url'))
       ->save();
   }
 
