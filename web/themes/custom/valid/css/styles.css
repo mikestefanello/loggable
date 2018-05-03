@@ -1,5 +1,9 @@
 @import url(https://fonts.googleapis.com/css?family=Rubik);
 
+.page-user-register.is-portal {
+  padding-top: 30px;
+}
+
 .login-content .logo {
   font-family: 'Rubik', sans-serif;
   font-size: 3rem;

@@ -18,6 +18,10 @@ function valid_preprocess_html(&$variables) {
   $variables['attributes']['class'][] = 'app';
   $variables['attributes']['class'][] = 'sidebar-mini';
   $variables['attributes']['class'][] = 'rtl';
+
+  if (valid_is_portal()) {
+    $variables['attributes']['class'][] = 'is-portal';
+  }
 }
 
 /**
@@ -175,12 +179,18 @@ function valid_form_alter(&$form, FormStateInterface $form_state) {
  *   TRUE if the portal should be used, otherwise FALSE.
  */
 function valid_is_portal() {
-  $route_match = \Drupal::routeMatch()->getRouteName();
-  $portal_paths = ['user.pass', 'user.login', 'user.register'];
-  if (in_array($route_match, $portal_paths, TRUE)) {
-    return TRUE;
+  $is_portal = &drupal_static(__FUNCTION__, NULL);
+
+  if ($is_portal === NULL) {
+    $is_portal = FALSE;
+    $route_match = \Drupal::routeMatch()->getRouteName();
+    $portal_paths = ['user.pass', 'user.login', 'user.register'];
+    if (in_array($route_match, $portal_paths, TRUE)) {
+      $is_portal = TRUE;
+    }
   }
-  return FALSE;
+
+  return $is_portal;
 }
 
 /**

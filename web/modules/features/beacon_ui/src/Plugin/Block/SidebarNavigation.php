@@ -100,7 +100,7 @@ class SidebarNavigation extends BlockBase implements ContainerFactoryPluginInter
     $items['channels'] = [
       'title' => t('Channels'),
       'url' => Url::fromRoute('<none>', [], ['fragment' => 'channels']),
-      'icon' => 'filter',
+      'icon' => 'hashtag',
       'below' => [],
     ];
 
