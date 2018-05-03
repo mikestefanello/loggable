@@ -108,7 +108,7 @@ parameters:
       # Disable by setting to [].
       #
       # @default ['session', 'user']
-      contexts: ['session', 'user']
+      contexts: ['session']
       # Tags with a high invalidation frequency.
       #
       # Disable by setting to [].
