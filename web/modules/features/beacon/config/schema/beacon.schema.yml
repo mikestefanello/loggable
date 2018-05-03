@@ -1,3 +1,11 @@
+beacon.settings:
+  type: config_object
+  label: 'Beacon settings'
+  mapping:
+    alert_email_from:
+      type: string
+      label: 'Alert email from address'
+
 condition.plugin.beacon_entity:
   type: condition.plugin
   mapping:

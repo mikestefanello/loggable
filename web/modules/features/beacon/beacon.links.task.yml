@@ -51,6 +51,12 @@ alert.list_tab:
   base_route: entity.alert.collection
   weight: -10
 
+alert.settings_tab:
+  route_name: alert.settings
+  title: 'Settings'
+  base_route: entity.alert.collection
+  weight: -9
+
 entity.alert.canonical:
   route_name: entity.alert.canonical
   base_route: entity.alert.canonical

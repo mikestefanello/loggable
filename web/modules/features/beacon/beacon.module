@@ -118,6 +118,11 @@ function beacon_mail($key, &$message, $params) {
     case 'alert':
       $message['subject'] = $params['subject'];
       $message['body'] = $params['body'];
+
+      // Check for a "from" address override.
+      if ($from = \Drupal::config('beacon.settings')->get('alert_email_from')) {
+        $message['from'] = $from;
+      }
       break;
   }
 }
