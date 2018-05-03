@@ -43,6 +43,12 @@ a.tabledrag-handle .handle {
   font-size: 1.4rem;
 }
 
+@media (min-width: 768px) {
+  .sidebar-mini.sidenav-toggled .app-sidebar__user-avatar {
+    text-align: center;
+  }
+}
+
 .block-local-actions-block .icon {
   min-width: 12px;
   font-size: 1.8rem;
