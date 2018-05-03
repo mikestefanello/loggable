@@ -29,14 +29,35 @@ abstract class BeaconContentEntityBase extends ContentEntityBase implements Beac
   /**
    * {@inheritdoc}
    */
-  public function postSave(EntityStorageInterface $storage, $update = TRUE) {
-    parent::postSave($storage, $update);
+  protected function invalidateTagsOnSave($update) {
+    // We do not use list cache tags for these entities because they are all
+    // only accessible by the owning user, and the entity tags contain
+    // contextual tags already.
+    $tags = [];
 
-    // Check if the entity is new.
-    if (!$update) {
-      // For some reason, tags are only invalidated on updates and deletes.
-      Cache::invalidateTags($this->getCacheTagsToInvalidate());
+    if ($this->hasLinkTemplate('canonical')) {
+      // Creating or updating an entity may change a cached 403 or 404 response.
+      $tags = Cache::mergeTags($tags, ['4xx-response']);
     }
+
+    // Also invalidate its unique cache tag.
+    // Core only does this for existing entities but we need it done for all.
+    $tags = Cache::mergeTags($tags, $this->getCacheTagsToInvalidate());
+
+    // Invalidate the tags.
+    Cache::invalidateTags($tags);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected static function invalidateTagsOnDelete(EntityTypeInterface $entity_type, array $entities) {
+    // Skip the list tags. See invalidateTagsOnSave().
+    $tags = [];
+    foreach ($entities as $entity) {
+      $tags = Cache::mergeTags($tags, $entity->getCacheTagsToInvalidate());
+    }
+    Cache::invalidateTags($tags);
   }
 
   /**
