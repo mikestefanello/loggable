@@ -89,10 +89,20 @@ class Alert extends BeaconContentEntityBase implements AlertInterface {
    * {@inheritdoc}
    */
   public function getCacheTagsToInvalidate() {
-    return Cache::mergeTags(parent::getCacheTagsToInvalidate(), [
-      'channel.alerts:' . $this->channel->entity->id(),
-      'user.alerts:' . $this->getOwnerId(),
-    ]);
+    // Add the user tag.
+    $tags = ['user.alerts:' . $this->getOwnerId()];
+
+    // Extract the channel.
+    $channel = $this->channel->entity;
+
+    // Check if the channel still exists.
+    if ($channel) {
+      // Add the channel tag.
+      $tags[] = 'channel.alerts:' . $this->channel->entity->id();
+    }
+
+    // Merge and return.
+    return Cache::mergeTags(parent::getCacheTagsToInvalidate(), $tags);
   }
 
   /**

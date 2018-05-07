@@ -63,25 +63,34 @@ function beacon_entity_base_field_info(EntityTypeInterface $entity_type) {
 }
 
 /**
- * Implements hook_ENTITY_TYPE_predelete().
+ * Implements hook_entity_predelete().
  */
-function beacon_user_predelete($account) {
-  // Delete alert entities belonging to this user.
-  // Events will expire eventually.
-  $alert_storage = \Drupal::entityTypeManager()
-    ->getStorage('alert');
+function beacon_entity_predelete($entity) {
+  // Extract the entity type.
+  $type = $entity->getEntityTypeId();
 
-  // Find the user's alerts.
-  $alert_ids = $alert_storage
-    ->getQuery()
-    ->addTag('access_bypass')
-    ->condition('user_id', $account->id())
-    ->execute();
+  // Check the entity type.
+  switch ($type) {
+    case 'user':
+    case 'channel':
+      // Delete alert entities belonging to this entity.
+      // Events will expire eventually.
+      $alert_storage = \Drupal::entityTypeManager()
+        ->getStorage('alert');
 
-  // Check for alert IDs.
-  if ($alert_ids) {
-    // Load and delete the alerts.
-    $alert_storage->delete($alert_storage->loadMultiple($alert_ids));
+      // Find the entity's alerts.
+      $alert_ids = $alert_storage
+        ->getQuery()
+        ->addTag('access_bypass')
+        ->condition(($type == 'channel') ? 'channel' : 'user_id', $entity->id())
+        ->execute();
+
+      // Check for alert IDs.
+      if ($alert_ids) {
+        // Load and delete the alerts.
+        $alert_storage->delete($alert_storage->loadMultiple($alert_ids));
+      }
+      break;
   }
 }
 

@@ -84,10 +84,20 @@ class Event extends BeaconContentEntityBase implements EventInterface {
    * {@inheritdoc}
    */
   public function getCacheTagsToInvalidate() {
-    return Cache::mergeTags(parent::getCacheTagsToInvalidate(), [
-      'channel.events:' . $this->channel->entity->id(),
-      'user.events:' . $this->getOwnerId(),
-    ]);
+    // Add the user tag.
+    $tags = ['user.events:' . $this->getOwnerId()];
+
+    // Extract the channel.
+    $channel = $this->channel->entity;
+
+    // Check if the channel still exists.
+    if ($channel) {
+      // Add the channel tag.
+      $tags[] = 'channel.events:' . $this->channel->entity->id();
+    }
+
+    // Merge and return.
+    return Cache::mergeTags(parent::getCacheTagsToInvalidate(), $tags);
   }
 
   /**
