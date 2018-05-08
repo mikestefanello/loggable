@@ -156,7 +156,7 @@ class SidebarNavigation extends BlockBase implements ContainerFactoryPluginInter
         ],
         'documentation' => [
           'title' => t('Documentation'),
-          'url' => Url::fromRoute('<none>', [], ['fragment' => 'todo']),
+          'url' => Url::fromUri('https://docs.loggable.io'),
           'icon' => 'book',
         ],
       ],
