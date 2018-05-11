@@ -45,7 +45,7 @@ class Slack extends Webhook {
       'username' => $settings['username'],
       'attachments' => [
         [
-          'pretext' => $this->t('A notification was dispatched from Loggable'),
+          'pretext' => $this->t('A notification was dispatched for the following event'),
           'author_name' => \Drupal::config('system.site')->get('name'),
           'author_link' => Url::fromRoute('<front>', [], ['absolute' => TRUE])->toString(),
           'title' => strip_tags($event->label()),
@@ -94,7 +94,7 @@ class Slack extends Webhook {
     return [
       'endpoint' => '',
       'channel' => '',
-      'username' => 'loggable',
+      'username' => \Drupal::config('system.site')->get('name'),
     ];
   }
 
@@ -109,7 +109,7 @@ class Slack extends Webhook {
       '#title' => t('Webhook URL'),
       '#required' => TRUE,
       '#default_value' => $settings['endpoint'],
-      '#description' => t('The Slack webhook URL. This must being with https://hooks.slack.com.'),
+      '#description' => t('The Slack webhook URL. This must begin with https://hooks.slack.com.'),
     ];
     $form['channel'] = [
       '#type' => 'textfield',
