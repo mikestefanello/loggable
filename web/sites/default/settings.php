@@ -773,7 +773,17 @@ $settings['file_scan_ignore_directories'] = [
  */
 $settings['entity_update_batch_size'] = 50;
 
-// Automatic Platform.sh settings.
+/**
+ * Stripe keys.
+ */
+$config['stripe.settings']['apikey']['test']['public'] = 'pk_test_lEtS4tQPZjIfvJg0kAcceNiv';
+$config['stripe.settings']['apikey']['test']['secret'] = 'sk_test_vpZTGPMwJEDKyd2KITZb6UMf';
+$config['stripe.settings']['apikey']['live']['public'] = 'pk_live_5PYVCQ2H9LkTT0uN7exK5oIy';
+$config['stripe.settings']['apikey']['live']['secret'] = 'sk_live_hrKCM5prD88UNzQwFj573lDO';
+
+/**
+  *Automatic Platform.sh settings.
+ */
 if (file_exists($app_root . '/' . $site_path . '/settings.platformsh.php')) {
   include $app_root . '/' . $site_path . '/settings.platformsh.php';
 }

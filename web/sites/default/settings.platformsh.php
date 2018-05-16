@@ -170,3 +170,9 @@ if (getenv('PLATFORM_PROJECT_ENTROPY') && empty($settings['hash_salt'])) {
 if (getenv('PLATFORM_TREE_ID') && empty($settings['deployment_identifier'])) {
   $settings['deployment_identifier'] = getenv('PLATFORM_TREE_ID');
 }
+
+// Check for a non-prod environment.
+if (getenv('PLATFORM_BRANCH') != 'master') {
+  // Stripe environment.
+  $config['stripe.settings']['environment'] = 'test';
+}
