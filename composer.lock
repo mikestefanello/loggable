@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "29b45bb5ee45d7dc94fd8c903dfac843",
+    "content-hash": "d1fdc9ac429394d6e0757e37198ee24b",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -1619,17 +1619,17 @@
         },
         {
             "name": "drupal/bootstrap_barrio",
-            "version": "4.8.0",
+            "version": "4.9.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupal.org/project/bootstrap_barrio",
-                "reference": "8.x-4.8"
+                "reference": "8.x-4.9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/bootstrap_barrio-8.x-4.8.zip",
-                "reference": "8.x-4.8",
-                "shasum": "811eb4d62adb7ade53393a64a04ea6a98be64de7"
+                "url": "https://ftp.drupal.org/files/projects/bootstrap_barrio-8.x-4.9.zip",
+                "reference": "8.x-4.9",
+                "shasum": "cddf9bdff0064a3593e827622cc5e1853b382316"
             },
             "require": {
                 "drupal/core": "~8.0"
@@ -1640,8 +1640,8 @@
                     "dev-4.x": "4.x-dev"
                 },
                 "drupal": {
-                    "version": "8.x-4.8",
-                    "datestamp": "1523118185",
+                    "version": "8.x-4.9",
+                    "datestamp": "1525127880",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -2515,17 +2515,17 @@
         },
         {
             "name": "drupal/jsonapi",
-            "version": "1.16.0",
+            "version": "1.17.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupal.org/project/jsonapi",
-                "reference": "8.x-1.16"
+                "reference": "8.x-1.17"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/jsonapi-8.x-1.16.zip",
-                "reference": "8.x-1.16",
-                "shasum": "2750ba9c137ef87da10089bc100d6f88d8ac4342"
+                "url": "https://ftp.drupal.org/files/projects/jsonapi-8.x-1.17.zip",
+                "reference": "8.x-1.17",
+                "shasum": "fbe3f36bfbbb804c2d7b0314136d30338002b1a0"
             },
             "require": {
                 "drupal/core": "^8.4.3"
@@ -2541,16 +2541,14 @@
                     "dev-1.x": "1.x-dev"
                 },
                 "drupal": {
-                    "version": "8.x-1.16",
-                    "datestamp": "1524692053",
+                    "version": "8.x-1.17",
+                    "datestamp": "1525889880",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
                     }
                 },
-                "patches_applied": {
-                    "Allow extreme shorthand filters": "https://www.drupal.org/files/issues/2018-05-03/2968891-8.patch"
-                }
+                "patches_applied": []
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
             "license": [
@@ -2582,17 +2580,17 @@
         },
         {
             "name": "drupal/jsonapi_extras",
-            "version": "2.0.0",
+            "version": "2.1.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupal.org/project/jsonapi_extras",
-                "reference": "8.x-2.0"
+                "reference": "8.x-2.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/jsonapi_extras-8.x-2.0.zip",
-                "reference": "8.x-2.0",
-                "shasum": "7c6b2c82155a5c6d6ec11af1a9b329b8488ab295"
+                "url": "https://ftp.drupal.org/files/projects/jsonapi_extras-8.x-2.1.zip",
+                "reference": "8.x-2.1",
+                "shasum": "3302e63fd595577546b783c592cca3b8b6a7e1da"
             },
             "require": {
                 "drupal/core": "^8.5",
@@ -2605,8 +2603,8 @@
                     "dev-2.x": "2.x-dev"
                 },
                 "drupal": {
-                    "version": "8.x-2.0",
-                    "datestamp": "1524931084",
+                    "version": "8.x-2.1",
+                    "datestamp": "1525411687",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
