@@ -1,5 +1,5 @@
 default_plan_id: 'standard'
 trial_period_days: 14
-alert_email: ''
-tos_url: ''
-privacy_url: ''
+alert_email: 'info@loggable.io'
+tos_url: 'https://www.loggable.io/terms.html'
+privacy_url: 'https://www.loggable.io/privacy.html'

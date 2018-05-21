@@ -12,4 +12,31 @@ function beacon_standard_install() {
     ->set('admin', 'valid')
     ->set('default', 'valid')
     ->save();
+
+  // Set the site settings.
+  $config->getEditable('system.site')
+    ->set('name', 'Loggable')
+    ->set('mail', 'info@loggable.io')
+    ->save();
+
+  // Set the date settings.
+  $config->getEditable('system.date')
+    ->set('country.default', 'US')
+    ->set('first_day', 1)
+    ->set('timezone.default', 'America/New_York')
+    ->set('timezone.user.configurable', TRUE)
+    ->save();
+
+  // Set the perforamnce settings.
+  $config->getEditable('system.performance')
+    ->set('cache.page.max_age', 900)
+    ->set('css',  [
+      'preprocess' => TRUE,
+      'gzip' => TRUE,
+    ])
+    ->set('js',  [
+      'preprocess' => TRUE,
+      'gzip' => TRUE,
+    ])
+    ->save();
 }
