@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "78758929be7f2398cef7c59d6d49875c",
+    "content-hash": "fce46ad1d799b48792e8c0b75c8bf130",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -2672,6 +2672,53 @@
             "homepage": "https://www.drupal.org/project/key_auth",
             "support": {
                 "source": "http://cgit.drupalcode.org/key_auth"
+            }
+        },
+        {
+            "name": "drupal/loggable",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupal.org/project/loggable",
+                "reference": "8.x-1.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/loggable-8.x-1.0.zip",
+                "reference": "8.x-1.0",
+                "shasum": "0df825322e41bb580fe20a2501ed51b04350d5e7"
+            },
+            "require": {
+                "drupal/core": "~8.0"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-1.x": "1.x-dev"
+                },
+                "drupal": {
+                    "version": "8.x-1.0",
+                    "datestamp": "1526891584",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "mstef",
+                    "homepage": "https://www.drupal.org/user/107190"
+                }
+            ],
+            "description": "Send selected log entries to Loggable.",
+            "homepage": "https://www.drupal.org/project/loggable",
+            "support": {
+                "source": "http://cgit.drupalcode.org/loggable"
             }
         },
         {

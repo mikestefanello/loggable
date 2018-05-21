@@ -27,7 +27,8 @@
         "drupal/bootstrap_barrio": "^4.8",
         "drupal/ctools": "^3.0",
         "drupal/views_custom_cache_tag": "^1.0",
-        "drupal/redis": "^1.0@RC"
+        "drupal/redis": "^1.0@RC",
+        "drupal/loggable": "^1.0"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
