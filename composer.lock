@@ -2676,17 +2676,17 @@
         },
         {
             "name": "drupal/loggable",
-            "version": "1.2.0",
+            "version": "1.3.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupal.org/project/loggable",
-                "reference": "8.x-1.2"
+                "reference": "8.x-1.3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/loggable-8.x-1.2.zip",
-                "reference": "8.x-1.2",
-                "shasum": "86b8813451dc58e86ce1cbf671201d4bf59cc025"
+                "url": "https://ftp.drupal.org/files/projects/loggable-8.x-1.3.zip",
+                "reference": "8.x-1.3",
+                "shasum": "bec2e327e9719b9fb3c1a236aecfa7fd2c7df304"
             },
             "require": {
                 "drupal/core": "~8.0"
@@ -2697,8 +2697,8 @@
                     "dev-1.x": "1.x-dev"
                 },
                 "drupal": {
-                    "version": "8.x-1.2",
-                    "datestamp": "1526968384",
+                    "version": "8.x-1.3",
+                    "datestamp": "1527212585",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
