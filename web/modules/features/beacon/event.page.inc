@@ -65,12 +65,15 @@ function template_preprocess_event(array &$variables) {
   // Generate a link.
   $link = $event_url ? Link::fromTextAndUrl($event_url->toString(), $event_url->setOption('attributes', ['target' => '_blank'])) : NULL;
 
+  // Extract the channel.
+  $channel = $event->channel->entity;
+
   // Create a table to display the field values.
   $variables['table'] = [
     '#theme' => 'table',
     '#header' => [],
     '#rows' => [
-      $add_row(t('Channel'), $event->channel->entity->link()),
+      $add_row(t('Channel'), $channel ? $channel->link() : t('Deleted channel')),
       $add_row(t('Event ID'), $event->uuid()),
       $add_row(t('Type'), $event->type->value),
       $add_row(t('Severity'), new FormattableMarkup('<span class="badge badge-pill badge-@severity-class">@value</span>', ['@severity-class' => $severity_class, '@value' => $severity_values[$event->severity->value]])),

@@ -25,7 +25,7 @@ function beacon_cron() {
     ->getQuery()
     ->condition('expire', REQUEST_TIME, '<')
     ->addTag('access_bypass')
-    // Constant or setting?
+    // TODO: Constant or setting?
     ->range(0, 100)
     ->execute();
 
