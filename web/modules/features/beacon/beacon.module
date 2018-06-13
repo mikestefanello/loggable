@@ -72,24 +72,13 @@ function beacon_entity_predelete($entity) {
   // Check the entity type.
   switch ($type) {
     case 'user':
+      // Delete this user's channels.
+      beacon_entity_delete_by_field_value('channel', 'user_id', $entity->id());
+      break;
+
     case 'channel':
-      // Delete alert entities belonging to this entity.
-      // Events will expire eventually.
-      $alert_storage = \Drupal::entityTypeManager()
-        ->getStorage('alert');
-
-      // Find the entity's alerts.
-      $alert_ids = $alert_storage
-        ->getQuery()
-        ->addTag('access_bypass')
-        ->condition(($type == 'channel') ? 'channel' : 'user_id', $entity->id())
-        ->execute();
-
-      // Check for alert IDs.
-      if ($alert_ids) {
-        // Load and delete the alerts.
-        $alert_storage->delete($alert_storage->loadMultiple($alert_ids));
-      }
+      // Delete this channel's alerts.
+      beacon_entity_delete_by_field_value('alert', 'channel', $entity->id());
       break;
   }
 }
@@ -185,6 +174,35 @@ function beacon_entity_types() {
     'event',
     'alert',
   ];
+}
+
+/**
+ * Helper function to delete entities of a given type based on a field value.
+ *
+ * @param string $entity_type_id
+ *   The entity type ID of the entities to delete.
+ * @param string $field_name
+ *   The name of the field to query on.
+ * @param mixed $field_value
+ *   The value of the field to filter by.
+ */
+function beacon_entity_delete_by_field_value(string $entity_type_id, string $field_name, $field_value) {
+  // Load entity storage.
+  $storage = \Drupal::entityTypeManager()
+    ->getStorage($entity_type_id);
+
+  // Query to find entities to delete.
+  $ids = $storage
+    ->getQuery()
+    ->addTag('access_bypass')
+    ->condition($field_name, $field_value)
+    ->execute();
+
+  // Check for entity IDs.
+  if ($ids) {
+    // Load and delete the entities.
+    $storage->delete($storage->loadMultiple($ids));
+  }
 }
 
 /**
