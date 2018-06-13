@@ -173,6 +173,16 @@ function beacon_billing_mail($key, &$message, $params) {
         $message['body'][] = 'Exception: ' . strtr('%type: @message in %function (line %line of %file).', Error::decodeException($params['exception']));
       }
       break;
+
+    // Trial ending.
+    case 'trial_ending':
+      $site_name = \Drupal::config('system.site')->get('name');
+      $message['subject'] = 'Your ' . $site_name . ' trial is about to end';
+      $message['body'][] = 'Hi ' . $params['user']->getDisplayName() . ',';
+      $message['body'][] = 'Your free trial with ' . $site_name . ' is going to end soon. Please navigate to the URL below to add a payment method to your account in order to prevent losing access to the service.';
+      $message['body'][] = '';
+      $message['body'][] = ' - ' . Url::fromRoute('beacon_billing.manage_subscription', [], ['absolute' => TRUE])->toString();
+      break;
   }
 }
 

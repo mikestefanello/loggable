@@ -65,6 +65,29 @@ class Subscription extends ContentEntityBase implements SubscriptionInterface {
   public function postSave(EntityStorageInterface $storage, $update = TRUE) {
     parent::postSave($storage, $update);
 
+    // Check if this is an update.
+    if ($update && isset($this->original)) {
+      // Check if the original status was trailing.
+      if ($this->original->getStatus() == StripeSubscription::STATUS_TRIALING) {
+        // Check if the status is now past due.
+        if ($this->getStatus() == StripeSubscription::STATUS_PAST_DUE) {
+          // Load the user that owns this subscription.
+          if ($user = $this->getOwner()) {
+            // Build the email parameters.
+            $params = [
+              'user' => $user,
+              'subscription' => $this,
+            ];
+
+            // Email the user about the ending trial.
+            // TODO: Can we inject this?
+            \Drupal::service('plugin.manager.mail')
+              ->mail('beacon_billing', 'trial_ending', $user->getEmail(), 'en', $params);
+          }
+        }
+      }
+    }
+
     // Clear the billing cache.
     // TODO: Can we inject this?
     \Drupal::service('beacon_billing')->clearCache($this);
