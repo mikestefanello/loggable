@@ -74,6 +74,7 @@ A client module for Drupal is available [here](https://www.drupal.org/project/lo
 ## SaaS/Billing
 
 To setup Loggable as a SaaS, with paid-subscriptions for users:
+
 * Enabled the `beacon_billing` module.
 * Configure Stripe integration at `/admin/config/stripe`.
 * Configure additional billing settings at `/admin/structure/subscription/settings`.
@@ -89,4 +90,4 @@ This was launched as a SaaS and discontinued in 2018. I've made this code open s
 
 ## Credits
 
-* (Vali Admin)[https://github.com/pratikborsadiya/vali-admin] theme by (Pratik Borsadiya)[https://github.com/pratikborsadiya], ported to Drupal.
+* [Vali Admin](https://github.com/pratikborsadiya/vali-admin) theme by [Pratik Borsadiya](https://github.com/pratikborsadiya), ported to Drupal.
