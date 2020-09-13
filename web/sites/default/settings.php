@@ -280,7 +280,7 @@ $config_directories = array(
  *   service requires the install profile use the 'install_profile' container
  *   parameter. Functional code can use \Drupal::installProfile().
  */
-$settings['install_profile'] = 'beacon_standard';
+$settings['install_profile'] = 'loggable';
 
 /**
  * Salt for one-time login links, cancel links, form tokens, etc.
@@ -774,15 +774,7 @@ $settings['file_scan_ignore_directories'] = [
 $settings['entity_update_batch_size'] = 50;
 
 /**
- * Stripe keys.
- */
-$config['stripe.settings']['apikey']['test']['public'] = 'pk_test_lEtS4tQPZjIfvJg0kAcceNiv';
-$config['stripe.settings']['apikey']['test']['secret'] = 'sk_test_vpZTGPMwJEDKyd2KITZb6UMf';
-$config['stripe.settings']['apikey']['live']['public'] = 'pk_live_5PYVCQ2H9LkTT0uN7exK5oIy';
-$config['stripe.settings']['apikey']['live']['secret'] = 'sk_live_hrKCM5prD88UNzQwFj573lDO';
-
-/**
-  *Automatic Platform.sh settings.
+ * Automatic Platform.sh settings.
  */
 if (file_exists($app_root . '/' . $site_path . '/settings.platformsh.php')) {
   include $app_root . '/' . $site_path . '/settings.platformsh.php';

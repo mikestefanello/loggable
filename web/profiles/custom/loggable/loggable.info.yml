@@ -24,7 +24,7 @@ dependencies:
   - jsonapi_extras
   - key_auth
   - views_custom_cache_tag
-  # Features are installed in beacon_standard.profile
+  # Features are installed in loggable.profile
 themes:
   - classy
   - bootstrap_barrio

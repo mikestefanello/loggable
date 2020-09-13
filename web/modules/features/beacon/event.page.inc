@@ -57,16 +57,16 @@ function template_preprocess_event(array &$variables) {
   ];
 
   // Pick the severity class.
-  $severity_class = $severity_classes[$event->severity->value];
+  $severity_class = $severity_classes[$event->getSeverity()];
 
   // Extract the event URL field value.
-  $event_url = $event->url->first() ? $event->url->first()->getUrl() : NULL;
+  $event_url = $event->getUrl();
 
   // Generate a link.
   $link = $event_url ? Link::fromTextAndUrl($event_url->toString(), $event_url->setOption('attributes', ['target' => '_blank'])) : NULL;
 
   // Extract the channel.
-  $channel = $event->channel->entity;
+  $channel = $event->getParent();
 
   // Create a table to display the field values.
   $variables['table'] = [
@@ -75,13 +75,13 @@ function template_preprocess_event(array &$variables) {
     '#rows' => [
       $add_row(t('Channel'), $channel ? $channel->link() : t('Deleted channel')),
       $add_row(t('Event ID'), $event->uuid()),
-      $add_row(t('Type'), $event->type->value),
-      $add_row(t('Severity'), new FormattableMarkup('<span class="badge badge-pill badge-@severity-class">@value</span>', ['@severity-class' => $severity_class, '@value' => $severity_values[$event->severity->value]])),
-      $add_row(t('User'), $event->user->value),
+      $add_row(t('Type'), $event->getType()),
+      $add_row(t('Severity'), new FormattableMarkup('<span class="badge badge-pill badge-@severity-class">@value</span>', ['@severity-class' => $severity_class, '@value' => $severity_values[$event->getSeverity()]])),
+      $add_row(t('User'), $event->getUser()),
       $add_row(t('URL'), $link),
-      $add_row(t('Date'), format_date($event->created->value, 'long')),
-      $add_row(t('Expires'), format_date($event->expire->value, 'long')),
-      $add_row(t('Message'), $event->message->value),
+      $add_row(t('Date'), format_date($event->getCreatedTime(), 'long')),
+      $add_row(t('Expires'), format_date($event->getExpiration(), 'long')),
+      $add_row(t('Message'), $event->getMessage()),
     ],
   ];
 }

@@ -290,4 +290,46 @@ class Event extends BeaconContentEntityBase implements EventInterface {
     return [strtotime('+2 weeks')];
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function getType() {
+    return $this->type->value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getSeverity() {
+    return $this->severity->value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getMessage() {
+    return $this->message->value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getUser() {
+    return $this->user->value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getUrl() {
+    return $this->url->first() ? $this->url->first()->getUrl() : NULL;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getExpiration() {
+    return $this->expire->value;
+  }
+
 }

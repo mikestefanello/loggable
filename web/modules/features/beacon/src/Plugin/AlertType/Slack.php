@@ -31,7 +31,7 @@ class Slack extends Webhook {
     $settings = $this->getSettings();
 
     // Extract the message.
-    $message = $event->message->value;
+    $message = $event->getMessage();
 
     // Check if the message needs to be trimmed.
     if (strlen($message) > SELF::MESSAGE_LENGTH) {
@@ -53,22 +53,22 @@ class Slack extends Webhook {
           'fields' => [
             [
               'title' => $this->t('Channel'),
-              'value' => $event->channel->entity->label(),
+              'value' => $event->getParent()->label(),
               'short' => TRUE,
             ],
             [
               'title' => $this->t('Type'),
-              'value' => $event->type->value,
+              'value' => $event->getType(),
               'short' => TRUE,
             ],
             [
               'title' => $this->t('Severity'),
-              'value' => $event->severity->value,
+              'value' => $event->getSeverity(),
               'short' => TRUE,
             ],
             [
               'title' => $this->t('User'),
-              'value' => $event->user->value,
+              'value' => $event->getUser(),
               'short' => TRUE,
             ],
             [

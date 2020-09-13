@@ -48,13 +48,10 @@ class AlertTypeManager extends DefaultPluginManager {
     $settings = [];
 
     // Determine the plugin ID.
-    $plugin_id = $plugin_id ? $plugin_id : $alert->get('type')->value;
+    $plugin_id = $plugin_id ? $plugin_id : $alert->getType();
 
     // Check if there are alert settings.
-    if ($value = $alert->get('settings')->value) {
-      // Unserialize the settings.
-      $value = unserialize($value);
-
+    if ($value = $alert->getSettings()) {
       // Check if this plugin has settings stored.
       if (isset($value[$plugin_id])) {
         // Use these settings.

@@ -6,6 +6,7 @@ use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Entity\EntityFormBuilder;
 use Drupal\beacon_billing\BeaconBilling;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * Class ManageSubscriptionController.
@@ -48,7 +49,14 @@ class ManageSubscriptionController extends ControllerBase {
    * Provide the subscription entity edit form for the user's subscription.
    */
   public function form() {
-    return $this->entityFormBuilder->getForm($this->beaconBilling->getUserSubscription(), 'default');
+    // Get the user's subscription.
+    if ($subscription = $this->beaconBilling->getUserSubscription()) {
+      return $this->entityFormBuilder->getForm($subscription, 'default');
+    }
+
+    // Redirect back home.
+    drupal_set_message(t('No subscription found.'), 'error');
+    return new RedirectResponse('/');
   }
 
 }

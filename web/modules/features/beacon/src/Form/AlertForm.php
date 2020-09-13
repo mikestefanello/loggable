@@ -185,9 +185,11 @@ class AlertForm extends BeaconContentEntityForm {
     $entity = parent::validateForm($form, $form_state);
 
     // Check for an alert type.
-    if ($entity->type->value) {
+    if ($entity->getType()) {
       // Allow the alert type plugin to validate the form.
-      $this->alertTypeManager->createInstanceFromAlert($entity)->validateSettingsForm($form_state);
+      $this->alertTypeManager
+        ->createInstanceFromAlert($entity)
+        ->validateSettingsForm($form_state);
     }
   }
 
@@ -198,19 +200,18 @@ class AlertForm extends BeaconContentEntityForm {
     $entity = $this->entity;
 
     // Allow the alert type plugin to submit the form.
-    $this->alertTypeManager->createInstanceFromAlert($entity)->submitSettingsForm($form_state);
+    $this->alertTypeManager
+      ->createInstanceFromAlert($entity)
+      ->submitSettingsForm($form_state);
 
     // Extract the current settings.
-    $settings = $entity->settings->value;
-
-    // Unserialize, if needed.
-    $settings = $settings ? unserialize($settings) : [];
+    $settings = $entity->getSettings();
 
     // Add the settings for the select alert type plugin.
     $settings[$entity->type->value] = $form_state->getValue('settings_form');
 
     // Inject the settings value.
-    $entity->set('settings', serialize($settings));
+    $entity->setSettings($settings);
 
     // Save the entity.
     $status = parent::save($form, $form_state);
@@ -227,7 +228,7 @@ class AlertForm extends BeaconContentEntityForm {
           '%label' => $entity->label(),
         ]));
     }
-    $form_state->setRedirect('entity.channel.canonical', ['channel' => $entity->channel->entity->uuid()]);
+    $form_state->setRedirect('entity.channel.canonical', ['channel' => $entity->getParent()->uuid()]);
   }
 
   /**

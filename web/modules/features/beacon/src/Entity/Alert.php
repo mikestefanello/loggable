@@ -252,4 +252,37 @@ class Alert extends BeaconContentEntityBase implements AlertInterface {
     return 'channel';
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function getType() {
+    return $this->type->value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getSettings() {
+    $settings = $this->settings->value;
+    return $settings ? unserialize($settings) : [];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setSettings(array $settings) {
+    return $this->set('settings', serialize($settings));
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getEventTypes() {
+    $types = [];
+    foreach ($this->event_types->getValue() as $value) {
+      $types[] = $value['value'];
+    }
+    return $types;
+  }
+
 }

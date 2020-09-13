@@ -89,8 +89,8 @@ class AlertDispatcher implements AlertDispatcherInterface {
     $ids = $storage
       ->getQuery()
       ->condition('enabled', 1)
-      ->condition('channel', $event->channel->entity->id())
-      ->condition('event_severity', $event->severity->value)
+      ->condition('channel', $event->getParent()->id())
+      ->condition('event_severity', $event->getSeverity())
       ->execute();
 
     // Load the alerts.
@@ -99,15 +99,9 @@ class AlertDispatcher implements AlertDispatcherInterface {
     // Iterate the alerts.
     foreach ($alerts as $index => $alert) {
       // Check if this alert has event type filters.
-      if ($alert->event_types->getValue()) {
-        // Flatten the types.
-        $types = [];
-        foreach ($alert->event_types->getValue() as $value) {
-          $types[] = $value['value'];
-        }
-
+      if ($types = $alert->getEventTypes()) {
         // Check if the type is not a match.
-        if (!$this->pathMatcher->matchPath($event->type->value, implode("\n", $types))) {
+        if (!$this->pathMatcher->matchPath($event->getType(), implode("\n", $types))) {
           // Remove this alert.
           unset($alerts[$index]);
         }

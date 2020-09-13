@@ -35,4 +35,39 @@ interface AlertInterface extends ContentEntityInterface, EntityChangedInterface,
    */
   public function isEnabled();
 
+  /**
+   * Get the type.
+   *
+   * @return string|null
+   *   The alert type, or NULL, if no value is set.
+   */
+  public function getType();
+
+  /**
+   * Get the settings.
+   *
+   * @return array
+   *   The alert settings.
+   */
+  public function getSettings();
+
+  /**
+   * Set the settings.
+   *
+   * @param array $settings
+   *   An array of settings.
+   *
+   * @return \Drupal\beacon\Entity\AlertInterface
+   *   The called alert.
+   */
+  public function setSettings(array $settings);
+
+  /**
+   * Get the event types.
+   *
+   * @return array
+   *   An array of event types.
+   */
+  public function getEventTypes();
+
 }

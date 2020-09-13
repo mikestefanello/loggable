@@ -3,7 +3,7 @@
 /**
  * Implements hook_install().
  */
-function beacon_standard_install() {
+function loggable_install() {
   // Load the config factory.
   $config = \Drupal::configFactory();
 

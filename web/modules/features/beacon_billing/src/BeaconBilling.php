@@ -259,7 +259,7 @@ class BeaconBilling {
     // Load the subscription.
     if ($subscription = $this->getUserSubscription($user)) {
       // Load the plan ID.
-      if ($plan_id = $subscription->plan->value) {
+      if ($plan_id = $subscription->getPlan()) {
         // Load the plan plugin definition.
         return $this->subscriptionPlanManager
           ->getDefinition($plan_id);
@@ -362,8 +362,8 @@ class BeaconBilling {
       $stripe_customer = StripeCustomer::retrieve($subscription->getCustomerId());
 
       // Update the values.
-      $stripe_customer->email = $subscription->email->value;
-      $stripe_customer->metadata['name'] = $subscription->name->value;
+      $stripe_customer->email = $subscription->getEmail();
+      $stripe_customer->metadata['name'] = $subscription->getName();
 
       // Store the token, if one is present.
       if ($cc_token) {
@@ -398,7 +398,7 @@ class BeaconBilling {
           // Update the plan.
           $stripe_subscription->items = [
             [
-              'plan' => $subscription->plan->value,
+              'plan' => $subscription->getPlan(),
               'id' => $stripe_subscription->items->data[0]->id,
               'quantity' => $this->getSubscriptionQuantity($subscription),
             ],
@@ -671,7 +671,7 @@ class BeaconBilling {
           'customer' => $subscription->getCustomerId(),
           'items' => [
             [
-              'plan' => $subscription->plan->value,
+              'plan' => $subscription->getPlan(),
               'quantity' => $this->getSubscriptionQuantity($subscription),
             ],
           ],

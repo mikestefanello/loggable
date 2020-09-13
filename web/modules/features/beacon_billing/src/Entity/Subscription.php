@@ -136,7 +136,14 @@ class Subscription extends ContentEntityBase implements SubscriptionInterface {
    * {@inheritdoc}
    */
   public function hasCard() {
-    return (bool) $this->get('cc_last_4')->value;
+    return (bool) $this->getCardLast4();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getCardLast4() {
+    return $this->get('cc_last_4')->value;
   }
 
   /**
@@ -165,6 +172,27 @@ class Subscription extends ContentEntityBase implements SubscriptionInterface {
    */
   public function getCustomerId() {
     return $this->get('customer_id')->value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getPlan() {
+    return $this->get('plan')->value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getName() {
+    return $this->get('name')->value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getEmail() {
+    return $this->get('email')->value;
   }
 
   /**

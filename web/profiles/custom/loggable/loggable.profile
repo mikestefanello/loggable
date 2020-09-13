@@ -5,9 +5,9 @@ use Drupal\Core\Config\FileStorage;
 /**
  * Implements hook_install_tasks().
  */
-function beacon_standard_install_tasks(&$install_state) {
+function loggable_install_tasks(&$install_state) {
   $tasks = [];
-  $tasks['beacon_standard_enable_features_batch'] = [
+  $tasks['loggable_enable_features_batch'] = [
     'display_name' => t('Install features'),
     'type' => 'batch',
   ];
@@ -17,9 +17,9 @@ function beacon_standard_install_tasks(&$install_state) {
 /**
  * Install task callback to provide a batch to enable all features.
  *
- * @see beacon_standard_install_tasks().
+ * @see loggable_install_tasks().
  */
-function beacon_standard_enable_features_batch() {
+function loggable_enable_features_batch() {
   // List features to install.
   $features = [
     'beacon',
@@ -34,7 +34,7 @@ function beacon_standard_enable_features_batch() {
 
   // Add an operation for each feature.
   foreach ($features as $feature) {
-    $batch['operations'][] = ['beacon_standard_enable_feature', [$feature]];
+    $batch['operations'][] = ['loggable_enable_feature', [$feature]];
   }
 
   return $batch;
@@ -45,7 +45,7 @@ function beacon_standard_enable_features_batch() {
  *
  * This is done at the very end because existing configuration needs to be purged.
  */
-function beacon_standard_enable_feature($feature, &$context = []) {
+function loggable_enable_feature($feature, &$context = []) {
   // Load the configuration factory.
   $config_factory = \Drupal::configFactory();
 

@@ -85,9 +85,9 @@ class SubscriptionForm extends ContentEntityForm {
       '#title' => $this->t('Subscription status'),
       '#open' => TRUE,
       '#weight' => -50,
-      '#access' => (bool) $entity->status->value,
+      '#access' => (bool) $entity->getStatus(),
       'markup' => [
-        '#markup' => $entity->status->value ? $status_values[$entity->status->value] : '',
+        '#markup' => $entity->getStatus() ? $status_values[$entity->getStatus()] : '',
       ],
     ];
 
@@ -194,7 +194,7 @@ class SubscriptionForm extends ContentEntityForm {
       // Show the stored card and allow updating.
       $form['cc_wrapper']['cc_container']['update_cc']['last_4'] = [
         '#type' => 'item',
-        '#markup' => $this->t('Card ending in %last_4', ['%last_4' => $entity->cc_last_4->value]),
+        '#markup' => $this->t('Card ending in %last_4', ['%last_4' => $entity->getCardLast4()]),
       ];
       $form['cc_wrapper']['cc_container']['update_cc']['update_cc_button'] = [
         '#type' => 'checkbox',

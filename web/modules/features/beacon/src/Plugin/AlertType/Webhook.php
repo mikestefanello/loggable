@@ -62,16 +62,16 @@ class Webhook extends AlertTypeBase implements ContainerFactoryPluginInterface {
 
     // Build the data to post.
     $data = [
-      'channel' => $event->channel->entity->uuid(),
-      'channelName' => $event->channel->entity->label(),
+      'channel' => $event->getParent()->uuid(),
+      'channelName' => $event->getParent()->label(),
       'event' => $event->uuid(),
-      'type' => $event->type->value,
-      'severity' => $event->severity->value,
-      'user' => $event->user->value,
-      'url' => $event->url->first() ? $event->url->first()->getUrl()->toString() : '',
-      'created' => $event->created->value,
-      'expire' => $event->expire->value,
-      'message' => $event->message->value,
+      'type' => $event->getType(),
+      'severity' => $event->getSeverity(),
+      'user' => $event->getUser(),
+      'url' => ($url = $event->getUrl()) ? $url->toString() : NULL,
+      'created' => $event->getCreatedTime(),
+      'expire' => $event->getExpiration(),
+      'message' => $event->getMessage(),
     ];
 
     // Queue the request.
